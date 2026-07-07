@@ -1,24 +1,67 @@
+#!/usr/bin/env python3
+"""passgen — desktop app (no browser chrome)"""
+
 import http.server
 import socketserver
 import webbrowser
+import subprocess
+import shutil
 import threading
 import os
+import sys
+import signal
 
 PORT = 8765
 DIR = os.path.dirname(os.path.abspath(__file__))
-HTML = os.path.join(DIR, "index.html")
+URL = f"http://localhost:{PORT}/index.html"
 
 
-class Handler(http.server.SimpleHTTPRequestHandler):
+class QuietHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=DIR, **kwargs)
-
     def log_message(self, fmt, *args):
-        pass  # quiet
+        pass
+
+
+def open_app_mode(url):
+    """Open URL without browser chrome (address bar, tabs)."""
+    browsers = [
+        ("google-chrome-stable", ["--app=" + url, "--no-first-run"]),
+        ("google-chrome",       ["--app=" + url, "--no-first-run"]),
+        ("chromium-browser",    ["--app=" + url, "--no-first-run"]),
+        ("chromium",            ["--app=" + url, "--no-first-run"]),
+        ("brave-browser",       ["--app=" + url]),
+        ("vivaldi",             ["--app=" + url]),
+        ("firefox",             ["--new-window", url, "--kiosk"]),
+        ("microsoft-edge",      ["--app=" + url]),
+    ]
+    for name, args in browsers:
+        path = shutil.which(name)
+        if path:
+            subprocess.Popen([path] + args,
+                             stdout=subprocess.DEVNULL,
+                             stderr=subprocess.DEVNULL)
+            return True
+    return False
 
 
 if __name__ == "__main__":
-    print("Opening passgen in your browser...")
-    webbrowser.open(f"http://localhost:{PORT}/index.html")
-    with socketserver.TCPServer(("", PORT), Handler) as httpd:
-        httpd.serve_forever()
+    # Start HTTP server
+    httpd = socketserver.TCPServer(("", PORT), QuietHandler)
+    thread = threading.Thread(target=httpd.serve_forever, daemon=True)
+    thread.start()
+
+    print(f"  passgen — http://localhost:{PORT}")
+    print()
+
+    # Try app mode first
+    if not open_app_mode(URL):
+        webbrowser.open(URL)
+
+    print("Press Ctrl+C to stop")
+
+    try:
+        signal.pause()
+    except KeyboardInterrupt:
+        httpd.shutdown()
+        print("\nBye!")
