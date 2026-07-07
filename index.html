@@ -132,9 +132,9 @@ input.error{border-color:#f472b6;animation:glow 1.5s ease infinite}
 .str-wrap{margin-top:6px}
 .str-bars{display:flex;gap:4px}
 .str-bar{height:4px;flex:1;border-radius:3px;background:#e0dce8;transition:background .4s ease}
-.str-bar.on.s0{background:#f9a8d4}
-.str-bar.on.s1{background:#e11d48}
-.str-bar.on.s2{background:#a855f7}
+.str-bar.on.weak{background:#f9a8d4}
+.str-bar.on.medium{background:#e11d48}
+.str-bar.on.strong{background:#a855f7}
 .str-info{font-size:13px;margin-top:4px;transition:all .3s}
 .str-info.weak{color:#f472b6}
 .str-info.medium{color:#e11d48}
@@ -426,8 +426,9 @@ function updateStrength(len,sets){
   else if(len>=10&&sets>=3){level='medium';emoji=':3';msg='Хороший, можно длиннее'}
   else{level='weak';emoji='>.<';msg='Добавьте символов или увеличьте длину'}
   const count={weak:1,medium:2,strong:3}[level];
+  const bclass='str-bar on '+level;
   for(let i=0;i<3;i++){
-    const b=document.createElement('div');b.className='str-bar'+(i<count?' on s'+i:'');
+    const b=document.createElement('div');b.className=i<count?bclass:'str-bar';
     bars.appendChild(b);
   }
   info.className='str-info '+level;
