@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
 app.py — Кроссплатформенный GUI для генератора паролей (Tkinter).
-Светлый дизайн, сиреневые кнопки с эффектом тиснения.
+Автоматически подбирает шрифт с кириллицей.
 """
 
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, font
 import sys
 import os
 
@@ -14,22 +14,60 @@ from core import generate_password
 from settings import load_services, save_services, load_settings, save_settings
 
 
-# ── Шрифты (гарантированно есть на Arch, Windows, macOS) ───────
-FONT_REG  = ("Liberation Sans", 11)
-FONT_BOLD = ("Liberation Sans", 11, "bold")
-FONT_TITLE= ("Liberation Sans", 16, "bold")
-FONT_PWD  = ("Liberation Mono", 12, "bold")
-FONT_SMALL= ("Liberation Sans", 9)
+# ── Подбор шрифта с кириллицей ─────────────────────────────────
+FONT_CANDIDATES = [
+    ("Liberation Sans", 11),     # Linux (ttf-liberation)
+    ("DejaVu Sans", 11),         # Linux (ttf-dejavu)
+    ("Noto Sans", 11),           # Linux (noto-fonts)
+]
+
+MONO_CANDIDATES = [
+    "Liberation Mono",
+    "DejaVu Sans Mono",
+    "Noto Sans Mono",
+    "Courier New",
+    "Courier",
+]
+
+TEST_STRING = "СидСервисДлинаСимволыСкопироватьABCDabcd1234"
+
+
+def _font_supports(family, size, test):
+    """Проверить, существует ли шрифт и отображает ли он test."""
+    try:
+        f = font.Font(family=family, size=size)
+        w = f.measure(test)
+        return w > 1  # ширина > 1px значит символы есть
+    except Exception:
+        return False
+
+
+def _pick_fonts():
+    """Выбрать лучший доступный шрифт (основной и моноширинный)."""
+    base = ("TkDefaultFont", 11)
+    for family, size in FONT_CANDIDATES:
+        if _font_supports(family, size, TEST_STRING):
+            base = (family, size)
+            break
+
+    mono = ("TkFixedFont", 12)
+    for family in MONO_CANDIDATES:
+        if _font_supports(family, 12, TEST_STRING):
+            mono = (family, 12)
+            break
+
+    return base, mono
+
 
 # ── Цвета ──────────────────────────────────────────────────────
-BG       = "#f8f8ff"
-FG       = "#1a1a1a"
-BTN_LILAC= "#a855f7"
-BTN_HVR  = "#c084fc"
-BTN_EDGE = "#7c3aed"
-BTN_VIO  = "#a78bfa"
-ENTRY_BG = "#ffffff"
-MUTED    = "#888888"
+BG        = "#f8f8ff"
+FG        = "#1a1a1a"
+BTN_LILAC = "#a855f7"
+BTN_HVR   = "#c084fc"
+BTN_EDGE  = "#7c3aed"
+BTN_VIOLET= "#a78bfa"
+ENTRY_BG  = "#ffffff"
+MUTED     = "#888888"
 
 
 class PassGenApp(tk.Tk):
@@ -46,6 +84,9 @@ class PassGenApp(tk.Tk):
         self.geometry(f"{win_w}x{win_h}+{(sw-win_w)//2}+{(sh-win_h)//2}")
         self.resizable(False, False)
 
+        # Подбор шрифтов
+        self._base_font, self._mono_font = _pick_fonts()
+
         self._build_ui()
         self._load_data()
         self.protocol("WM_DELETE_WINDOW", self._on_close)
@@ -55,21 +96,23 @@ class PassGenApp(tk.Tk):
     def _build_ui(self):
         self.configure(bg=BG)
 
-        # Заголовок
-        tk.Label(self, text="passgen  |  Password Generator",
-                 font=FONT_TITLE, bg=BG, fg="#4a1a6b"
-        ).pack(anchor="w", padx=28, pady=(22, 18))
+        FONT_REG    = self._base_font
+        FONT_BOLD   = (self._base_font[0], self._base_font[1], "bold")
+        FONT_TITLE  = (self._base_font[0], 16, "bold")
+        FONT_PWD    = (self._mono_font[0], self._mono_font[1], "bold")
+        FONT_SMALL  = (self._base_font[0], 9)
 
-        # ── Сид-фраза ───────────────────────────────────────────
-        self._label("Сид-фраза:")
+        # Заголовок
+        self._make_title("passgen  |  Password Generator", FONT_TITLE)
+
+        # Сид-фраза
+        self._make_label("Сид-фраза:", FONT_REG)
         self.seed_var = tk.StringVar()
-        self.seed_entry = tk.Entry(self, textvariable=self.seed_var,
-                                    font=FONT_REG, relief="sunken", bd=2,
-                                    bg=ENTRY_BG, fg=FG)
+        self.seed_entry = self._make_entry(self.seed_var, FONT_REG)
         self.seed_entry.pack(fill="x", padx=28, pady=(0, 10), ipady=4)
 
-        # ── Сервис ──────────────────────────────────────────────
-        self._label("Сервис:")
+        # Сервис
+        self._make_label("Сервис:", FONT_REG)
         self.svc_var = tk.StringVar()
         self.svc_combo = ttk.Combobox(self, textvariable=self.svc_var,
                                        font=FONT_REG)
@@ -77,7 +120,7 @@ class PassGenApp(tk.Tk):
         self.svc_combo.bind("<Return>", lambda e: self._generate())
         self.svc_combo.bind("<KP_Enter>", lambda e: self._generate())
 
-        # ── Длина ───────────────────────────────────────────────
+        # Длина
         frame_len = tk.Frame(self, bg=BG)
         frame_len.pack(fill="x", padx=28, pady=(0, 12))
         tk.Label(frame_len, text="Длина:", font=FONT_REG,
@@ -90,7 +133,7 @@ class PassGenApp(tk.Tk):
                                     bg=ENTRY_BG, fg=FG)
         self.len_spin.pack(side="right")
 
-        # ── Чекбоксы ────────────────────────────────────────────
+        # Чекбоксы
         frame_chk = tk.Frame(self, bg=BG)
         frame_chk.pack(fill="x", padx=28, pady=(0, 12))
         tk.Label(frame_chk, text="Символы:", font=FONT_REG,
@@ -105,16 +148,17 @@ class PassGenApp(tk.Tk):
         chk_frame = tk.Frame(frame_chk, bg=BG)
         chk_frame.grid(row=0, column=1, sticky="w")
 
-        self._chk(chk_frame, "Заглавные",   self.cap_var, 0, 0)
-        self._chk(chk_frame, "Строчные",     self.low_var, 0, 1)
-        self._chk(chk_frame, "Цифры",        self.dig_var, 1, 0)
-        self._chk(chk_frame, "Спецсимволы",  self.sym_var, 1, 1)
+        self._make_chk(chk_frame, "Заглавные",   self.cap_var, 0, 0, FONT_REG)
+        self._make_chk(chk_frame, "Строчные",     self.low_var, 0, 1, FONT_REG)
+        self._make_chk(chk_frame, "Цифры",        self.dig_var, 1, 0, FONT_REG)
+        self._make_chk(chk_frame, "Спецсимволы",  self.sym_var, 1, 1, FONT_REG)
 
-        # ── Кнопка генерации ────────────────────────────────────
-        self.gen_btn = self._btn("Сгенерировать", BTN_LILAC, self._generate)
+        # Кнопка генерации
+        self.gen_btn = self._make_btn("Сгенерировать", FONT_BOLD,
+                                      BTN_LILAC, self._generate)
         self.gen_btn.pack(fill="x", padx=28, pady=(4, 10), ipady=6)
 
-        # ── Поле пароля ─────────────────────────────────────────
+        # Поле пароля
         self.pwd_var = tk.StringVar()
         self.pwd_entry = tk.Entry(self, textvariable=self.pwd_var,
                                    font=FONT_PWD,
@@ -123,32 +167,42 @@ class PassGenApp(tk.Tk):
                                    state="readonly")
         self.pwd_entry.pack(fill="x", padx=28, pady=(0, 6), ipady=6)
 
-        # ── Индикатор надёжности ────────────────────────────────
+        # Индикатор надёжности
         self.strength_var = tk.StringVar()
         tk.Label(self, textvariable=self.strength_var,
                  font=FONT_SMALL, bg=BG, fg=MUTED
         ).pack(anchor="w", padx=28, pady=(0, 6))
 
-        # ── Кнопка копирования ──────────────────────────────────
-        self.copy_btn = self._btn("Скопировать", BTN_VIO, self._copy_password)
+        # Кнопка копирования
+        self.copy_btn = self._make_btn("Скопировать", FONT_BOLD,
+                                       BTN_VIOLET, self._copy_password)
         self.copy_btn.pack(fill="x", padx=28, pady=(0, 24), ipady=6)
 
-    # ── Вспомогательные виджеты ─────────────────────────────────
+    # ── Вспомогательные методы ──────────────────────────────────
 
-    def _label(self, text):
-        tk.Label(self, text=text, font=FONT_REG, bg=BG, fg=FG
+    def _make_title(self, text, font):
+        tk.Label(self, text=text, font=font, bg=BG, fg="#4a1a6b"
+        ).pack(anchor="w", padx=28, pady=(22, 18))
+
+    def _make_label(self, text, font):
+        tk.Label(self, text=text, font=font, bg=BG, fg=FG
         ).pack(anchor="w", padx=28)
 
-    def _chk(self, parent, text, var, row, col):
+    def _make_entry(self, var, font):
+        return tk.Entry(self, textvariable=var, font=font,
+                         relief="sunken", bd=2,
+                         bg=ENTRY_BG, fg=FG)
+
+    def _make_chk(self, parent, text, var, row, col, font):
         cb = tk.Checkbutton(parent, text=text, variable=var,
-                             font=FONT_REG, bg=BG, fg=FG,
+                             font=font, bg=BG, fg=FG,
                              selectcolor=ENTRY_BG,
                              activebackground=BG, relief="flat")
         cb.grid(row=row, column=col, sticky="w", padx=(0, 20), pady=2)
 
-    def _btn(self, text, color, command):
+    def _make_btn(self, text, font, color, command):
         btn = tk.Button(self, text=text, command=command,
-                         font=FONT_BOLD,
+                         font=font,
                          bg=color, fg="#ffffff",
                          activebackground=BTN_HVR,
                          activeforeground="#ffffff",
@@ -160,16 +214,16 @@ class PassGenApp(tk.Tk):
     # ── Загрузка / сохранение ───────────────────────────────────
 
     def _load_data(self):
-        settings = load_settings()
-        self.len_var.set(settings["length"])
-        self.cap_var.set(settings["capitals"])
-        self.low_var.set(settings["lower"])
-        self.dig_var.set(settings["digits"])
-        self.sym_var.set(settings["symbols"])
+        s = load_settings()
+        self.len_var.set(s["length"])
+        self.cap_var.set(s["capitals"])
+        self.low_var.set(s["lower"])
+        self.dig_var.set(s["digits"])
+        self.sym_var.set(s["symbols"])
 
-        services = load_services()
-        if services:
-            self.svc_combo["values"] = services
+        svcs = load_services()
+        if svcs:
+            self.svc_combo["values"] = svcs
 
     def _save_data(self):
         save_settings(
@@ -180,43 +234,42 @@ class PassGenApp(tk.Tk):
             symbols=self.sym_var.get(),
         )
         services = list(self.svc_combo["values"])
-        current = self.svc_var.get().strip()
-        if current and current not in services:
-            services.append(current)
+        cur = self.svc_var.get().strip()
+        if cur and cur not in services:
+            services.append(cur)
         save_services(services)
 
     # ── Логика ──────────────────────────────────────────────────
 
     def _generate(self):
         service = self.svc_var.get().strip()
-        master_seed = self.seed_var.get().strip()
+        seed = self.seed_var.get().strip()
 
-        if not master_seed:
-            messagebox.showwarning("Ошибка", "Введите сид-фразу")
+        if not seed:
+            messagebox.showwarning("", "Введите сид-фразу")
             return
         if not service:
-            messagebox.showwarning("Ошибка", "Введите название сервиса")
+            messagebox.showwarning("", "Введите название сервиса")
             return
 
         try:
-            password = generate_password(
-                master_seed=master_seed,
-                service=service,
+            pwd = generate_password(
+                master_seed=seed, service=service,
                 length=self.len_var.get(),
                 use_capitals=self.cap_var.get(),
                 use_lower=self.low_var.get(),
                 use_digits=self.dig_var.get(),
                 use_symbols=self.sym_var.get(),
             )
-            self.pwd_var.set(password)
+            self.pwd_var.set(pwd)
 
-            values = list(self.svc_combo["values"])
-            if service not in values:
-                values.append(service)
-                self.svc_combo["values"] = values
+            vals = list(self.svc_combo["values"])
+            if service not in vals:
+                vals.append(service)
+                self.svc_combo["values"] = vals
 
         except ValueError as ex:
-            messagebox.showwarning("Ошибка", str(ex))
+            messagebox.showwarning("", str(ex))
 
     def _copy_password(self):
         pwd = self.pwd_var.get()
