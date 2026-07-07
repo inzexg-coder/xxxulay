@@ -9,7 +9,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes glow{0%,100%{border-color:#e03131}50%{border-color:#ff5577}}
+@keyframes glow{0%,100%{border-color:#f472b6}50%{border-color:#f9a8d4}}
 @keyframes slideDown{from{max-height:0;opacity:0}to{max-height:300px;opacity:1}}
 @keyframes slideUp{from{max-height:300px;opacity:1}to{max-height:0;opacity:0}}
 @keyframes checkPop{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
@@ -44,7 +44,7 @@ input[type="text"],input[type="number"]{
 input:focus{border-color:#a855f7;box-shadow:0 0 0 3px rgba(168,85,247,.12)}
 input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 input[type="number"]{-moz-appearance:textfield}
-input.error{border-color:#e03131;animation:glow 1.5s ease infinite}
+input.error{border-color:#f472b6;animation:glow 1.5s ease infinite}
 
 
 
@@ -138,7 +138,7 @@ input.error{border-color:#e03131;animation:glow 1.5s ease infinite}
 .str-bar.on.medium{background:#f59e0b}
 .str-bar.on.strong{background:#10b981}
 
-.error{font-size:12px;color:#e03131;min-height:16px;margin-top:2px}
+.error{font-size:12px;color:#f472b6;min-height:16px;margin-top:2px}
 
 .msg{text-align:center;font-size:13px;color:#a855f7;font-weight:600;min-height:20px;margin-top:3px}
 </style>
@@ -149,8 +149,9 @@ input.error{border-color:#e03131;animation:glow 1.5s ease infinite}
 
 <div class="card">
   <div class="card-title">Доступ</div>
-  <label>Мастер-пароль</label>
-  <input type="text" id="seed" placeholder="Ваш секретный код">
+  <label>Сид</label>
+  <div style="font-size:11px;color:#999;margin-bottom:5px;margin-top:-2px">Секретная фраза, которую вы держите в голове. Один сид — все пароли.</div>
+  <input type="text" id="seed" placeholder="Ваша секретная фраза">
   <div class="error" id="seedErr"></div>
 </div>
 
@@ -331,7 +332,7 @@ async function gen(){
   document.getElementById('seed').classList.remove('error');
   if(!seed){
     document.getElementById('seed').classList.add('error');
-    document.getElementById('seedErr').textContent='Введите мастер-пароль';
+    document.getElementById('seedErr').textContent='Введите сид';
     return;
   }
   const sets=Object.values(state).filter(Boolean).length;
