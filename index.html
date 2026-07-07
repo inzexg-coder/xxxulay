@@ -188,6 +188,16 @@ input.error{border-color:#f472b6;animation:glow 1.5s ease infinite}
     <div class="col">
       <label>Символы</label>
       <div class="chk-grid" id="chkGrid"></div>
+      <div style="margin-top:8px;display:flex;flex-direction:column;gap:4px">
+        <div class="chk-item" onclick="toggleInv('cap')" style="font-size:12px">
+          <span class="chk-circle" id="invCap"></span>
+          <span>Первая заглавная</span>
+        </div>
+        <div class="chk-item" onclick="toggleInv('dig')" style="font-size:12px">
+          <span class="chk-circle" id="invDig"></span>
+          <span>Последняя цифра</span>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -225,11 +235,13 @@ const POPULAR = [
 ];
 
 let state = {capitals:1,lowercase:1,digits:0,symbols:1};
+let inv = {cap:0,dig:0};
 let svcs = [];
 
 
 function init(){
   renderChk();
+  renderInv();
   loadState();
   document.getElementById('seed').addEventListener('input',()=>{
     document.getElementById('seed').classList.remove('error');
@@ -245,9 +257,11 @@ function loadState(){
   if(saved) try {
     const d = JSON.parse(saved);
     state = d.state || state;
+    inv = d.inv || {cap:0,dig:0};
     svcs = d.svcs || [];
     document.getElementById('length').value = d.len || 10;
     renderChk();
+    renderInv();
     
     renderSvcChips();
   }catch(e){}
@@ -258,6 +272,14 @@ function saveState(){
   }))}catch(e){}
 }
 
+function toggleInv(id){
+  inv[id]=+!inv[id];
+  document.getElementById('inv'+id.charAt(0).toUpperCase()+id.slice(1)).className='chk-circle'+(inv[id]?' on':'');
+}
+function renderInv(){
+  document.getElementById('invCap').className='chk-circle'+(inv.cap?' on':'');
+  document.getElementById('invDig').className='chk-circle'+(inv.dig?' on':'');
+}
 function renderChk(){
   const g=document.getElementById('chkGrid');g.innerHTML='';
   for(const[id,lbl]of CHK){
@@ -344,7 +366,18 @@ async function gen(){
   if(!sets){document.getElementById('seedErr').textContent='Выберите хотя бы один тип символов';return;}
   const alpha=CHK.filter(([id])=>state[id]).map(([,,l])=>l).join('');
   const pwd=await hmacGen(seed,svc,len,alpha);
-  document.getElementById('pwd').value=pwd;
+  // Apply inversion
+  let finalPwd=pwd;
+  if(inv.cap&&finalPwd.length>0)finalPwd=finalPwd[0].toUpperCase()+finalPwd.slice(1);
+  if(inv.dig&&finalPwd.length>0){
+    // Get a deterministic digit from HMAC
+    const dk=await crypto.subtle.importKey('raw',new TextEncoder().encode(seed+'_lastdig'),{name:'HMAC',hash:'SHA-256'},false,['sign']);
+    const ds=await crypto.subtle.sign('HMAC',dk,new TextEncoder().encode(svc+len));
+    const dd=new Uint8Array(ds);
+    const digit='0123456789'[dd[0]%10];
+    finalPwd=finalPwd.slice(0,-1)+digit;
+  }
+  document.getElementById('pwd').value=finalPwd;
   updateStrength(len,sets);
   if(!svcs.includes(svc)&&svc!=='(empty)'){
     svcs.push(svc);svcs.sort();renderSvcChips();
