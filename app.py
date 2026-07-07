@@ -13,7 +13,7 @@ import signal
 
 PORT = 8765
 DIR = os.path.dirname(os.path.abspath(__file__))
-URL = f"http://localhost:{PORT}/index.html"
+# URL built after port detection
 
 
 class QuietHandler(http.server.SimpleHTTPRequestHandler):
@@ -46,17 +46,24 @@ def open_app_mode(url):
 
 
 if __name__ == "__main__":
-    # Start HTTP server
-    httpd = socketserver.TCPServer(("", PORT), QuietHandler)
+    # Find available port
+    port = PORT
+    while True:
+        try:
+            httpd = socketserver.TCPServer(("", port), QuietHandler)
+            break
+        except OSError:
+            port += 1
     thread = threading.Thread(target=httpd.serve_forever, daemon=True)
     thread.start()
 
-    print(f"  passgen — http://localhost:{PORT}")
+    url = f"http://localhost:{port}/index.html"
+    print(f"  passgen — http://localhost:{port}")
     print()
 
     # Try app mode first
-    if not open_app_mode(URL):
-        webbrowser.open(URL)
+    if not open_app_mode(url):
+        webbrowser.open(url)
 
     print("Press Ctrl+C to stop")
 
