@@ -1,10 +1,6 @@
 """
-app.py — Кроссплатформенный GUI для генератора паролей (Tkinter/ttk).
-
-Запуск:
-    python app.py
-
-Работает на Windows, Linux (Arch), macOS без дополнительных зависимостей.
+app.py — Кроссплатформенный GUI для генератора паролей (Tkinter).
+Светлый дизайн, сиреневые кнопки с эффектом тиснения.
 """
 
 import tkinter as tk
@@ -17,216 +13,143 @@ from core import generate_password
 from settings import load_services, save_services, load_settings, save_settings
 
 
-# ── Цветовая схема ──────────────────────────────────────────────
-COLORS = {
-    "bg": "#1e1e2e",          # тёмный фон
-    "fg": "#cdd6f4",          # светлый текст
-    "accent": "#89b4fa",      # акцент (синий)
-    "surface": "#313244",     # карточки / поля
-    "border": "#45475a",      # рамки
-    "success": "#a6e3a1",     # зелёный
-    "error": "#f38ba8",       # красный
-    "text_muted": "#6c7086",  # приглушённый
-}
-
-
 class PassGenApp(tk.Tk):
-    """Главное окно генератора паролей."""
+    """Главное окно."""
 
     def __init__(self):
         super().__init__()
         self.title("passgen")
-        self.configure(bg=COLORS["bg"])
+        self.configure(bg="#f8f8ff")
 
-        # Размер и центрирование
-        win_w, win_h = 340, 420
+        win_w, win_h = 380, 460
         sw = self.winfo_screenwidth()
         sh = self.winfo_screenheight()
-        x = (sw - win_w) // 2
-        y = (sh - win_h) // 2
-        self.geometry(f"{win_w}x{win_h}+{x}+{y}")
+        self.geometry(f"{win_w}x{win_h}+{(sw-win_w)//2}+{(sh-win_h)//2}")
         self.resizable(False, False)
 
-        # Настройка стилей ttk
-        self._setup_styles()
-
-        # Сборка интерфейса
         self._build_ui()
-
-        # Загрузка данных
         self._load_data()
-
-        # Привязка закрытия окна
         self.protocol("WM_DELETE_WINDOW", self._on_close)
 
-    # ── Стилизация ──────────────────────────────────────────────
-
-    def _setup_styles(self):
-        style = ttk.Style(self)
-        style.theme_use("clam")
-
-        style.configure("TLabel",
-                        background=COLORS["bg"],
-                        foreground=COLORS["fg"],
-                        font=("Segoe UI", 10))
-
-        style.configure("TEntry",
-                        fieldbackground=COLORS["surface"],
-                        foreground=COLORS["fg"],
-                        bordercolor=COLORS["border"],
-                        lightcolor=COLORS["border"],
-                        darkcolor=COLORS["border"],
-                        font=("Segoe UI", 10))
-
-        style.configure("TCombobox",
-                        fieldbackground=COLORS["surface"],
-                        foreground=COLORS["fg"],
-                        bordercolor=COLORS["border"],
-                        arrowcolor=COLORS["fg"],
-                        font=("Segoe UI", 10))
-        style.map("TCombobox",
-                  fieldbackground=[("readonly", COLORS["surface"])])
-
-        style.configure("TCheckbutton",
-                        background=COLORS["bg"],
-                        foreground=COLORS["fg"],
-                        font=("Segoe UI", 10))
-        style.map("TCheckbutton",
-                  background=[("active", COLORS["bg"])])
-
-        style.configure("TButton",
-                        background=COLORS["accent"],
-                        foreground=COLORS["bg"],
-                        font=("Segoe UI", 10, "bold"),
-                        borderwidth=0,
-                        focusthickness=0)
-        style.map("TButton",
-                  background=[("active", "#74c7ec"), ("pressed", "#89b4fa")])
-
-        style.configure("Success.TButton",
-                        background=COLORS["success"],
-                        foreground=COLORS["bg"],
-                        font=("Segoe UI", 10, "bold"),
-                        borderwidth=0,
-                        focusthickness=0)
-        style.map("Success.TButton",
-                  background=[("active", "#94eb9c"), ("pressed", "#a6e3a1")])
-
-        style.configure("Muted.TLabel",
-                        background=COLORS["bg"],
-                        foreground=COLORS["text_muted"],
-                        font=("Segoe UI", 8))
-
-        style.configure("Title.TLabel",
-                        background=COLORS["bg"],
-                        foreground=COLORS["fg"],
-                        font=("Segoe UI", 12, "bold"))
-
-        style.configure("Result.TEntry",
-                        fieldbackground=COLORS["surface"],
-                        foreground=COLORS["success"],
-                        bordercolor=COLORS["border"],
-                        font=("Consolas", 11, "bold"))
-
-    # ── Построение UI ───────────────────────────────────────────
+    # ── Построение интерфейса ───────────────────────────────────
 
     def _build_ui(self):
-# Отступы
-        pad = {"padx": 20, "pady": (0, 4)}
-        pass  #
-        pass  #
+        bg = "#f8f8ff"
+        font_label = ("Helvetica", 11)
+        font_entry = ("Helvetica", 11)
+        font_pwd   = ("Courier", 12, "bold")
 
-        # ── Заголовок ──
-        title = ttk.Label(self, text="🔐 passgen", style="Title.TLabel")
-        title.pack(anchor="w", padx=20, pady=(20, 16))
+        self.configure(bg=bg)
 
-        # ── Сид-фраза ──
-        row_seed = tk.Frame(self, bg=COLORS["bg"])
-        row_seed.pack(fill="x", padx=20, pady=(0, 8))
+        # Заголовок
+        tk.Label(self, text="🔐 passgen",
+                 font=("Helvetica", 16, "bold"),
+                 bg=bg, fg="#4a1a6b").pack(anchor="w", padx=28, pady=(22, 18))
 
-        ttk.Label(row_seed, text="Сид-фраза:").pack(side="left")
+        # ── Сид-фраза ───────────────────────────────────────────
+        self._row_label("Сид-фраза:", padx=28)
         self.seed_var = tk.StringVar()
-        self.seed_entry = ttk.Entry(row_seed, textvariable=self.seed_var, width=22)
-        self.seed_entry.pack(side="right")
+        self.seed_entry = tk.Entry(self, textvariable=self.seed_var,
+                                    font=font_entry, relief="sunken", bd=2,
+                                    bg="#ffffff", fg="#1a1a1a")
+        self.seed_entry.pack(fill="x", padx=28, pady=(0, 10), ipady=4)
 
-        # ── Сервис ──
-        row_svc = tk.Frame(self, bg=COLORS["bg"])
-        row_svc.pack(fill="x", padx=20, pady=(0, 8))
-
-        ttk.Label(row_svc, text="Сервис:").pack(side="left")
+        # ── Сервис ──────────────────────────────────────────────
+        self._row_label("Сервис:", padx=28)
         self.svc_var = tk.StringVar()
-        self.svc_combo = ttk.Combobox(row_svc, textvariable=self.svc_var, width=20)
-        self.svc_combo.pack(side="right")
+        self.svc_combo = ttk.Combobox(self, textvariable=self.svc_var,
+                                       font=font_entry)
+        self.svc_combo.pack(fill="x", padx=28, pady=(0, 10))
         self.svc_combo.bind("<Return>", lambda e: self._generate())
         self.svc_combo.bind("<KP_Enter>", lambda e: self._generate())
 
-        # ── Длина ──
-        row_len = tk.Frame(self, bg=COLORS["bg"])
-        row_len.pack(fill="x", padx=20, pady=(0, 8))
-
-        ttk.Label(row_len, text="Длина:").pack(side="left")
+        # ── Длина ───────────────────────────────────────────────
+        frame_len = tk.Frame(self, bg=bg)
+        frame_len.pack(fill="x", padx=28, pady=(0, 12))
+        tk.Label(frame_len, text="Длина:", font=font_label,
+                 bg=bg, fg="#1a1a1a").pack(side="left")
         self.len_var = tk.IntVar(value=10)
-        self.len_spin = tk.Spinbox(
-            row_len, from_=1, to=99, textvariable=self.len_var,
-            width=5, font=("Segoe UI", 10),
-            bg=COLORS["surface"], fg=COLORS["fg"],
-            buttonbackground=COLORS["bg"],
-            relief="flat", bd=0,
-        )
+        self.len_spin = tk.Spinbox(frame_len, from_=1, to=99,
+                                    textvariable=self.len_var,
+                                    font=font_entry, width=6,
+                                    relief="sunken", bd=2,
+                                    bg="#ffffff", fg="#1a1a1a")
         self.len_spin.pack(side="right")
 
-        # ── Чекбоксы ──
-        row_chk = tk.Frame(self, bg=COLORS["bg"])
-        row_chk.pack(fill="x", padx=20, pady=(0, 8))
-        ttk.Label(row_chk, text="Символы:").pack(anchor="nw", pady=(4, 0))
+        # ── Чекбоксы ────────────────────────────────────────────
+        frame_chk = tk.Frame(self, bg=bg)
+        frame_chk.pack(fill="x", padx=28, pady=(0, 12))
+        tk.Label(frame_chk, text="Символы:", font=font_label,
+                 bg=bg, fg="#1a1a1a").grid(row=0, column=0, sticky="nw",
+                                           padx=(0, 18), pady=(2, 0))
 
-        chk_frame = tk.Frame(row_chk, bg=COLORS["bg"])
-        chk_frame.pack(fill="x", pady=(4, 0))
-
+        chk_bg = bg
         self.cap_var = tk.BooleanVar(value=True)
         self.low_var = tk.BooleanVar(value=True)
         self.dig_var = tk.BooleanVar(value=False)
         self.sym_var = tk.BooleanVar(value=True)
 
-        chk_cap = ttk.Checkbutton(chk_frame, text="Заглавные",
-                                  variable=self.cap_var)
-        chk_cap.grid(row=0, column=0, sticky="w", padx=(0, 12))
+        chk_frame = tk.Frame(frame_chk, bg=bg)
+        chk_frame.grid(row=0, column=1, sticky="w")
 
-        chk_low = ttk.Checkbutton(chk_frame, text="Строчные",
-                                  variable=self.low_var)
-        chk_low.grid(row=0, column=1, sticky="w", padx=(0, 12))
+        self._make_chk(chk_frame, "Заглавные",   self.cap_var, 0, 0, chk_bg)
+        self._make_chk(chk_frame, "Строчные",     self.low_var, 0, 1, chk_bg)
+        self._make_chk(chk_frame, "Цифры",        self.dig_var, 1, 0, chk_bg)
+        self._make_chk(chk_frame, "Спецсимволы",  self.sym_var, 1, 1, chk_bg)
 
-        chk_dig = ttk.Checkbutton(chk_frame, text="Цифры",
-                                  variable=self.dig_var)
-        chk_dig.grid(row=1, column=0, sticky="w", padx=(0, 12), pady=(4, 0))
+        # ── Кнопка генерации ────────────────────────────────────
+        self.gen_btn = self._make_btn(self, "🚀  Сгенерировать",
+                                       "#a855f7", self._generate)
+        self.gen_btn.pack(fill="x", padx=28, pady=(4, 10), ipady=6)
 
-        chk_sym = ttk.Checkbutton(chk_frame, text="Спецсимволы",
-                                  variable=self.sym_var)
-        chk_sym.grid(row=1, column=1, sticky="w", padx=(0, 12), pady=(4, 0))
-
-        # ── Кнопка генерации ──
-        self.gen_btn = ttk.Button(self, text="Готово",
-                                  style="TButton",
-                                  command=self._generate)
-        self.gen_btn.pack(fill="x", padx=20, pady=(4, 8))
-
-        # ── Поле пароля ──
+        # ── Поле пароля ─────────────────────────────────────────
         self.pwd_var = tk.StringVar()
-        self.pwd_entry = ttk.Entry(self, textvariable=self.pwd_var,
-                                   style="Result.TEntry",
+        self.pwd_entry = tk.Entry(self, textvariable=self.pwd_var,
+                                   font=font_pwd,
+                                   relief="sunken", bd=2,
+                                   bg="#ffffff", fg="#1a1a1a",
                                    state="readonly")
-        self.pwd_entry.pack(fill="x", padx=20, pady=(0, 4))
+        self.pwd_entry.pack(fill="x", padx=28, pady=(0, 6), ipady=6)
 
-        # ── Индикатор надёжности (заглушка, будет позже) ──
-        self.strength_label = ttk.Label(self, text="",
-                                        style="Muted.TLabel")
-        self.strength_label.pack(anchor="w", padx=(20, 0), pady=(0, 4))
+        # ── Индикатор надёжности ────────────────────────────────
+        self.strength_var = tk.StringVar()
+        tk.Label(self, textvariable=self.strength_var,
+                 font=("Helvetica", 9), bg=bg,
+                 fg="#888888").pack(anchor="w", padx=28, pady=(0, 6))
 
-        # ── Кнопка копирования ──
-        self.copy_btn = ttk.Button(self, text="Скопировать",
-                                   style="Success.TButton",
-                                   command=self._copy_password)
-        self.copy_btn.pack(fill="x", padx=20, pady=(0, 20))
+        # ── Кнопка копирования ──────────────────────────────────
+        self.copy_btn = self._make_btn(self, "📋  Скопировать",
+                                        "#a78bfa", self._copy_password)
+        self.copy_btn.pack(fill="x", padx=28, pady=(0, 24), ipady=6)
+
+    # ── Вспомогательные методы ──────────────────────────────────
+
+    def _row_label(self, text, padx):
+        tk.Label(self, text=text,
+                 font=("Helvetica", 11), bg="#f8f8ff",
+                 fg="#1a1a1a").pack(anchor="w", padx=padx)
+
+    def _make_chk(self, parent, text, var, row, col, bg):
+        cb = tk.Checkbutton(parent, text=text, variable=var,
+                             font=("Helvetica", 10),
+                             bg=bg, fg="#1a1a1a",
+                             selectcolor="#ffffff",
+                             activebackground=bg,
+                             relief="flat")
+        cb.grid(row=row, column=col, sticky="w", padx=(0, 20), pady=2)
+
+    def _make_btn(self, parent, text, color, command):
+        """Кнопка с тиснением (raised) и сиреневым градиентным эффектом."""
+        btn = tk.Button(parent, text=text, command=command,
+                         font=("Helvetica", 11, "bold"),
+                         bg=color, fg="#ffffff",
+                         activebackground="#c084fc",
+                         activeforeground="#ffffff",
+                         relief="raised", bd=3,
+                         highlightbackground="#7c3aed",
+                         cursor="hand2",
+                         padx=10, pady=6)
+        return btn
 
     # ── Загрузка / сохранение ───────────────────────────────────
 
@@ -250,7 +173,6 @@ class PassGenApp(tk.Tk):
             digits=self.dig_var.get(),
             symbols=self.sym_var.get(),
         )
-        # Собираем историю сервисов
         services = list(self.svc_combo["values"])
         current = self.svc_var.get().strip()
         if current and current not in services:
@@ -266,7 +188,6 @@ class PassGenApp(tk.Tk):
         if not master_seed:
             messagebox.showwarning("Ошибка", "Введите сид-фразу")
             return
-
         if not service:
             messagebox.showwarning("Ошибка", "Введите название сервиса")
             return
@@ -283,7 +204,7 @@ class PassGenApp(tk.Tk):
             )
             self.pwd_var.set(password)
 
-            # Обновить список сервисов
+            # Обновить список
             values = list(self.svc_combo["values"])
             if service not in values:
                 values.append(service)
@@ -299,9 +220,8 @@ class PassGenApp(tk.Tk):
         self.clipboard_clear()
         self.clipboard_append(pwd)
 
-        # Визуальный фидбек
         old_text = self.copy_btn["text"]
-        self.copy_btn.config(text="✓ Скопировано")
+        self.copy_btn.config(text="✓ Скопировано!")
         self.after(1500, lambda: self.copy_btn.config(text=old_text))
 
     def _on_close(self):
