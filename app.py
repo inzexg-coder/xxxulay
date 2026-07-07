@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, messagebox, font
+from tkinter import ttk, font
 import sys
 import os
 
@@ -7,7 +7,50 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from core import generate_password
 from settings import load_services, save_services, load_settings, save_settings
 
+# -- Tooltip widget -------------------------------------------------
+
+class ToolTip:
+    """Simple tooltip that appears on hover."""
+
+    def __init__(self, widget, text, delay=400):
+        self.widget = widget
+        self.text = text
+        self.delay = delay
+        self._tip = None
+        self._after_id = None
+        widget.bind("<Enter>", self._schedule)
+        widget.bind("<Leave>", self._hide)
+
+    def _schedule(self, event=None):
+        self._after_id = self.widget.after(self.delay, self._show)
+
+    def _show(self):
+        if self._tip:
+            return
+        x = self.widget.winfo_rootx() + 20
+        y = self.widget.winfo_rooty() + self.widget.winfo_height() + 5
+        self._tip = tk.Toplevel(self.widget)
+        self._tip.wm_overrideredirect(True)
+        self._tip.wm_geometry(f"+{x}+{y}")
+        label = tk.Label(self._tip, text=self.text,
+                          justify="left",
+                          bg="#ffffcc", fg="#1a1a1a",
+                          font=("TkDefaultFont", 10),
+                          relief="solid", bd=1,
+                          padx=8, pady=4)
+        label.pack()
+
+    def _hide(self, event=None):
+        if self._after_id:
+            self.widget.after_cancel(self._after_id)
+            self._after_id = None
+        if self._tip:
+            self._tip.destroy()
+            self._tip = None
+
+
 # -- Font detection -------------------------------------------------
+
 FONT_CANDIDATES = [
     ("Liberation Sans", 13),
     ("DejaVu Sans", 13),
@@ -48,6 +91,7 @@ def _pick_fonts():
 
 
 # -- Colors ---------------------------------------------------------
+
 BG         = "#f8f8ff"
 FG         = "#1a1a1a"
 BTN_LILAC  = "#a855f7"
@@ -55,7 +99,7 @@ BTN_HVR    = "#c084fc"
 BTN_EDGE   = "#7c3aed"
 BTN_VIOLET = "#a78bfa"
 ENTRY_BG   = "#ffffff"
-MUTED      = "#888888"
+ERROR_RED  = "#e03131"
 
 
 class PassGenApp(tk.Tk):
@@ -83,10 +127,10 @@ class PassGenApp(tk.Tk):
     def _build_ui(self):
         self.configure(bg=BG)
 
-        FONT_REG    = (self._base_font[0], self._base_font[1], "normal")
-        FONT_BOLD   = (self._base_font[0], self._base_font[1], "bold")
-        FONT_TITLE  = (self._base_font[0], 18, "bold")
-        FONT_PWD    = (self._mono_font[0], self._mono_font[1], "bold")
+        FONT_REG   = (self._base_font[0], self._base_font[1], "normal")
+        FONT_BOLD  = (self._base_font[0], self._base_font[1], "bold")
+        FONT_TITLE = (self._base_font[0], 18, "bold")
+        FONT_PWD   = (self._mono_font[0], self._mono_font[1], "bold")
 
         # Title
         tk.Label(self, text="passgen  -  Password Generator",
@@ -95,18 +139,29 @@ class PassGenApp(tk.Tk):
 
         # Master seed
         self._label("Master seed:", FONT_BOLD)
+        ToolTip(self._last_widget,
+                "Your secret phrase (like a password).\n"
+                "Keep it in your head, do not lose it.\n"
+                "Same seed + same service = same password.")
         self.seed_var = tk.StringVar()
         self.seed_entry = self._entry(self.seed_var, FONT_REG)
         self.seed_entry.pack(fill="x", padx=28, pady=(0, 10), ipady=6)
         self.seed_entry.bind("<KeyRelease>", lambda e: self._clear_error())
+        ToolTip(self.seed_entry,
+                "Enter your secret phrase.\n"
+                "Example: MyBigSecret2024")
 
         # Error label
         self.error_var = tk.StringVar()
-        self.error_label = tk.Label(self, textvariable=self.error_var, font=FONT_REG, bg=BG, fg="#e03131")
+        self.error_label = tk.Label(self, textvariable=self.error_var,
+                                     font=FONT_REG, bg=BG, fg=ERROR_RED)
         self.error_label.pack(anchor="w", padx=28, pady=(0, 4))
 
         # Service
         self._label("Service:", FONT_BOLD)
+        ToolTip(self._last_widget,
+                "Website or app name.\n"
+                "Examples: google, vk, github, email")
         self.svc_var = tk.StringVar()
         self.svc_combo = ttk.Combobox(self, textvariable=self.svc_var,
                                        font=FONT_REG)
@@ -115,12 +170,19 @@ class PassGenApp(tk.Tk):
         self.svc_combo.bind("<KP_Enter>", lambda e: self._generate())
         self.svc_combo.bind("<<ComboboxSelected>>", lambda e: self._clear_error())
         self.svc_combo.bind("<KeyRelease>", lambda e: self._clear_error())
+        ToolTip(self.svc_combo,
+                "Type or select a service name.\n"
+                "Different services get different passwords,\n"
+                "even with the same seed.")
 
         # Length
         frame_len = tk.Frame(self, bg=BG)
         frame_len.pack(fill="x", padx=28, pady=(0, 12))
         tk.Label(frame_len, text="Length:", font=FONT_BOLD,
                  bg=BG, fg=FG).pack(side="left")
+        ToolTip(frame_len,
+                "How many characters in the password.\n"
+                "Recommended: 12-16 characters.")
         self.len_var = tk.IntVar(value=10)
         self.len_spin = tk.Spinbox(frame_len, from_=1, to=99,
                                     textvariable=self.len_var,
@@ -132,9 +194,12 @@ class PassGenApp(tk.Tk):
         # Checkboxes
         frame_chk = tk.Frame(self, bg=BG)
         frame_chk.pack(fill="x", padx=28, pady=(0, 12))
-        tk.Label(frame_chk, text="Charset:", font=FONT_BOLD,
-                 bg=BG, fg=FG).grid(row=0, column=0, sticky="nw",
-                                    padx=(0, 18), pady=(2, 0))
+        lbl_chk = tk.Label(frame_chk, text="Charset:", font=FONT_BOLD,
+                           bg=BG, fg=FG)
+        lbl_chk.grid(row=0, column=0, sticky="nw", padx=(0, 18), pady=(2, 0))
+        ToolTip(lbl_chk,
+                "Choose which types of characters\n"
+                "to include in the password.")
 
         self.cap_var = tk.BooleanVar(value=True)
         self.low_var = tk.BooleanVar(value=True)
@@ -145,14 +210,21 @@ class PassGenApp(tk.Tk):
         chk_frame.grid(row=0, column=1, sticky="w")
 
         self._chk(chk_frame, "Capitals",  self.cap_var, 0, 0, FONT_REG)
+        ToolTip(self._last_widget, "A B C D E F ...")
         self._chk(chk_frame, "Lowercase", self.low_var, 0, 1, FONT_REG)
+        ToolTip(self._last_widget, "a b c d e f ...")
         self._chk(chk_frame, "Digits",    self.dig_var, 1, 0, FONT_REG)
+        ToolTip(self._last_widget, "0 1 2 3 4 5 6 7 8 9")
         self._chk(chk_frame, "Symbols",   self.sym_var, 1, 1, FONT_REG)
+        ToolTip(self._last_widget, "! @ # $ % & * + = - .")
 
         # Generate button
         self.gen_btn = self._btn("Generate", FONT_BOLD,
                                  BTN_LILAC, self._generate)
         self.gen_btn.pack(fill="x", padx=28, pady=(4, 10), ipady=8)
+        ToolTip(self.gen_btn,
+                "Create a unique password based on\n"
+                "your seed + service name.")
 
         # Password field
         self.pwd_var = tk.StringVar()
@@ -162,23 +234,29 @@ class PassGenApp(tk.Tk):
                                    bg=ENTRY_BG, fg=FG,
                                    state="readonly")
         self.pwd_entry.pack(fill="x", padx=28, pady=(0, 6), ipady=8)
+        ToolTip(self.pwd_entry,
+                "Your generated password.\n"
+                "Press Enter or click Copy to use it.")
 
         # Strength indicator
         self.strength_var = tk.StringVar()
         tk.Label(self, textvariable=self.strength_var,
-                 font=FONT_BOLD, bg=BG, fg=MUTED
+                 font=FONT_BOLD, bg=BG, fg="#888888"
         ).pack(anchor="w", padx=28, pady=(0, 6))
 
         # Copy button
         self.copy_btn = self._btn("Copy", FONT_BOLD,
                                   BTN_VIOLET, self._copy_password)
         self.copy_btn.pack(fill="x", padx=28, pady=(0, 24), ipady=8)
+        ToolTip(self.copy_btn,
+                "Copy the password to clipboard.\n"
+                "Then paste it into the website or app.")
 
     # -- Widget helpers ---------------------------------------------
 
     def _label(self, text, font):
-        tk.Label(self, text=text, font=font, bg=BG, fg=FG
-        ).pack(anchor="w", padx=28)
+        self._last_widget = tk.Label(self, text=text, font=font, bg=BG, fg=FG)
+        self._last_widget.pack(anchor="w", padx=28)
 
     def _entry(self, var, font):
         return tk.Entry(self, textvariable=var, font=font,
@@ -186,22 +264,22 @@ class PassGenApp(tk.Tk):
                          bg=ENTRY_BG, fg=FG)
 
     def _chk(self, parent, text, var, row, col, font):
-        cb = tk.Checkbutton(parent, text=text, variable=var,
-                             font=font, bg=BG, fg=FG,
-                             selectcolor=ENTRY_BG,
-                             activebackground=BG, relief="flat")
-        cb.grid(row=row, column=col, sticky="w", padx=(0, 20), pady=2)
+        self._last_widget = tk.Checkbutton(parent, text=text, variable=var,
+                                            font=font, bg=BG, fg=FG,
+                                            selectcolor=ENTRY_BG,
+                                            activebackground=BG, relief="flat")
+        self._last_widget.grid(row=row, column=col, sticky="w",
+                                padx=(0, 20), pady=2)
 
     def _btn(self, text, font, color, command):
-        btn = tk.Button(self, text=text, command=command,
-                         font=font,
-                         bg=color, fg="#ffffff",
-                         activebackground=BTN_HVR,
-                         activeforeground="#ffffff",
-                         relief="raised", bd=3,
-                         highlightbackground=BTN_EDGE,
-                         cursor="hand2")
-        return btn
+        return tk.Button(self, text=text, command=command,
+                          font=font,
+                          bg=color, fg="#ffffff",
+                          activebackground=BTN_HVR,
+                          activeforeground="#ffffff",
+                          relief="raised", bd=3,
+                          highlightbackground=BTN_EDGE,
+                          cursor="hand2")
 
     # -- Load / Save -------------------------------------------------
 
@@ -261,8 +339,8 @@ class PassGenApp(tk.Tk):
                 vals.append(service)
                 self.svc_combo["values"] = vals
 
-        except ValueError as ex:
-            messagebox.showwarning("", str(ex))
+        except ValueError:
+            self.error_var.set("Select at least one character type")
 
     def _clear_error(self):
         if self.error_var.get():
