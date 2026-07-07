@@ -9,42 +9,54 @@
 *{margin:0;padding:0;box-sizing:border-box}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes glow{0%,100%{border-color:#f472b6}50%{border-color:#f9a8d4}}
+@keyframes glow{0%,100%{border-color:var(--error)}50%{border-color:var(--pink)}}
 @keyframes slideDown{from{max-height:0;opacity:0}to{max-height:300px;opacity:1}}
 @keyframes slideUp{from{max-height:300px;opacity:1}to{max-height:0;opacity:0}}
 @keyframes checkPop{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
 
 body{
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  background:#f5f0ff;color:#1a1a2e;
+  background:var(--bg);color:var(--fg);
   padding:20px 24px 16px;max-width:400px;margin:0 auto;
   overflow-y:auto;height:100vh;display:flex;flex-direction:column;
 }
+:root{
+  --bg:var(--hover);--card:#fff;--fg:#1a1a2e;--border:var(--border);--muted:#999;
+  --shadow:rgba(90,20,140,.08);--chipbg:var(--border);--hover:var(--hover);
+  --errbg:#fff;--pink:var(--error);--crimson:var(--crimson);--lilac:var(--lilac);--lilac2:var(--lilac2);
+  --violet:var(--violet);--error:var(--error)
+}
+body.dark{
+  --bg:#111120;--card:#1e1e3a;--fg:#e0e0ff;--border:#2a2a5a;--muted:#6a6a8a;
+  --shadow:rgba(0,0,0,.4);--chipbg:#2a2a5a;--hover:#2a2a5a;
+  --errbg:#1e1e3a;--pink:var(--pink);--crimson:#fb7185;--lilac:#c084fc;--lilac2:var(--violet);
+  --violet:#8b5cf6;--error:var(--pink)
+}
 ::-webkit-scrollbar{display:none}
 
-h1{font-size:20px;font-weight:700;color:#5b21b6;margin-bottom:14px;letter-spacing:-.3px;flex-shrink:0;animation:fadeUp .4s ease}
+h1{font-size:20px;font-weight:700;color:var(--lilac2);margin-bottom:14px;letter-spacing:-.3px;flex-shrink:0;animation:fadeUp .4s ease}
 
 .card{
-  background:#fff;border-radius:12px;padding:14px 16px 12px;margin-bottom:10px;
-  box-shadow:0 1px 4px rgba(90,20,140,.08);flex-shrink:0;
+  background:var(--card);border-radius:12px;padding:14px 16px 12px;margin-bottom:10px;
+  box-shadow:0 1px 4px var(--shadow);flex-shrink:0;
   animation:fadeUp .4s ease both
 }
 .card:nth-child(2){animation-delay:.05s}
 .card:nth-child(3){animation-delay:.1s}
 .card-title{font-size:10px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
 
-label{display:block;font-size:13px;font-weight:600;color:#1a1a2e;margin-bottom:3px}
+label{display:block;font-size:13px;font-weight:600;color:var(--fg);margin-bottom:3px}
 
 input[type="text"],input[type="number"]{
   width:100%;padding:10px 12px;font-size:14px;font-family:inherit;
-  border:1.5px solid #e0dce8;border-radius:10px;background:#fff;
-  color:#1a1a2e;outline:none;
+  border:1.5px solid var(--border);border-radius:10px;background:var(--card);
+  color:var(--fg);outline:none;
   transition:border-color .25s,box-shadow .25s,background .25s
 }
-input:focus{border-color:#a855f7;box-shadow:0 0 0 3px rgba(168,85,247,.12)}
+input:focus{border-color:var(--lilac);box-shadow:0 0 0 3px rgba(168,85,247,.12)}
 input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 input[type="number"]{-moz-appearance:textfield}
-input.error{border-color:#f472b6;animation:glow 1.5s ease infinite}
+input.error{border-color:var(--error);animation:glow 1.5s ease infinite}
 
 
 
@@ -53,10 +65,10 @@ input.error{border-color:#f472b6;animation:glow 1.5s ease infinite}
 .svc-header{display:flex;align-items:center;gap:6px;margin-bottom:3px}
 .svc-header label{margin-bottom:0;flex:1}
 .svc-expand{
-  color:#a855f7;font-size:12px;cursor:pointer;user-select:none;font-weight:500;
+  color:var(--lilac);font-size:12px;cursor:pointer;user-select:none;font-weight:500;
   display:flex;align-items:center;gap:3px;transition:color .2s
 }
-.svc-expand:hover{color:#7c3aed}
+.svc-expand:hover{color:var(--lilac2)}
 .svc-expand .arrow{display:inline-block;transition:transform .25s;font-size:10px}
 .svc-expand.open .arrow{transform:rotate(180deg)}
 .svc-panel{
@@ -66,10 +78,10 @@ input.error{border-color:#f472b6;animation:glow 1.5s ease infinite}
 .svc-grid{display:flex;flex-wrap:wrap;gap:6px}
 .svc-chip{
   padding:5px 12px;border-radius:16px;font-size:12px;font-weight:500;
-  border:1.5px solid #e0dce8;background:#fff;color:#1a1a2e;
+  border:1.5px solid var(--border);background:var(--card);color:var(--fg);
   cursor:pointer;transition:all .2s;user-select:none
 }
-.svc-chip:hover{border-color:#a855f7;background:#f5f0ff;transform:translateY(-1px)}
+.svc-chip:hover{border-color:var(--lilac);background:var(--bg);transform:translateY(-1px)}
 .svc-chip:active{transform:scale(.96)}
 
 
@@ -80,17 +92,17 @@ input.error{border-color:#f472b6;animation:glow 1.5s ease infinite}
 .len-group input{width:52px;text-align:center;font-weight:600}
 .len-btn{display:flex;flex-direction:column;gap:2px}
 .len-btn button{
-  width:26px;height:15px;border:1.5px solid #e0dce8;border-radius:4px;
-  background:#fff;color:#a855f7;font-size:9px;cursor:pointer;padding:0;line-height:0;
+  width:26px;height:15px;border:1.5px solid var(--border);border-radius:4px;
+  background:var(--card);color:var(--lilac);font-size:9px;cursor:pointer;padding:0;line-height:0;
   transition:background .15s,transform .1s
 }
-.len-btn button:hover{background:#f5f0ff}
+.len-btn button:hover{background:var(--hover)}
 .len-btn button:active{transform:scale(.9)}
 
 .chk-grid{display:grid;grid-template-columns:auto auto;gap:5px 20px}
 .chk-item{
   display:flex;align-items:center;gap:7px;cursor:pointer;
-  font-size:13px;color:#1a1a2e;user-select:none;transition:transform .1s
+  font-size:13px;color:var(--fg);user-select:none;transition:transform .1s
 }
 .chk-item:active{transform:scale(.95)}
 .chk-circle{
@@ -99,10 +111,10 @@ input.error{border-color:#f472b6;animation:glow 1.5s ease infinite}
   justify-content:center;transition:all .25s cubic-bezier(.4,0,.2,1);flex-shrink:0
 }
 .chk-circle.on{
-  border-color:#a855f7;background:#a855f7;
+  border-color:var(--lilac);background:var(--lilac);
   animation:checkPop .3s cubic-bezier(.4,0,.2,1)
 }
-.chk-circle.on::after{content:'';width:7px;height:7px;border-radius:50%;background:#fff}
+.chk-circle.on::after{content:'';width:7px;height:7px;border-radius:50%;background:var(--card)}
 
 .btn{
   width:100%;padding:10px;font-size:14px;font-weight:600;font-family:inherit;
@@ -111,12 +123,12 @@ input.error{border-color:#f472b6;animation:glow 1.5s ease infinite}
 }
 .btn:active{transform:scale(.97)}
 .btn-primary{
-  background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;
+  background:linear-gradient(135deg,var(--lilac),var(--lilac2));color:#fff;
   box-shadow:0 2px 8px rgba(168,85,247,.3);animation-delay:.15s
 }
 .btn-primary:hover{box-shadow:0 4px 14px rgba(168,85,247,.4)}
 .btn-secondary{
-  background:linear-gradient(135deg,#a78bfa,#8b5cf6);color:#fff;
+  background:linear-gradient(135deg,var(--violet),#8b5cf6);color:#fff;
   box-shadow:0 2px 8px rgba(167,139,250,.3);animation-delay:.25s
 }
 .btn-secondary:hover{box-shadow:0 4px 14px rgba(167,139,250,.4)}
@@ -124,30 +136,38 @@ input.error{border-color:#f472b6;animation:glow 1.5s ease infinite}
 .pwd-field{
   width:100%;padding:12px;font-size:15px;font-weight:600;
   font-family:'SF Mono','Fira Code',monospace;
-  border:1.5px solid #e0dce8;border-radius:10px;background:#fff;
-  color:#1a1a2e;text-align:center;outline:none;letter-spacing:.5px;
+  border:1.5px solid var(--border);border-radius:10px;background:var(--card);
+  color:var(--fg);text-align:center;outline:none;letter-spacing:.5px;
   transition:border-color .25s
 }
 
 .str-wrap{margin-top:6px}
 .str-bars{display:flex;gap:4px}
-.str-bar{height:4px;flex:1;border-radius:3px;background:#e0dce8;transition:background .4s ease}
-.str-bar.on.weak{background:#f9a8d4}
-.str-bar.on.medium{background:#e11d48}
-.str-bar.on.strong{background:#a855f7}
+.str-bar{height:4px;flex:1;border-radius:3px;background:var(--border);transition:background .4s ease}
+.str-bar.on.weak{background:var(--pink)}
+.str-bar.on.medium{background:var(--crimson)}
+.str-bar.on.strong{background:var(--lilac)}
 .str-info{font-size:13px;margin-top:4px;transition:all .3s}
-.str-info.weak{color:#f472b6}
-.str-info.medium{color:#e11d48}
-.str-info.strong{color:#a855f7}
+.str-info.weak{color:var(--error)}
+.str-info.medium{color:var(--crimson)}
+.str-info.strong{color:var(--lilac)}
 
-.error{font-size:12px;color:#f472b6;min-height:16px;margin-top:2px}
+.error{font-size:12px;color:var(--error);min-height:16px;margin-top:2px}
 
-.msg{text-align:center;font-size:13px;color:#a855f7;font-weight:600;min-height:20px;margin-top:3px}
+.msg{text-align:center;font-size:13px;color:var(--lilac);font-weight:600;min-height:20px;margin-top:3px}
 </style>
 </head>
 <body>
 
-<h1>passgen</h1>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+  <h1 style="margin-bottom:0">passgen</h1>
+  <div style="display:flex;gap:6px;align-items:center">
+    <span style="font-size:11px;color:var(--muted);cursor:pointer;user-select:none" onclick="exportData()">Экспорт</span>
+    <span style="font-size:11px;color:var(--muted);cursor:pointer;user-select:none" onclick="document.getElementById('importFile').click()">Импорт</span>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+    <span style="font-size:18px;cursor:pointer;user-select:none;color:var(--muted)" onclick="toggleTheme()" id="themeBtn">☾</span>
+  </div>
+</div>
 
 <div class="card">
   <div class="card-title">Доступ</div>
@@ -174,6 +194,14 @@ input.error{border-color:#f472b6;animation:glow 1.5s ease infinite}
 
 <div class="card">
   <div class="card-title">Параметры</div>
+  <div style="margin-bottom:8px">
+    <select id="preset" onchange="applyPreset()" style="width:100%;padding:6px 10px;font-size:12px;font-family:inherit;border:1.5px solid var(--border);border-radius:8px;background:var(--card);color:var(--fg);outline:none">
+      <option value="custom">Свой</option>
+      <option value="min">Минимальный (8, буквы+цифры)</option>
+      <option value="std">Стандартный (10, всё кроме спецсимволов)</option>
+      <option value="max">Максимальный (16, всё)</option>
+    </select>
+  </div>
   <div class="row">
     <div class="col">
       <label>Длина</label>
@@ -189,7 +217,7 @@ input.error{border-color:#f472b6;animation:glow 1.5s ease infinite}
       <label>Символы</label>
       <div class="chk-grid" id="chkGrid"></div>
       <div style="margin-top:8px">
-        <span style="font-size:11px;color:#a855f7;cursor:pointer;user-select:none;font-weight:500" onclick="toggleAdvanced()">
+        <span style="font-size:11px;color:var(--lilac);cursor:pointer;user-select:none;font-weight:500" onclick="toggleAdvanced()">
           <span id="advArrow" style="display:inline-block;transition:transform .25s;font-size:10px">&#9654;</span> Расширенные
         </span>
         <div id="advPanel" style="overflow:hidden;max-height:0;transition:max-height .3s ease,opacity .25s;opacity:0">
@@ -214,8 +242,8 @@ input.error{border-color:#f472b6;animation:glow 1.5s ease infinite}
 <div class="card" style="margin-top:12px">
   <div class="card-title">Логин и пароль</div>
   <div style="display:flex;gap:6px;margin-bottom:8px">
-    <input type="text" id="login" readonly style="flex:1;padding:8px 10px;font-size:13px;border:1.5px solid #e0dce8;border-radius:8px;background:#fff;color:#1a1a2e;outline:none;font-family:inherit" placeholder="Логин">
-    <button onclick="genLogin()" style="padding:8px 12px;font-size:12px;font-weight:600;border:none;border-radius:8px;background:linear-gradient(135deg,#a78bfa,#8b5cf6);color:#fff;cursor:pointer;white-space:nowrap">Создать логин</button>
+    <input type="text" id="login" readonly style="flex:1;padding:8px 10px;font-size:13px;border:1.5px solid var(--border);border-radius:8px;background:var(--card);color:var(--fg);outline:none;font-family:inherit" placeholder="Логин">
+    <button onclick="genLogin()" style="padding:8px 12px;font-size:12px;font-weight:600;border:none;border-radius:8px;background:linear-gradient(135deg,var(--violet),#8b5cf6);color:#fff;cursor:pointer;white-space:nowrap">Создать логин</button>
   </div>
   <input class="pwd-field" id="pwd" readonly>
   <div class="str-wrap" id="strWrap">
@@ -253,7 +281,7 @@ let svcs = [];
 function init(){
   renderChk();
   renderInv();
-  loadState();
+  loadTheme();loadState();
   document.getElementById('seed').addEventListener('input',()=>{
     document.getElementById('seed').classList.remove('error');
     document.getElementById('seedErr').textContent='';
@@ -263,6 +291,10 @@ function init(){
 
 }
 
+function loadTheme(){
+  const t=localStorage.getItem('passgen_theme');
+  if(t==='dark'){document.body.classList.add('dark');document.getElementById('themeBtn').textContent='☀';}
+}
 function loadState(){
   const saved = localStorage.getItem('passgen_state');
   if(saved) try {
@@ -286,6 +318,43 @@ function saveState(){
 function toggleInv(id){
   inv[id]=+!inv[id];
   document.getElementById('inv'+id.charAt(0).toUpperCase()+id.slice(1)).className='chk-circle'+(inv[id]?' on':'');
+}
+function toggleTheme(){
+  document.body.classList.toggle('dark');
+  const d=document.body.classList.contains('dark');
+  document.getElementById('themeBtn').textContent=d?'☀':'☾';
+  localStorage.setItem('passgen_theme',d?'dark':'light');
+}
+function applyPreset(){
+  const v=document.getElementById('preset').value;
+  if(v==='custom')return;
+  switch(v){
+    case'min':state={capitals:1,lowercase:1,digits:1,symbols:0};document.getElementById('length').value=8;break;
+    case'std':state={capitals:1,lowercase:1,digits:1,symbols:0};document.getElementById('length').value=10;break;
+    case'max':state={capitals:1,lowercase:1,digits:1,symbols:1};document.getElementById('length').value=16;break;
+  }
+  renderChk();
+}
+function exportData(){
+  const data={svcs,state,inv,len:+document.getElementById('length').value};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='passgen_export.json';a.click();
+}
+function importData(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const d=JSON.parse(reader.result);
+      if(d.svcs){svcs=d.svcs;renderSvcChips();}
+      if(d.state){state=d.state;renderChk();}
+      if(d.inv){inv=d.inv;renderInv();}
+      if(d.len){document.getElementById('length').value=d.len;}
+      saveState();
+    }catch(err){alert('Ошибка импорта');}
+  };
+  reader.readAsText(file);
+  e.target.value='';
 }
 function toggleAdvanced(){
   const p=document.getElementById('advPanel');
@@ -352,7 +421,7 @@ function chip(item, hasLogo, deletable){
     d.appendChild(document.createTextNode(name));
   } else {
     const dot=document.createElement('span');
-    dot.style.cssText='display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#e0dce8;color:#999;font-size:10px;font-weight:700;margin-right:4px;flex-shrink:0';
+    dot.style.cssText='display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--border);color:#999;font-size:10px;font-weight:700;margin-right:4px;flex-shrink:0';
     dot.textContent='?';
     d.appendChild(dot);
     d.appendChild(document.createTextNode(name));
@@ -401,6 +470,8 @@ async function gen(){
   }
   document.getElementById('pwd').value=finalPwd;
   updateStrength(len,sets);
+  // Auto copy
+  try{navigator.clipboard.writeText(finalPwd);document.getElementById('msg').textContent='Скопировано!';setTimeout(()=>document.getElementById('msg').textContent='',2000);}catch(e){}
   if(!svcs.includes(svc)&&svc!=='(empty)'){
     svcs.push(svc);svcs.sort();renderSvcChips();
   }
