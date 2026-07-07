@@ -44,7 +44,7 @@ input[type="text"],input[type="number"]{
 input:focus{border-color:#a855f7;box-shadow:0 0 0 3px rgba(168,85,247,.12)}
 input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 input[type="number"]{-moz-appearance:textfield}
-input.error{border-color:#e03131;background:#fff0f0;animation:glow 1.5s ease infinite}
+input.error{border-color:#e03131;animation:glow 1.5s ease infinite}
 
 .input-wrap{position:relative}
 .input-wrap input{padding-right:36px}
@@ -229,7 +229,16 @@ const CHK = [
   ['digits','Цифры','0123456789'],
   ['symbols','Спецсимволы','!@#$%&*+=-.'],
 ];
-const POPULAR = ['google','github','vk','yandex','mail','icloud','dropbox','telegram'];
+const POPULAR = [
+  {n:'google',  l:'g', c:'#4285f4'},
+  {n:'github',  l:'GH',c:'#333'},
+  {n:'vk',      l:'V', c:'#4a76a8'},
+  {n:'yandex',  l:'Ya',c:'#fc3f1d'},
+  {n:'mail',    l:'@', c:'#005ff9'},
+  {n:'icloud',  l:'i', c:'#369'},
+  {n:'dropbox', l:'D', c:'#0061ff'},
+  {n:'telegram',l:'T', c:'#0088cc'},
+];
 
 let state = {capitals:1,lowercase:1,digits:0,symbols:1};
 let svcs = [];
@@ -313,11 +322,21 @@ function renderSvcChips(){
     for(const s of svcs) sg.appendChild(chip(s));
   }else{sl.style.display='none';}
   const pg=document.getElementById('svcPopularGrid');pg.innerHTML='';
-  for(const s of POPULAR){if(!svcs.includes(s))pg.appendChild(chip(s));}
+  for(const s of POPULAR){if(svcs.indexOf(s.n)===-1)pg.appendChild(chip(s));}
 }
-function chip(name){
+function chip(item){
+  const isObj = typeof item === 'object';
+  const name = isObj ? item.n : item;
   const d=document.createElement('div');d.className='svc-chip';
-  d.textContent=name;
+  if(isObj){
+    const dot=document.createElement('span');
+    dot.style.cssText='display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:'+item.c+';color:#fff;font-size:10px;font-weight:700;margin-right:4px;flex-shrink:0';
+    dot.textContent=item.l;
+    d.appendChild(dot);
+    d.appendChild(document.createTextNode(name));
+  } else {
+    d.textContent=name;
+  }
   d.onclick=()=>{
     document.getElementById('service').value=name;
     document.getElementById('svcPanel').classList.remove('open');
