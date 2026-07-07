@@ -215,7 +215,7 @@ input.error{border-color:#f472b6;animation:glow 1.5s ease infinite}
   <div class="card-title">Логин и пароль</div>
   <div style="display:flex;gap:6px;margin-bottom:8px">
     <input type="text" id="login" readonly style="flex:1;padding:8px 10px;font-size:13px;border:1.5px solid #e0dce8;border-radius:8px;background:#fff;color:#1a1a2e;outline:none;font-family:inherit" placeholder="Логин">
-    <button onclick="genLogin()" style="padding:8px 12px;font-size:12px;font-weight:600;border:none;border-radius:8px;background:linear-gradient(135deg,#a78bfa,#8b5cf6);color:#fff;cursor:pointer;white-space:nowrap">Логин</button>
+    <button onclick="genLogin()" style="padding:8px 12px;font-size:12px;font-weight:600;border:none;border-radius:8px;background:linear-gradient(135deg,#a78bfa,#8b5cf6);color:#fff;cursor:pointer;white-space:nowrap">Создать логин</button>
   </div>
   <input class="pwd-field" id="pwd" readonly>
   <div class="str-wrap" id="strWrap">
@@ -428,8 +428,13 @@ function genLogin(){
   if(!seed||!svc)return;
   const enc=new TextEncoder().encode(seed+'login'+svc);
   crypto.subtle.digest('SHA-256',enc).then(buf=>{
-    const h=Array.from(new Uint8Array(buf)).slice(0,4).map(b=>b.toString(16).padStart(2,'0')).join('');
-    document.getElementById('login').value='user_'+h;
+    const alpha='abcdefghjkmnpqrstuvwxyz23456789';
+    const bytes=new Uint8Array(buf);
+    let login='';
+    for(let i=0;i<6;i++){
+      login+=alpha[bytes[i]%alpha.length];
+    }
+    document.getElementById('login').value=login;
   });
 }
 function updateStrength(len,sets){
