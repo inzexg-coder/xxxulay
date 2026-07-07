@@ -188,14 +188,21 @@ input.error{border-color:#f472b6;animation:glow 1.5s ease infinite}
     <div class="col">
       <label>Символы</label>
       <div class="chk-grid" id="chkGrid"></div>
-      <div style="margin-top:8px;display:flex;flex-direction:column;gap:4px">
-        <div class="chk-item" onclick="toggleInv('cap')" style="font-size:12px">
-          <span class="chk-circle" id="invCap"></span>
-          <span>Первая заглавная</span>
-        </div>
-        <div class="chk-item" onclick="toggleInv('dig')" style="font-size:12px">
-          <span class="chk-circle" id="invDig"></span>
-          <span>Последняя цифра</span>
+      <div style="margin-top:8px">
+        <span style="font-size:11px;color:#a855f7;cursor:pointer;user-select:none;font-weight:500" onclick="toggleAdvanced()">
+          <span id="advArrow" style="display:inline-block;transition:transform .25s;font-size:10px">&#9654;</span> Расширенные
+        </span>
+        <div id="advPanel" style="overflow:hidden;max-height:0;transition:max-height .3s ease,opacity .25s;opacity:0">
+          <div style="display:flex;flex-direction:column;gap:4px;padding-top:6px">
+            <div class="chk-item" onclick="toggleInv('cap')" style="font-size:12px">
+              <span class="chk-circle" id="invCap"></span>
+              <span>Первая заглавная</span>
+            </div>
+            <div class="chk-item" onclick="toggleInv('dig')" style="font-size:12px">
+              <span class="chk-circle" id="invDig"></span>
+              <span>Последняя цифра</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -275,6 +282,17 @@ function saveState(){
 function toggleInv(id){
   inv[id]=+!inv[id];
   document.getElementById('inv'+id.charAt(0).toUpperCase()+id.slice(1)).className='chk-circle'+(inv[id]?' on':'');
+}
+function toggleAdvanced(){
+  const p=document.getElementById('advPanel');
+  const a=document.getElementById('advArrow');
+  if(p.style.maxHeight!='0px'&&p.style.maxHeight!=''){
+    p.style.maxHeight='0px';p.style.opacity='0';
+    a.style.transform='rotate(0deg)';
+  }else{
+    p.style.maxHeight='120px';p.style.opacity='1';
+    a.style.transform='rotate(90deg)';
+  }
 }
 function renderInv(){
   document.getElementById('invCap').className='chk-circle'+(inv.cap?' on':'');
