@@ -10,6 +10,8 @@
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes glow{0%,100%{border-color:#e03131}50%{border-color:#ff5577}}
+@keyframes slideDown{from{max-height:0;opacity:0}to{max-height:300px;opacity:1}}
+@keyframes slideUp{from{max-height:300px;opacity:1}to{max-height:0;opacity:0}}
 @keyframes checkPop{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
 
 body{
@@ -63,7 +65,8 @@ input.error{border-color:#e03131;animation:glow 1.5s ease infinite}
 .dropdown-item{padding:9px 14px;font-size:14px;cursor:pointer}
 .dropdown-item:hover{background:#f5f0ff}
 
-
+.svc-header{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.svc-header label{margin-bottom:0;flex:1}
 .svc-expand{
   color:#a855f7;font-size:12px;cursor:pointer;user-select:none;font-weight:500;
   display:flex;align-items:center;gap:3px;transition:color .2s
@@ -75,7 +78,7 @@ input.error{border-color:#e03131;animation:glow 1.5s ease infinite}
   overflow:hidden;max-height:0;transition:max-height .3s ease,opacity .25s ease,margin .25s;opacity:0
 }
 .svc-panel.open{max-height:300px;opacity:1;margin-top:8px}
-
+.svc-grid{display:flex;flex-wrap:wrap;gap:6px}
 .svc-chip{
   padding:5px 12px;border-radius:16px;font-size:12px;font-weight:500;
   border:1.5px solid #e0dce8;background:#fff;color:#1a1a2e;
@@ -83,7 +86,7 @@ input.error{border-color:#e03131;animation:glow 1.5s ease infinite}
 }
 .svc-chip:hover{border-color:#a855f7;background:#f5f0ff;transform:translateY(-1px)}
 .svc-chip:active{transform:scale(.96)}
-
+.svc-label{font-size:11px;color:#999;margin-bottom:5px;font-weight:500;display:none}
 
 .row{display:flex;gap:24px;align-items:flex-start}
 .col{flex:0 0 auto}
@@ -168,13 +171,23 @@ input.error{border-color:#e03131;animation:glow 1.5s ease infinite}
 
 <div class="card">
   <div class="card-title">Сервис</div>
-  <label>Название сервиса</label>
+  <div class="svc-header">
+    <label>Название сервиса</label>
+    <span class="svc-expand" id="svcToggle" onclick="toggleSvcPanel()">
+      <span class="arrow">&#9660;</span> список
+    </span>
+  </div>
   <div class="input-wrap">
     <input type="text" id="service" placeholder="google, github, vk ...">
     <span class="input-icon" id="svcArrow" onclick="toggleDD()">&#9662;</span>
     <div class="dropdown" id="dd"></div>
   </div>
-
+  <div class="svc-panel" id="svcPanel">
+    <div class="svc-label" id="svcSavedLabel">Сохранённые</div>
+    <div class="svc-grid" id="svcSavedGrid"></div>
+    <div class="svc-label" style="margin-top:8px">Популярные</div>
+    <div class="svc-grid" id="svcPopularGrid"></div>
+  </div>
   <div class="error" id="svcErr"></div>
 </div>
 
@@ -216,7 +229,16 @@ const CHK = [
   ['digits','Цифры','0123456789'],
   ['symbols','Спецсимволы','!@#$%&*+=-.'],
 ];
-const POPULAR = ['google','github','vk','yandex','mail','icloud','dropbox','telegram'];
+const POPULAR = [
+  {n:'google',  l:'g', c:'#4285f4'},
+  {n:'github',  l:'GH',c:'#333'},
+  {n:'vk',      l:'V', c:'#4a76a8'},
+  {n:'yandex',  l:'Ya',c:'#fc3f1d'},
+  {n:'mail',    l:'@', c:'#005ff9'},
+  {n:'icloud',  l:'i', c:'#369'},
+  {n:'dropbox', l:'D', c:'#0061ff'},
+  {n:'telegram',l:'T', c:'#0088cc'},
+];
 
 let state = {capitals:1,lowercase:1,digits:0,symbols:1};
 let svcs = [];
@@ -245,7 +267,7 @@ function loadState(){
     document.getElementById('length').value = d.len || 10;
     renderChk();
     updateArrow();
-    updateArrow();
+    renderSvcChips();
   }catch(e){}
 }
 function saveState(){
@@ -270,9 +292,9 @@ function adj(d){const i=document.getElementById('length');let v=+i.value+d;i.val
 
 function toggleDD(){ddOpen?hideDD():showDD();}
 function showDD(){
+  if(!svcs.length)return;
   const dd=document.getElementById('dd');dd.innerHTML='';
-  const all = [...new Set([...POPULAR,...svcs])];
-  for(const s of all){
+  for(const s of svcs){
     const d=document.createElement('div');d.className='dropdown-item';
     d.textContent=s;
     d.onclick=()=>{document.getElementById('service').value=s;hideDD();};
@@ -283,13 +305,45 @@ function showDD(){
 function hideDD(){document.getElementById('dd').classList.remove('show');ddOpen=false;}
 function updateArrow(){
   const a=document.getElementById('svcArrow');
-  a.style.display='block';
+  a.classList.toggle('show',svcs.length>0);
 }
 
+function toggleSvcPanel(){
+  const p=document.getElementById('svcPanel');
+  const t=document.getElementById('svcToggle');
+  p.classList.toggle('open');
+  t.classList.toggle('open');
+}
 
-
-
-
+function renderSvcChips(){
+  const sg=document.getElementById('svcSavedGrid');sg.innerHTML='';
+  const sl=document.getElementById('svcSavedLabel');
+  if(svcs.length){sl.style.display='block';
+    for(const s of svcs) sg.appendChild(chip(s));
+  }else{sl.style.display='none';}
+  const pg=document.getElementById('svcPopularGrid');pg.innerHTML='';
+  for(const s of POPULAR){if(svcs.indexOf(s.n)===-1)pg.appendChild(chip(s));}
+}
+function chip(item){
+  const isObj = typeof item === 'object';
+  const name = isObj ? item.n : item;
+  const d=document.createElement('div');d.className='svc-chip';
+  if(isObj){
+    const dot=document.createElement('span');
+    dot.style.cssText='display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:'+item.c+';color:#fff;font-size:10px;font-weight:700;margin-right:4px;flex-shrink:0';
+    dot.textContent=item.l;
+    d.appendChild(dot);
+    d.appendChild(document.createTextNode(name));
+  } else {
+    d.textContent=name;
+  }
+  d.onclick=()=>{
+    document.getElementById('service').value=name;
+    document.getElementById('svcPanel').classList.remove('open');
+    document.getElementById('svcToggle').classList.remove('open');
+  };
+  return d;
+}
 
 async function gen(){
   const seed=document.getElementById('seed').value.trim();
@@ -308,7 +362,7 @@ async function gen(){
   document.getElementById('pwd').value=pwd;
   updateStrength(len,sets);
   if(!svcs.includes(svc)&&svc!=='(empty)'){
-    svcs.push(svc);svcs.sort();updateArrow();updateArrow();
+    svcs.push(svc);svcs.sort();updateArrow();renderSvcChips();
   }
   saveState();
 }
