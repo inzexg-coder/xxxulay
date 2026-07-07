@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" translate="no">
+<html lang="ru" translate="no">
 <head>
 <meta charset="UTF-8">
 <meta name="google" content="notranslate">
@@ -7,32 +7,53 @@
 <title>passgen</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-::-webkit-scrollbar{display:none}body{
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes glow{0%,100%{border-color:#e03131}50%{border-color:#ff5577}}
+@keyframes slideDown{from{max-height:0;opacity:0}to{max-height:300px;opacity:1}}
+@keyframes slideUp{from{max-height:300px;opacity:1}to{max-height:0;opacity:0}}
+@keyframes checkPop{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
+
+body{
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   background:#f5f0ff;color:#1a1a2e;
-  padding:20px 24px 16px;max-width:400px;margin:0 auto;overflow-y:auto;height:100vh;display:flex;flex-direction:column;
+  padding:20px 24px 16px;max-width:400px;margin:0 auto;
+  overflow-y:auto;height:100vh;display:flex;flex-direction:column;
 }
-h1{font-size:20px;font-weight:700;color:#5b21b6;margin-bottom:12px;letter-spacing:-.3px;flex-shrink:0}
+::-webkit-scrollbar{display:none}
+
+h1{font-size:20px;font-weight:700;color:#5b21b6;margin-bottom:14px;letter-spacing:-.3px;flex-shrink:0;animation:fadeUp .4s ease}
+
 .card{
-  background:#fff;border-radius:14px;padding:18px 18px 14px;margin-bottom:12px;
-  box-shadow:0 1px 4px rgba(90,20,140,.08)
+  background:#fff;border-radius:12px;padding:14px 16px 12px;margin-bottom:10px;
+  box-shadow:0 1px 4px rgba(90,20,140,.08);flex-shrink:0;
+  animation:fadeUp .4s ease both
 }
+.card:nth-child(2){animation-delay:.05s}
+.card:nth-child(3){animation-delay:.1s}
 .card-title{font-size:10px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+
 label{display:block;font-size:13px;font-weight:600;color:#1a1a2e;margin-bottom:3px}
+
 input[type="text"],input[type="number"]{
   width:100%;padding:10px 12px;font-size:14px;font-family:inherit;
   border:1.5px solid #e0dce8;border-radius:10px;background:#fff;
-  color:#1a1a2e;outline:none;transition:border-color .2s
+  color:#1a1a2e;outline:none;
+  transition:border-color .25s,box-shadow .25s,background .25s
 }
 input:focus{border-color:#a855f7;box-shadow:0 0 0 3px rgba(168,85,247,.12)}
+input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+input[type="number"]{-moz-appearance:textfield}
+input.error{border-color:#e03131;background:#fff0f0;animation:glow 1.5s ease infinite}
+
 .input-wrap{position:relative}
 .input-wrap input{padding-right:36px}
 .input-icon{
   position:absolute;right:10px;top:50%;transform:translateY(-50%);
   color:#a855f7;font-size:18px;cursor:pointer;display:none;
-  user-select:none;transition:color .15s
+  user-select:none;transition:color .15s,transform .2s
 }
-.input-icon:hover{color:#7c3aed}
+.input-icon:hover{color:#7c3aed;transform:translateY(-50%) scale(1.1)}
 .input-icon.show{display:block}
 .dropdown{
   position:absolute;top:100%;left:0;right:0;z-index:100;
@@ -43,48 +64,97 @@ input:focus{border-color:#a855f7;box-shadow:0 0 0 3px rgba(168,85,247,.12)}
 .dropdown.show{display:block}
 .dropdown-item{padding:9px 14px;font-size:14px;cursor:pointer}
 .dropdown-item:hover{background:#f5f0ff}
+
+.svc-header{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.svc-header label{margin-bottom:0;flex:1}
+.svc-expand{
+  color:#a855f7;font-size:12px;cursor:pointer;user-select:none;font-weight:500;
+  display:flex;align-items:center;gap:3px;transition:color .2s
+}
+.svc-expand:hover{color:#7c3aed}
+.svc-expand .arrow{display:inline-block;transition:transform .25s;font-size:10px}
+.svc-expand.open .arrow{transform:rotate(180deg)}
+.svc-panel{
+  overflow:hidden;max-height:0;transition:max-height .3s ease,opacity .25s ease,margin .25s;opacity:0
+}
+.svc-panel.open{max-height:300px;opacity:1;margin-top:8px}
+.svc-grid{display:flex;flex-wrap:wrap;gap:6px}
+.svc-chip{
+  padding:5px 12px;border-radius:16px;font-size:12px;font-weight:500;
+  border:1.5px solid #e0dce8;background:#fff;color:#1a1a2e;
+  cursor:pointer;transition:all .2s;user-select:none
+}
+.svc-chip:hover{border-color:#a855f7;background:#f5f0ff;transform:translateY(-1px)}
+.svc-chip:active{transform:scale(.96)}
+.svc-label{font-size:11px;color:#999;margin-bottom:5px;font-weight:500;display:none}
+
 .row{display:flex;gap:24px;align-items:flex-start}
 .col{flex:0 0 auto}
+
 .len-group{display:flex;align-items:center;gap:3px}
 .len-group input{width:52px;text-align:center;font-weight:600}
 .len-btn{display:flex;flex-direction:column;gap:2px}
 .len-btn button{
   width:26px;height:15px;border:1.5px solid #e0dce8;border-radius:4px;
-  background:#fff;color:#a855f7;font-size:9px;cursor:pointer;padding:0;line-height:0
+  background:#fff;color:#a855f7;font-size:9px;cursor:pointer;padding:0;line-height:0;
+  transition:background .15s,transform .1s
 }
 .len-btn button:hover{background:#f5f0ff}
+.len-btn button:active{transform:scale(.9)}
+
 .chk-grid{display:grid;grid-template-columns:auto auto;gap:5px 20px}
-.chk-item{display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;color:#1a1a2e;user-select:none}
+.chk-item{
+  display:flex;align-items:center;gap:7px;cursor:pointer;
+  font-size:13px;color:#1a1a2e;user-select:none;transition:transform .1s
+}
+.chk-item:active{transform:scale(.95)}
 .chk-circle{
   width:18px;height:18px;border-radius:50%;
   border:2px solid #c4bcd4;display:flex;align-items:center;
-  justify-content:center;transition:all .2s;flex-shrink:0
+  justify-content:center;transition:all .25s cubic-bezier(.4,0,.2,1);flex-shrink:0
 }
-.chk-circle.on{border-color:#a855f7;background:#a855f7}
+.chk-circle.on{
+  border-color:#a855f7;background:#a855f7;
+  animation:checkPop .3s cubic-bezier(.4,0,.2,1)
+}
 .chk-circle.on::after{content:'';width:7px;height:7px;border-radius:50%;background:#fff}
+
 .btn{
-  width:100%;padding:12px;font-size:14px;font-weight:600;font-family:inherit;
-  border:none;border-radius:11px;cursor:pointer;transition:transform .1s
+  width:100%;padding:10px;font-size:14px;font-weight:600;font-family:inherit;
+  border:none;border-radius:11px;cursor:pointer;flex-shrink:0;
+  transition:transform .12s,box-shadow .25s,opacity .2s;animation:fadeUp .4s ease both
 }
 .btn:active{transform:scale(.97)}
 .btn-primary{
   background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;
-  box-shadow:0 2px 8px rgba(168,85,247,.3)
+  box-shadow:0 2px 8px rgba(168,85,247,.3);animation-delay:.15s
 }
 .btn-primary:hover{box-shadow:0 4px 14px rgba(168,85,247,.4)}
 .btn-secondary{
   background:linear-gradient(135deg,#a78bfa,#8b5cf6);color:#fff;
-  box-shadow:0 2px 8px rgba(167,139,250,.3)
+  box-shadow:0 2px 8px rgba(167,139,250,.3);animation-delay:.25s
 }
 .btn-secondary:hover{box-shadow:0 4px 14px rgba(167,139,250,.4)}
+
 .pwd-field{
   width:100%;padding:12px;font-size:15px;font-weight:600;
   font-family:'SF Mono','Fira Code',monospace;
   border:1.5px solid #e0dce8;border-radius:10px;background:#fff;
-  color:#1a1a2e;text-align:center;outline:none;letter-spacing:.5px
+  color:#1a1a2e;text-align:center;outline:none;letter-spacing:.5px;
+  transition:border-color .25s
 }
-.error{font-size:12px;color:#e03131;min-height:16px;margin-top:3px}
-.strength{font-size:12px;color:#999;min-height:16px;margin-top:4px}
+
+.str-bars{display:flex;gap:3px;margin-top:4px}
+.str-bar{
+  height:4px;flex:1;border-radius:2px;background:#e0dce8;
+  transition:background .4s ease
+}
+.str-bar.on.weak{background:#e03131}
+.str-bar.on.medium{background:#f59e0b}
+.str-bar.on.strong{background:#10b981}
+
+.error{font-size:12px;color:#e03131;min-height:16px;margin-top:2px}
+
 .msg{text-align:center;font-size:13px;color:#a855f7;font-weight:600;min-height:20px;margin-top:3px}
 </style>
 </head>
@@ -93,28 +163,39 @@ input:focus{border-color:#a855f7;box-shadow:0 0 0 3px rgba(168,85,247,.12)}
 <h1>passgen</h1>
 
 <div class="card">
-  <div class="card-title">Credentials</div>
-  <label>Master seed</label>
-  <input type="text" id="seed" placeholder="Your secret phrase">
+  <div class="card-title">Доступ</div>
+  <label>Мастер-пароль</label>
+  <input type="text" id="seed" placeholder="Ваш секретный код">
   <div class="error" id="seedErr"></div>
 </div>
 
 <div class="card">
-  <div class="card-title">Service</div>
-  <label>Service name</label>
+  <div class="card-title">Сервис</div>
+  <div class="svc-header">
+    <label>Название сервиса</label>
+    <span class="svc-expand" id="svcToggle" onclick="toggleSvcPanel()">
+      <span class="arrow">&#9660;</span> список
+    </span>
+  </div>
   <div class="input-wrap">
-    <input type="text" id="service" placeholder="e.g. google, vk, github">
+    <input type="text" id="service" placeholder="google, github, vk ...">
     <span class="input-icon" id="svcArrow" onclick="toggleDD()">&#9662;</span>
     <div class="dropdown" id="dd"></div>
+  </div>
+  <div class="svc-panel" id="svcPanel">
+    <div class="svc-label" id="svcSavedLabel">Сохранённые</div>
+    <div class="svc-grid" id="svcSavedGrid"></div>
+    <div class="svc-label" style="margin-top:8px">Популярные</div>
+    <div class="svc-grid" id="svcPopularGrid"></div>
   </div>
   <div class="error" id="svcErr"></div>
 </div>
 
 <div class="card">
-  <div class="card-title">Options</div>
+  <div class="card-title">Параметры</div>
   <div class="row">
     <div class="col">
-      <label>Length</label>
+      <label>Длина</label>
       <div class="len-group">
         <input type="number" id="length" value="10" min="1" max="99">
         <div class="len-btn">
@@ -124,63 +205,73 @@ input:focus{border-color:#a855f7;box-shadow:0 0 0 3px rgba(168,85,247,.12)}
       </div>
     </div>
     <div class="col">
-      <label>Characters</label>
+      <label>Символы</label>
       <div class="chk-grid" id="chkGrid"></div>
     </div>
   </div>
 </div>
 
-<button class="btn btn-primary" onclick="gen()">Generate</button>
+<button class="btn btn-primary" onclick="gen()">Создать</button>
 
 <div class="card" style="margin-top:12px">
-  <div class="card-title">Password</div>
+  <div class="card-title">Пароль</div>
   <input class="pwd-field" id="pwd" readonly>
-  <div class="strength" id="str"></div>
+  <div class="str-bars" id="strBars"></div>
 </div>
 
-<button class="btn btn-secondary" onclick="cpy()" style="margin-top:auto">Copy</button>
+<button class="btn btn-secondary" onclick="cpy()">Копировать</button>
 <div class="msg" id="msg"></div>
 
 <script>
-// ── State ──
 const CHK = [
-  ['capitals','Capitals','ABCDEFGHJKLMNPQRSTUVWXYZ'],
-  ['lowercase','Lowercase','abcdefghikmnpqrstuvwxyz'],
-  ['digits','Digits','0123456789'],
-  ['symbols','Symbols','!@#$%&*+=-.'],
+  ['capitals','Заглавные','ABCDEFGHJKLMNPQRSTUVWXYZ'],
+  ['lowercase','Строчные','abcdefghikmnpqrstuvwxyz'],
+  ['digits','Цифры','0123456789'],
+  ['symbols','Спецсимволы','!@#$%&*+=-.'],
 ];
+const POPULAR = ['google','github','vk','yandex','mail','icloud','dropbox','telegram'];
+
 let state = {capitals:1,lowercase:1,digits:0,symbols:1};
 let svcs = [];
 let ddOpen = false;
 
-// ── Init ──
 function init(){
   renderChk();
-  const saved = localStorage.getItem('passgen_state');
-  if(saved){
-    try{
-      const d=JSON.parse(saved);
-      state=d.state||state;
-      svcs=d.svcs||[];
-      document.getElementById('length').value=d.len||10;
-      renderChk();
-      updateArrow();
-    }catch(e){}
-  }
-  document.getElementById('seed').addEventListener('input',clearErr);
-  document.getElementById('service').addEventListener('input',clearErr);
+  loadState();
+  document.getElementById('seed').addEventListener('input',()=>{
+    document.getElementById('seed').classList.remove('error');
+    document.getElementById('seedErr').textContent='';
+  });
+  document.getElementById('seed').addEventListener('keydown',e=>{if(e.key==='Enter')gen()});
   document.getElementById('service').addEventListener('keydown',e=>{if(e.key==='Enter')gen()});
   document.addEventListener('click',e=>{
     if(!e.target.closest('.input-wrap'))hideDD();
   });
 }
 
-// ── Checkboxes ──
+function loadState(){
+  const saved = localStorage.getItem('passgen_state');
+  if(saved) try {
+    const d = JSON.parse(saved);
+    state = d.state || state;
+    svcs = d.svcs || [];
+    document.getElementById('length').value = d.len || 10;
+    renderChk();
+    updateArrow();
+    renderSvcChips();
+  }catch(e){}
+}
+function saveState(){
+  try{localStorage.setItem('passgen_state',JSON.stringify({
+    state, svcs, len: +document.getElementById('length').value
+  }))}catch(e){}
+}
+
 function renderChk(){
   const g=document.getElementById('chkGrid');g.innerHTML='';
   for(const[id,lbl]of CHK){
     const d=document.createElement('div');d.className='chk-item';
-    d.onclick=()=>{state[id]=+!state[id];renderChk();save();};
+    d.onclick=()=>{state[id]=+!state[id];renderChk();saveState();};
     const c=document.createElement('span');
     c.className='chk-circle'+(state[id]?' on':'');
     const t=document.createElement('span');t.textContent=lbl;
@@ -188,10 +279,8 @@ function renderChk(){
   }
 }
 
-// ── Length ──
 function adj(d){const i=document.getElementById('length');let v=+i.value+d;i.value=v<1?1:v>99?99:v;}
 
-// ── Dropdown ──
 function toggleDD(){ddOpen?hideDD():showDD();}
 function showDD(){
   if(!svcs.length)return;
@@ -199,7 +288,7 @@ function showDD(){
   for(const s of svcs){
     const d=document.createElement('div');d.className='dropdown-item';
     d.textContent=s;
-    d.onclick=()=>{document.getElementById('service').value=s;hideDD();clearErr();};
+    d.onclick=()=>{document.getElementById('service').value=s;hideDD();};
     dd.appendChild(d);
   }
   dd.classList.add('show');ddOpen=true;
@@ -210,30 +299,53 @@ function updateArrow(){
   a.classList.toggle('show',svcs.length>0);
 }
 
-// ── Errors ──
-function clearErr(){document.getElementById('seedErr').textContent='';document.getElementById('svcErr').textContent='';}
-function setErr(f,m){document.getElementById(f+'Err').textContent=m;}
+function toggleSvcPanel(){
+  const p=document.getElementById('svcPanel');
+  const t=document.getElementById('svcToggle');
+  p.classList.toggle('open');
+  t.classList.toggle('open');
+}
 
-// ── Generate (HMAC-SHA256 via Web Crypto API) ──
+function renderSvcChips(){
+  const sg=document.getElementById('svcSavedGrid');sg.innerHTML='';
+  const sl=document.getElementById('svcSavedLabel');
+  if(svcs.length){sl.style.display='block';
+    for(const s of svcs) sg.appendChild(chip(s));
+  }else{sl.style.display='none';}
+  const pg=document.getElementById('svcPopularGrid');pg.innerHTML='';
+  for(const s of POPULAR){if(!svcs.includes(s))pg.appendChild(chip(s));}
+}
+function chip(name){
+  const d=document.createElement('div');d.className='svc-chip';
+  d.textContent=name;
+  d.onclick=()=>{
+    document.getElementById('service').value=name;
+    document.getElementById('svcPanel').classList.remove('open');
+    document.getElementById('svcToggle').classList.remove('open');
+  };
+  return d;
+}
+
 async function gen(){
   const seed=document.getElementById('seed').value.trim();
-  const svc=document.getElementById('service').value.trim();
+  const svc=document.getElementById('service').value.trim()||'(empty)';
   const len=+document.getElementById('length').value||10;
-  clearErr();
-  if(!seed){setErr('seed','Enter master seed');return;}
-  if(!svc){setErr('svc','Enter service name');return;}
-
+  document.getElementById('seed').classList.remove('error');
+  if(!seed){
+    document.getElementById('seed').classList.add('error');
+    document.getElementById('seedErr').textContent='Введите мастер-пароль';
+    return;
+  }
   const sets=Object.values(state).filter(Boolean).length;
-  if(!sets){setErr('seed','Select at least one character type');return;}
-
+  if(!sets){document.getElementById('seedErr').textContent='Выберите хотя бы один тип символов';return;}
   const alpha=CHK.filter(([id])=>state[id]).map(([,,l])=>l).join('');
   const pwd=await hmacGen(seed,svc,len,alpha);
-
   document.getElementById('pwd').value=pwd;
-  document.getElementById('str').textContent=len>=14&&sets>=4?'Strong':len>=10&&sets>=3?'Medium':'Weak';
-
-  if(!svcs.includes(svc)){svcs.push(svc);updateArrow();}
-  save();
+  updateStrength(len,sets);
+  if(!svcs.includes(svc)&&svc!=='(empty)'){
+    svcs.push(svc);svcs.sort();updateArrow();renderSvcChips();
+  }
+  saveState();
 }
 
 async function hmacGen(seed,svc,len,alpha){
@@ -251,22 +363,24 @@ async function hmacGen(seed,svc,len,alpha){
   return pwd;
 }
 
-// ── Copy ──
+function updateStrength(len,sets){
+  const bars=document.getElementById('strBars');bars.innerHTML='';
+  const level=len>=14&&sets>=4?'strong':len>=10&&sets>=3?'medium':'weak';
+  const count={weak:1,medium:2,strong:3}[level];
+  for(let i=0;i<3;i++){
+    const b=document.createElement('div');b.className='str-bar'+(i<count?' on '+level:'');
+    bars.appendChild(b);
+  }
+}
+
 async function cpy(){
   const p=document.getElementById('pwd').value;
   if(!p)return;
   try{await navigator.clipboard.writeText(p);}catch{
     document.getElementById('pwd').select();document.execCommand('copy');
   }
-  document.getElementById('msg').textContent='Copied!';
+  document.getElementById('msg').textContent='Скопировано!';
   setTimeout(()=>document.getElementById('msg').textContent='',1500);
-}
-
-// ── Save ──
-function save(){
-  try{localStorage.setItem('passgen_state',JSON.stringify({
-    state,svcs,len:+document.getElementById('length').value
-  }));}catch(e){}
 }
 
 init();
