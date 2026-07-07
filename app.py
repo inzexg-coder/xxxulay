@@ -26,14 +26,14 @@ class QuietHandler(http.server.SimpleHTTPRequestHandler):
 def open_app_mode(url):
     """Open URL without browser chrome (address bar, tabs)."""
     browsers = [
-        ("google-chrome-stable", ["--app=" + url, "--no-first-run"]),
-        ("google-chrome",       ["--app=" + url, "--no-first-run"]),
-        ("chromium-browser",    ["--app=" + url, "--no-first-run"]),
-        ("chromium",            ["--app=" + url, "--no-first-run"]),
-        ("brave-browser",       ["--app=" + url]),
-        ("vivaldi",             ["--app=" + url]),
-        ("firefox",             ["--new-window", url, "--kiosk"]),
-        ("microsoft-edge",      ["--app=" + url]),
+        ("google-chrome-stable", ["--app=" + url, "--window-size=420,580", "--no-first-run"]),
+        ("google-chrome",       ["--app=" + url, "--window-size=420,580", "--no-first-run"]),
+        ("chromium-browser",    ["--app=" + url, "--window-size=420,580", "--no-first-run"]),
+        ("chromium",            ["--app=" + url, "--window-size=420,580", "--no-first-run"]),
+        ("brave-browser",       ["--app=" + url, "--window-size=420,580"]),
+        ("vivaldi",             ["--app=" + url, "--window-size=420,580"]),
+        ("firefox",             ["--new-window", url]),
+        ("microsoft-edge",      ["--app=" + url, "--window-size=420,580"]),
     ]
     for name, args in browsers:
         path = shutil.which(name)
