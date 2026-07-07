@@ -129,14 +129,16 @@ input.error{border-color:#f472b6;animation:glow 1.5s ease infinite}
   transition:border-color .25s
 }
 
-.str-bars{display:flex;gap:3px;margin-top:4px}
-.str-bar{
-  height:4px;flex:1;border-radius:2px;background:#e0dce8;
-  transition:background .4s ease
-}
-.str-bar.on.weak{background:#e03131}
-.str-bar.on.medium{background:#f59e0b}
-.str-bar.on.strong{background:#10b981}
+.str-wrap{margin-top:6px}
+.str-bars{display:flex;gap:4px}
+.str-bar{height:4px;flex:1;border-radius:3px;background:#e0dce8;transition:background .4s ease}
+.str-bar.on.s0{background:#f9a8d4}
+.str-bar.on.s1{background:#e11d48}
+.str-bar.on.s2{background:#a855f7}
+.str-info{font-size:13px;margin-top:4px;transition:all .3s}
+.str-info.weak{color:#f472b6}
+.str-info.medium{color:#e11d48}
+.str-info.strong{color:#a855f7}
 
 .error{font-size:12px;color:#f472b6;min-height:16px;margin-top:2px}
 
@@ -195,7 +197,10 @@ input.error{border-color:#f472b6;animation:glow 1.5s ease infinite}
 <div class="card" style="margin-top:12px">
   <div class="card-title">Пароль</div>
   <input class="pwd-field" id="pwd" readonly>
-  <div class="str-bars" id="strBars"></div>
+  <div class="str-wrap" id="strWrap">
+    <div class="str-bars" id="strBars"></div>
+    <div class="str-info" id="strInfo"></div>
+  </div>
 </div>
 
 <button class="btn btn-secondary" onclick="cpy()">Копировать</button>
@@ -364,12 +369,18 @@ async function hmacGen(seed,svc,len,alpha){
 
 function updateStrength(len,sets){
   const bars=document.getElementById('strBars');bars.innerHTML='';
-  const level=len>=14&&sets>=4?'strong':len>=10&&sets>=3?'medium':'weak';
+  const info=document.getElementById('strInfo');
+  let level,emoji,msg;
+  if(len>=14&&sets>=4){level='strong';emoji='uwu';msg='Excellent password'}
+  else if(len>=10&&sets>=3){level='medium';emoji=':3';msg='Good password, could be longer'}
+  else{level='weak';emoji='>.<';msg='Add more symbols or increase length'}
   const count={weak:1,medium:2,strong:3}[level];
   for(let i=0;i<3;i++){
-    const b=document.createElement('div');b.className='str-bar'+(i<count?' on '+level:'');
+    const b=document.createElement('div');b.className='str-bar'+(i<count?' on s'+i:'');
     bars.appendChild(b);
   }
+  info.className='str-info '+level;
+  info.textContent=emoji+'  '+msg;
 }
 
 async function cpy(){
