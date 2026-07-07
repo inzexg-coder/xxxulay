@@ -1,6 +1,1 @@
-# Для запуска WinForms GUI из Python
-# Установка: pip install -r requirements.txt
-pythonnet>=3.0.0
-
-# В дальнейшем (для QR-кодов):
-# qrcode[pil]
+pywebview>=4.0
