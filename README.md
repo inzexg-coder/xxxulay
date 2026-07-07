@@ -234,3 +234,24 @@ pract/
 ---
 **Порядок работы:** каждый этап = отдельная итерация. Начинаем с Этапа 1 (настройка окружения),
 далее последовательно Этап 2 → Этап 3 → ..., заканчивая рефакторингом безопасности.
+
+
+## Install & Run
+
+```bash
+# 1. Clone
+git clone https://github.com/inzexg-coder/pract.git
+cd pract
+
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# On Arch Linux, also install WebKit:
+# sudo pacman -S webkit2gtk
+
+# 3. Run
+python app.py
+```
+
+---
+
