@@ -34,7 +34,7 @@ class ToolTip:
         self._tip.wm_geometry(f"+{x}+{y}")
         label = tk.Label(self._tip, text=self.text,
                           justify="left",
-                          bg="#ffffcc", fg="#1a1a1a",
+                          bg="#eaddff", fg="#1a1a1a",
                           font=("TkDefaultFont", 10),
                           relief="solid", bd=1,
                           padx=8, pady=4)
