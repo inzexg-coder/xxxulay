@@ -71,7 +71,7 @@ input.error{border-color:#e03131;animation:glow 1.5s ease infinite}
 }
 .svc-chip:hover{border-color:#a855f7;background:#f5f0ff;transform:translateY(-1px)}
 .svc-chip:active{transform:scale(.96)}
-.svc-label{font-size:11px;color:#999;margin-bottom:5px;font-weight:500;display:none}
+
 
 .row{display:flex;gap:24px;align-items:flex-start}
 .col{flex:0 0 auto}
@@ -164,10 +164,7 @@ input.error{border-color:#e03131;animation:glow 1.5s ease infinite}
   </div>
   <input type="text" id="service" placeholder="google, github, vk ...">
   <div class="svc-panel" id="svcPanel">
-    <div class="svc-label" id="svcSavedLabel">Сохранённые</div>
-    <div class="svc-grid" id="svcSavedGrid"></div>
-    <div class="svc-label" style="margin-top:8px">Популярные</div>
-    <div class="svc-grid" id="svcPopularGrid"></div>
+    <div class="svc-grid" id="svcGrid"></div>
   </div>
   <div class="error" id="svcErr"></div>
 </div>
@@ -282,15 +279,18 @@ function toggleSvcPanel(){
 }
 
 function renderSvcChips(){
-  const sg=document.getElementById('svcSavedGrid');sg.innerHTML='';
-  const sl=document.getElementById('svcSavedLabel');
-  if(svcs.length){sl.style.display='block';
-    for(const s of svcs) sg.appendChild(chip(s,false));
-  }else{sl.style.display='none';}
-  const pg=document.getElementById('svcPopularGrid');pg.innerHTML='';
-  for(const s of POPULAR){if(svcs.indexOf(s.n)===-1)pg.appendChild(chip(s,true));}
+  const g=document.getElementById('svcGrid');g.innerHTML='';
+  const shown=new Set();
+  // Popular first
+  for(const s of POPULAR){
+    if(svcs.indexOf(s.n)===-1){g.appendChild(chip(s,true,false));shown.add(s.n);}
+  }
+  // User saved after
+  for(const s of svcs){
+    g.appendChild(chip(s,false,true));
+  }
 }
-function chip(item, hasLogo){
+function chip(item, hasLogo, deletable){
   const isObj = typeof item === 'object';
   const name = isObj ? item.n : item;
   const d=document.createElement('div');d.className='svc-chip';
@@ -301,13 +301,26 @@ function chip(item, hasLogo){
     d.appendChild(dot);
     d.appendChild(document.createTextNode(name));
   } else {
-    d.textContent=name;
+    const dot=document.createElement('span');
+    dot.style.cssText='display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#e0dce8;color:#999;font-size:10px;font-weight:700;margin-right:4px;flex-shrink:0';
+    dot.textContent='?';
+    d.appendChild(dot);
+    d.appendChild(document.createTextNode(name));
   }
   d.onclick=()=>{
     document.getElementById('service').value=name;
     document.getElementById('svcPanel').classList.remove('open');
     document.getElementById('svcToggle').classList.remove('open');
   };
+  if(deletable){
+    d.oncontextmenu=(e)=>{
+      e.preventDefault();
+      svcs=svcs.filter(s=>s!==name);
+      renderSvcChips();
+      saveState();
+    };
+    d.title='ПРМ для удаления';
+  }
   return d;
 }
 
