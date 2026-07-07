@@ -98,6 +98,12 @@ class PassGenApp(tk.Tk):
         self.seed_var = tk.StringVar()
         self.seed_entry = self._entry(self.seed_var, FONT_REG)
         self.seed_entry.pack(fill="x", padx=28, pady=(0, 10), ipady=6)
+        self.seed_entry.bind("<KeyRelease>", lambda e: self._clear_error())
+
+        # Error label
+        self.error_var = tk.StringVar()
+        self.error_label = tk.Label(self, textvariable=self.error_var, font=FONT_REG, bg=BG, fg="#e03131")
+        self.error_label.pack(anchor="w", padx=28, pady=(0, 4))
 
         # Service
         self._label("Service:", FONT_BOLD)
@@ -107,6 +113,8 @@ class PassGenApp(tk.Tk):
         self.svc_combo.pack(fill="x", padx=28, pady=(0, 10))
         self.svc_combo.bind("<Return>", lambda e: self._generate())
         self.svc_combo.bind("<KP_Enter>", lambda e: self._generate())
+        self.svc_combo.bind("<<ComboboxSelected>>", lambda e: self._clear_error())
+        self.svc_combo.bind("<KeyRelease>", lambda e: self._clear_error())
 
         # Length
         frame_len = tk.Frame(self, bg=BG)
@@ -230,10 +238,10 @@ class PassGenApp(tk.Tk):
         seed = self.seed_var.get().strip()
 
         if not seed:
-            messagebox.showwarning("", "Enter master seed")
+            self.error_var.set("Enter master seed")
             return
         if not service:
-            messagebox.showwarning("", "Enter service name")
+            self.error_var.set("Enter service name")
             return
 
         try:
@@ -246,6 +254,7 @@ class PassGenApp(tk.Tk):
                 use_symbols=self.sym_var.get(),
             )
             self.pwd_var.set(pwd)
+            self._clear_error()
 
             vals = list(self.svc_combo["values"])
             if service not in vals:
@@ -254,6 +263,10 @@ class PassGenApp(tk.Tk):
 
         except ValueError as ex:
             messagebox.showwarning("", str(ex))
+
+    def _clear_error(self):
+        if self.error_var.get():
+            self.error_var.set("")
 
     def _copy_password(self):
         pwd = self.pwd_var.get()
