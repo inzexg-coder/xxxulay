@@ -5,629 +5,270 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>passgen</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: #f5f0ff;
-  color: #1a1a2e;
-  padding: 32px 28px;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  background:#f5f0ff;color:#1a1a2e;
+  padding:28px 24px;max-width:400px;margin:0 auto;
 }
-
-/* ── Header ── */
-h1 {
-  font-size: 22px;
-  font-weight: 700;
-  color: #5b21b6;
-  margin-bottom: 24px;
-  letter-spacing: -0.3px;
+h1{font-size:22px;font-weight:700;color:#5b21b6;margin-bottom:20px;letter-spacing:-.3px}
+.card{
+  background:#fff;border-radius:14px;padding:18px 18px 14px;margin-bottom:12px;
+  box-shadow:0 1px 4px rgba(90,20,140,.08)
 }
-
-/* ── Card ── */
-.card {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 20px 20px 16px;
-  margin-bottom: 14px;
-  box-shadow: 0 1px 3px rgba(90, 20, 140, 0.08), 0 1px 2px rgba(90, 20, 140, 0.06);
+.card-title{font-size:10px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+label{display:block;font-size:13px;font-weight:600;color:#1a1a2e;margin-bottom:3px}
+input[type="text"],input[type="number"]{
+  width:100%;padding:10px 12px;font-size:14px;font-family:inherit;
+  border:1.5px solid #e0dce8;border-radius:10px;background:#fff;
+  color:#1a1a2e;outline:none;transition:border-color .2s
 }
-
-.card-title {
-  font-size: 11px;
-  font-weight: 600;
-  color: #8b8ba7;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 10px;
+input:focus{border-color:#a855f7;box-shadow:0 0 0 3px rgba(168,85,247,.12)}
+.input-wrap{position:relative}
+.input-wrap input{padding-right:36px}
+.input-icon{
+  position:absolute;right:10px;top:50%;transform:translateY(-50%);
+  color:#a855f7;font-size:18px;cursor:pointer;display:none;
+  user-select:none;transition:color .15s
 }
-
-/* ── Labels ── */
-label {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: #1a1a2e;
-  margin-bottom: 4px;
+.input-icon:hover{color:#7c3aed}
+.input-icon.show{display:block}
+.dropdown{
+  position:absolute;top:100%;left:0;right:0;z-index:100;
+  background:#fff;border:1.5px solid #e0dce8;border-radius:10px;
+  box-shadow:0 8px 24px rgba(0,0,0,.12);
+  max-height:180px;overflow-y:auto;display:none;margin-top:4px
 }
-
-/* ── Inputs ── */
-input[type="text"], input[type="number"] {
-  width: 100%;
-  padding: 10px 12px;
-  font-size: 14px;
-  font-family: inherit;
-  border: 1.5px solid #e0dce8;
-  border-radius: 10px;
-  background: #ffffff;
-  color: #1a1a2e;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+.dropdown.show{display:block}
+.dropdown-item{padding:9px 14px;font-size:14px;cursor:pointer}
+.dropdown-item:hover{background:#f5f0ff}
+.row{display:flex;gap:24px;align-items:flex-start}
+.col{flex:0 0 auto}
+.len-group{display:flex;align-items:center;gap:3px}
+.len-group input{width:52px;text-align:center;font-weight:600}
+.len-btn{display:flex;flex-direction:column;gap:2px}
+.len-btn button{
+  width:26px;height:15px;border:1.5px solid #e0dce8;border-radius:4px;
+  background:#fff;color:#a855f7;font-size:9px;cursor:pointer;padding:0;line-height:0
 }
-
-input[type="text"]:focus, input[type="number"]:focus {
-  border-color: #a855f7;
-  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15);
+.len-btn button:hover{background:#f5f0ff}
+.chk-grid{display:grid;grid-template-columns:auto auto;gap:5px 20px}
+.chk-item{display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;color:#1a1a2e;user-select:none}
+.chk-circle{
+  width:18px;height:18px;border-radius:50%;
+  border:2px solid #c4bcd4;display:flex;align-items:center;
+  justify-content:center;transition:all .2s;flex-shrink:0
 }
-
-/* ── Input with icon ── */
-.input-wrap {
-  position: relative;
+.chk-circle.on{border-color:#a855f7;background:#a855f7}
+.chk-circle.on::after{content:'';width:7px;height:7px;border-radius:50%;background:#fff}
+.btn{
+  width:100%;padding:12px;font-size:14px;font-weight:600;font-family:inherit;
+  border:none;border-radius:11px;cursor:pointer;transition:transform .1s
 }
-
-.input-wrap input {
-  padding-right: 36px;
+.btn:active{transform:scale(.97)}
+.btn-primary{
+  background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;
+  box-shadow:0 2px 8px rgba(168,85,247,.3)
 }
-
-.input-icon {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #a855f7;
-  font-size: 18px;
-  cursor: pointer;
-  user-select: none;
-  transition: color 0.15s;
-  display: none;
+.btn-primary:hover{box-shadow:0 4px 14px rgba(168,85,247,.4)}
+.btn-secondary{
+  background:linear-gradient(135deg,#a78bfa,#8b5cf6);color:#fff;
+  box-shadow:0 2px 8px rgba(167,139,250,.3)
 }
-
-.input-icon.visible {
-  display: block;
+.btn-secondary:hover{box-shadow:0 4px 14px rgba(167,139,250,.4)}
+.pwd-field{
+  width:100%;padding:12px;font-size:15px;font-weight:600;
+  font-family:'SF Mono','Fira Code',monospace;
+  border:1.5px solid #e0dce8;border-radius:10px;background:#fff;
+  color:#1a1a2e;text-align:center;outline:none;letter-spacing:.5px
 }
-
-.input-icon:hover {
-  color: #7c3aed;
-}
-
-/* ── Dropdown ── */
-.dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  background: #fff;
-  border: 1.5px solid #e0dce8;
-  border-radius: 10px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-  max-height: 200px;
-  overflow-y: auto;
-  display: none;
-  margin-top: 4px;
-}
-
-.dropdown.show {
-  display: block;
-}
-
-.dropdown-item {
-  padding: 10px 14px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background 0.1s;
-}
-
-.dropdown-item:hover {
-  background: #f5f0ff;
-}
-
-/* ── Row: Length + checkbox group ── */
-.options-row {
-  display: flex;
-  gap: 32px;
-  align-items: flex-start;
-}
-
-.options-col {
-  flex: 0 0 auto;
-}
-
-/* ── Length ── */
-.length-group {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.length-group input {
-  width: 56px;
-  text-align: center;
-  font-weight: 600;
-}
-
-.len-btn {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.len-btn button {
-  display: block;
-  width: 28px;
-  height: 16px;
-  border: 1.5px solid #e0dce8;
-  border-radius: 4px;
-  background: #fff;
-  color: #a855f7;
-  font-size: 10px;
-  cursor: pointer;
-  line-height: 0;
-  transition: background 0.15s;
-  padding: 0;
-}
-
-.len-btn button:hover {
-  background: #f5f0ff;
-}
-
-/* ── Checkbox circles ── */
-.chk-grid {
-  display: grid;
-  grid-template-columns: auto auto;
-  gap: 6px 24px;
-}
-
-.chk-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  user-select: none;
-  font-size: 13px;
-  color: #1a1a2e;
-}
-
-.chk-circle {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid #c4bcd4;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-  flex-shrink: 0;
-}
-
-.chk-circle.checked {
-  border-color: #a855f7;
-  background: #a855f7;
-}
-
-.chk-circle.checked::after {
-  content: '';
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #fff;
-}
-
-/* ── Buttons ── */
-.btn {
-  width: 100%;
-  padding: 12px;
-  font-size: 14px;
-  font-weight: 600;
-  font-family: inherit;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: transform 0.1s, box-shadow 0.2s;
-}
-
-.btn:active {
-  transform: scale(0.98);
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #a855f7, #7c3aed);
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(168, 85, 247, 0.3);
-}
-
-.btn-primary:hover {
-  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.4);
-}
-
-.btn-secondary {
-  background: linear-gradient(135deg, #a78bfa, #8b5cf6);
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(167, 139, 250, 0.3);
-}
-
-.btn-secondary:hover {
-  box-shadow: 0 4px 16px rgba(167, 139, 250, 0.4);
-}
-
-/* ── Password display ── */
-.password-field {
-  width: 100%;
-  padding: 12px 14px;
-  font-size: 15px;
-  font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
-  font-weight: 600;
-  border: 1.5px solid #e0dce8;
-  border-radius: 10px;
-  background: #ffffff;
-  color: #1a1a2e;
-  outline: none;
-  text-align: center;
-  letter-spacing: 0.5px;
-}
-
-/* ── Error ── */
-.error {
-  font-size: 12px;
-  color: #e03131;
-  margin-top: 4px;
-  min-height: 16px;
-}
-
-/* ── Strength ── */
-.strength {
-  font-size: 12px;
-  color: #8b8ba7;
-  margin-top: 6px;
-  min-height: 16px;
-}
-
-/* ── Copied feedback ── */
-.copied-msg {
-  text-align: center;
-  font-size: 13px;
-  color: #a855f7;
-  font-weight: 600;
-  min-height: 20px;
-  margin-top: 4px;
-}
-
-/* ── Scrollbar ── */
-.dropdown::-webkit-scrollbar { width: 4px; }
-.dropdown::-webkit-scrollbar-thumb { background: #d0c8e0; border-radius: 4px; }
+.error{font-size:12px;color:#e03131;min-height:16px;margin-top:3px}
+.strength{font-size:12px;color:#999;min-height:16px;margin-top:4px}
+.msg{text-align:center;font-size:13px;color:#a855f7;font-weight:600;min-height:20px;margin-top:3px}
 </style>
 </head>
 <body>
 
 <h1>passgen</h1>
 
-<!-- CARD: CREDENTIALS -->
 <div class="card">
   <div class="card-title">Credentials</div>
   <label>Master seed</label>
   <input type="text" id="seed" placeholder="Your secret phrase">
-  <div class="error" id="seedError"></div>
+  <div class="error" id="seedErr"></div>
 </div>
 
-<!-- CARD: SERVICE -->
 <div class="card">
   <div class="card-title">Service</div>
   <label>Service name</label>
   <div class="input-wrap">
     <input type="text" id="service" placeholder="e.g. google, vk, github">
-    <span class="input-icon" id="serviceArrow" onclick="toggleDropdown()">▾</span>
-    <div class="dropdown" id="serviceDropdown"></div>
+    <span class="input-icon" id="svcArrow" onclick="toggleDD()">&#9662;</span>
+    <div class="dropdown" id="dd"></div>
   </div>
-  <div class="error" id="serviceError"></div>
+  <div class="error" id="svcErr"></div>
 </div>
 
-<!-- CARD: OPTIONS -->
 <div class="card">
   <div class="card-title">Options</div>
-  <div class="options-row">
-    <div class="options-col">
+  <div class="row">
+    <div class="col">
       <label>Length</label>
-      <div class="length-group">
+      <div class="len-group">
         <input type="number" id="length" value="10" min="1" max="99">
         <div class="len-btn">
-          <button onclick="adjLen(1)">▲</button>
-          <button onclick="adjLen(-1)">▼</button>
+          <button onclick="adj(1)">&#9650;</button>
+          <button onclick="adj(-1)">&#9660;</button>
         </div>
       </div>
     </div>
-    <div class="options-col">
+    <div class="col">
       <label>Characters</label>
       <div class="chk-grid" id="chkGrid"></div>
     </div>
   </div>
 </div>
 
-<!-- GENERATE BUTTON -->
-<button class="btn btn-primary" onclick="generate()">Generate</button>
+<button class="btn btn-primary" onclick="gen()">Generate</button>
 
-<!-- CARD: PASSWORD -->
-<div class="card" style="margin-top:14px;">
+<div class="card" style="margin-top:12px">
   <div class="card-title">Password</div>
-  <input class="password-field" id="password" readonly>
-  <div class="strength" id="strength"></div>
+  <input class="pwd-field" id="pwd" readonly>
+  <div class="strength" id="str"></div>
 </div>
 
-<!-- COPY BUTTON -->
-<button class="btn btn-secondary" onclick="copyPassword()">Copy</button>
-<div class="copied-msg" id="copiedMsg"></div>
+<button class="btn btn-secondary" onclick="cpy()">Copy</button>
+<div class="msg" id="msg"></div>
 
 <script>
 // ── State ──
-const CHARSETS = [
-  { id: 'capitals', label: 'Capitals', tip: 'A B C D ...', letters: 'ABCDEFGHJKLMNPQRSTUVWXYZ' },
-  { id: 'lowercase', label: 'Lowercase', tip: 'a b c d ...', letters: 'abcdefghikmnpqrstuvwxyz' },
-  { id: 'digits', label: 'Digits', tip: '0 1 2 3 ...', letters: '0123456789' },
-  { id: 'symbols', label: 'Symbols', tip: '! @ # $ ...', letters: '!@#$%&*+=-.' },
+const CHK = [
+  ['capitals','Capitals','ABCDEFGHJKLMNPQRSTUVWXYZ'],
+  ['lowercase','Lowercase','abcdefghikmnpqrstuvwxyz'],
+  ['digits','Digits','0123456789'],
+  ['symbols','Symbols','!@#$%&*+=-.'],
 ];
-
-let charsetState = { capitals: true, lowercase: true, digits: false, symbols: true };
-let savedServices = [];
-let dropdownVisible = false;
+let state = {capitals:1,lowercase:1,digits:0,symbols:1};
+let svcs = [];
+let ddOpen = false;
 
 // ── Init ──
-function init() {
-  renderCheckboxes();
-  loadSettings();
-
-  document.getElementById('seed').addEventListener('input', clearErrors);
-  document.getElementById('service').addEventListener('input', clearErrors);
-  document.getElementById('service').addEventListener('keydown', e => {
-    if (e.key === 'Enter') generate();
-  });
-
-  // Click outside closes dropdown
-  document.addEventListener('click', e => {
-    const wrap = document.querySelector('.input-wrap');
-    if (!wrap.contains(e.target)) hideDropdown();
+function init(){
+  renderChk();
+  const saved = localStorage.getItem('passgen_state');
+  if(saved){
+    try{
+      const d=JSON.parse(saved);
+      state=d.state||state;
+      svcs=d.svcs||[];
+      document.getElementById('length').value=d.len||10;
+      renderChk();
+      updateArrow();
+    }catch(e){}
+  }
+  document.getElementById('seed').addEventListener('input',clearErr);
+  document.getElementById('service').addEventListener('input',clearErr);
+  document.getElementById('service').addEventListener('keydown',e=>{if(e.key==='Enter')gen()});
+  document.addEventListener('click',e=>{
+    if(!e.target.closest('.input-wrap'))hideDD();
   });
 }
 
 // ── Checkboxes ──
-function renderCheckboxes() {
-  const grid = document.getElementById('chkGrid');
-  grid.innerHTML = '';
-  for (const cs of CHARSETS) {
-    const item = document.createElement('div');
-    item.className = 'chk-item';
-    item.onclick = () => toggleCharset(cs.id);
-
-    const circle = document.createElement('span');
-    circle.className = 'chk-circle' + (charsetState[cs.id] ? ' checked' : '');
-    circle.id = 'chk-' + cs.id;
-
-    const label = document.createElement('span');
-    label.textContent = cs.label;
-
-    item.appendChild(circle);
-    item.appendChild(label);
-    grid.appendChild(item);
+function renderChk(){
+  const g=document.getElementById('chkGrid');g.innerHTML='';
+  for(const[id,lbl]of CHK){
+    const d=document.createElement('div');d.className='chk-item';
+    d.onclick=()=>{state[id]=+!state[id];renderChk();save();};
+    const c=document.createElement('span');
+    c.className='chk-circle'+(state[id]?' on':'');
+    const t=document.createElement('span');t.textContent=lbl;
+    d.appendChild(c);d.appendChild(t);g.appendChild(d);
   }
-}
-
-function toggleCharset(id) {
-  charsetState[id] = !charsetState[id];
-  renderCheckboxes();
 }
 
 // ── Length ──
-function adjLen(delta) {
-  const inp = document.getElementById('length');
-  let v = parseInt(inp.value) + delta;
-  if (v < 1) v = 1;
-  if (v > 99) v = 99;
-  inp.value = v;
-}
+function adj(d){const i=document.getElementById('length');let v=+i.value+d;i.value=v<1?1:v>99?99:v;}
 
-// ── Service dropdown ──
-function toggleDropdown() {
-  if (dropdownVisible) hideDropdown();
-  else showDropdown();
-}
-
-function showDropdown() {
-  if (savedServices.length === 0) return;
-  const dd = document.getElementById('serviceDropdown');
-  dd.innerHTML = '';
-  for (const s of savedServices) {
-    const item = document.createElement('div');
-    item.className = 'dropdown-item';
-    item.textContent = s;
-    item.onclick = () => { document.getElementById('service').value = s; hideDropdown(); clearErrors(); };
-    dd.appendChild(item);
+// ── Dropdown ──
+function toggleDD(){ddOpen?hideDD():showDD();}
+function showDD(){
+  if(!svcs.length)return;
+  const dd=document.getElementById('dd');dd.innerHTML='';
+  for(const s of svcs){
+    const d=document.createElement('div');d.className='dropdown-item';
+    d.textContent=s;
+    d.onclick=()=>{document.getElementById('service').value=s;hideDD();clearErr();};
+    dd.appendChild(d);
   }
-  dd.classList.add('show');
-  dropdownVisible = true;
+  dd.classList.add('show');ddOpen=true;
 }
-
-function hideDropdown() {
-  document.getElementById('serviceDropdown').classList.remove('show');
-  dropdownVisible = false;
+function hideDD(){document.getElementById('dd').classList.remove('show');ddOpen=false;}
+function updateArrow(){
+  const a=document.getElementById('svcArrow');
+  a.classList.toggle('show',svcs.length>0);
 }
 
 // ── Errors ──
-function clearErrors() {
-  document.getElementById('seedError').textContent = '';
-  document.getElementById('serviceError').textContent = '';
+function clearErr(){document.getElementById('seedErr').textContent='';document.getElementById('svcErr').textContent='';}
+function setErr(f,m){document.getElementById(f+'Err').textContent=m;}
+
+// ── Generate (HMAC-SHA256 via Web Crypto API) ──
+async function gen(){
+  const seed=document.getElementById('seed').value.trim();
+  const svc=document.getElementById('service').value.trim();
+  const len=+document.getElementById('length').value||10;
+  clearErr();
+  if(!seed){setErr('seed','Enter master seed');return;}
+  if(!svc){setErr('svc','Enter service name');return;}
+
+  const sets=Object.values(state).filter(Boolean).length;
+  if(!sets){setErr('seed','Select at least one character type');return;}
+
+  const alpha=CHK.filter(([id])=>state[id]).map(([,,l])=>l).join('');
+  const pwd=await hmacGen(seed,svc,len,alpha);
+
+  document.getElementById('pwd').value=pwd;
+  document.getElementById('str').textContent=len>=14&&sets>=4?'Strong':len>=10&&sets>=3?'Medium':'Weak';
+
+  if(!svcs.includes(svc)){svcs.push(svc);updateArrow();}
+  save();
 }
 
-function setError(field, msg) {
-  document.getElementById(field + 'Error').textContent = msg;
-}
-
-// ── Generation ──
-async function generate() {
-  const seed = document.getElementById('seed').value.trim();
-  const service = document.getElementById('service').value.trim();
-  const length = parseInt(document.getElementById('length').value) || 10;
-
-  clearErrors();
-  if (!seed) { setError('seed', 'Enter master seed'); return; }
-  if (!service) { setError('service', 'Enter service name'); return; }
-
-  const selected = [];
-  for (const cs of CHARSETS) {
-    if (charsetState[cs.id]) selected.push(cs.letters);
-  }
-  if (selected.length === 0) { setError('seed', 'Select at least one character type'); return; }
-
-  const pwd = await generatePassword(seed, service, length, selected.join(''));
-  document.getElementById('password').value = pwd;
-  document.getElementById('strength').textContent = getStrength(pwd, selected.length);
-
-  // Add to services
-  if (!savedServices.includes(service)) {
-    savedServices.push(service);
-    updateServiceArrow();
-    saveServices();
-  }
-}
-
-async function generatePassword(seed, service, length, alphabet) {
-  const enc = new TextEncoder();
-  const keyBytes = enc.encode(seed);
-  const msgBase = enc.encode(service + length);
-  const alphabetLen = alphabet.length;
-  const maxValid = 256 - (256 % alphabetLen);
-  let pwd = '';
-  let counter = 0;
-
-  const cryptoKey = await crypto.subtle.importKey(
-    'raw', keyBytes, { name: 'HMAC', hash: 'SHA-256' },
-    false, ['sign']
-  );
-
-  while (pwd.length < length) {
-    const msgBytes = new Uint8Array(msgBase.length + 1);
-    msgBytes.set(msgBase);
-    msgBytes[msgBase.length] = counter;
-    const sig = await crypto.subtle.sign('HMAC', cryptoKey, msgBytes);
-    const digest = new Uint8Array(sig);
-    for (const byte of digest) {
-      if (byte < maxValid) {
-        pwd += alphabet[byte % alphabetLen];
-        if (pwd.length === length) break;
-      }
-    }
-    counter++;
+async function hmacGen(seed,svc,len,alpha){
+  const enc=new TextEncoder();
+  const keyBytes=enc.encode(seed);
+  const msgBase=enc.encode(svc+len);
+  const al=alpha.length, max=256-(256%al);
+  let pwd='', ct=0;
+  const k=await crypto.subtle.importKey('raw',keyBytes,{name:'HMAC',hash:'SHA-256'},false,['sign']);
+  while(pwd.length<len){
+    const m=new Uint8Array(msgBase.length+1);m.set(msgBase);m[msgBase.length]=ct++;
+    const s=await crypto.subtle.sign('HMAC',k,m);
+    for(const b of new Uint8Array(s))if(b<max){pwd+=alpha[b%al];if(pwd.length===len)break;}
   }
   return pwd;
 }
 
-// ── Strength ──
-function getStrength(pwd, numSets) {
-  const len = pwd.length;
-  if (len >= 14 && numSets >= 4) return 'Strong';
-  if (len >= 10 && numSets >= 3) return 'Medium';
-  return 'Weak';
-}
-
 // ── Copy ──
-function copyPassword() {
-  const pwd = document.getElementById('password').value;
-  if (!pwd) return;
-  navigator.clipboard.writeText(pwd).then(() => {
-    const msg = document.getElementById('copiedMsg');
-    msg.textContent = 'Copied!';
-    setTimeout(() => msg.textContent = '', 1500);
-  }).catch(() => {
-    // fallback
-    const inp = document.getElementById('password');
-    inp.select();
-    document.execCommand('copy');
-  });
-}
-
-// ── Settings (via Python bridge) ──
-async function loadSettings() {
-  try {
-    const svcJson = await pywebview.api.get_services();
-    savedServices = JSON.parse(svcJson);
-    updateServiceArrow();
-
-    const setJson = await pywebview.api.get_settings();
-    const sets = JSON.parse(setJson);
-    charsetState.capitals = sets.capitals;
-    charsetState.lowercase = sets.lower;
-    charsetState.digits = sets.digits;
-    charsetState.symbols = sets.symbols;
-    document.getElementById('length').value = sets.length;
-    renderCheckboxes();
-  } catch(e) {
-    // Fallback if not in PyWebView (e.g. direct browser open)
+async function cpy(){
+  const p=document.getElementById('pwd').value;
+  if(!p)return;
+  try{await navigator.clipboard.writeText(p);}catch{
+    document.getElementById('pwd').select();document.execCommand('copy');
   }
+  document.getElementById('msg').textContent='Copied!';
+  setTimeout(()=>document.getElementById('msg').textContent='',1500);
 }
 
-function saveServices() {
-  try { pywebview.api.save_service(document.getElementById('service').value.trim()); } catch(e) {}
+// ── Save ──
+function save(){
+  try{localStorage.setItem('passgen_state',JSON.stringify({
+    state,svcs,len:+document.getElementById('length').value
+  }));}catch(e){}
 }
 
-function updateServiceArrow() {
-  const arrow = document.getElementById('serviceArrow');
-  if (savedServices.length > 0) {
-    arrow.classList.add('visible');
-  } else {
-    arrow.classList.remove('visible');
-  }
-}
-
-// Override generate to use Python backend
-async function generate() {
-  const seed = document.getElementById('seed').value.trim();
-  const service = document.getElementById('service').value.trim();
-  const length = parseInt(document.getElementById('length').value) || 10;
-
-  clearErrors();
-  if (!seed) { setError('seed', 'Enter master seed'); return; }
-  if (!service) { setError('service', 'Enter service name'); return; }
-
-  const hasAny = Object.values(charsetState).some(v => v);
-  if (!hasAny) { setError('seed', 'Select at least one character type'); return; }
-
-  try {
-    const result = JSON.parse(await pywebview.api.generate(
-      seed, service, length,
-      charsetState.capitals, charsetState.lowercase,
-      charsetState.digits, charsetState.symbols
-    ));
-    if (result.ok) {
-      document.getElementById('password').value = result.password;
-      document.getElementById('strength').textContent = getStrength(result.password,
-        Object.values(charsetState).filter(v => v).length);
-      if (!savedServices.includes(service)) {
-        savedServices.push(service);
-        updateServiceArrow();
-        saveServices();
-      }
-    } else {
-      setError('seed', result.error);
-    }
-  } catch(e) {
-    setError('seed', 'Generation failed');
-  }
-}
-
-// Init
 init();
-loadSettings();
 </script>
 </body>
 </html>
