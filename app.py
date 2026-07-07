@@ -29,15 +29,16 @@ MONO_CANDIDATES = [
     "Courier",
 ]
 
-TEST_STRING = "СидСервисДлинаСимволыСкопироватьABCDabcd1234"
+TEST_STRING = "СидСервисДлинаСимволыCopyABCDabcd1234"
 
 
-def _font_supports(family, size, test):
-    """Проверить, существует ли шрифт и отображает ли он test."""
+def _font_exists(family, size):
+    """Проверить, установлен ли шрифт (не fallback-замена)."""
     try:
         f = font.Font(family=family, size=size)
-        w = f.measure(test)
-        return w > 1  # ширина > 1px значит символы есть
+        # actual("family") возвращает системное имя — если оно совпадает
+        # с запрошенным, значит шрифт реально установлен
+        return f.actual("family") == family
     except Exception:
         return False
 
@@ -46,13 +47,13 @@ def _pick_fonts():
     """Выбрать лучший доступный шрифт (основной и моноширинный)."""
     base = ("TkDefaultFont", 11)
     for family, size in FONT_CANDIDATES:
-        if _font_supports(family, size, TEST_STRING):
+        if _font_exists(family, size):
             base = (family, size)
             break
 
     mono = ("TkFixedFont", 12)
     for family in MONO_CANDIDATES:
-        if _font_supports(family, 12, TEST_STRING):
+        if _font_exists(family, 12):
             mono = (family, 12)
             break
 
@@ -103,16 +104,16 @@ class PassGenApp(tk.Tk):
         FONT_SMALL  = (self._base_font[0], 9)
 
         # Заголовок
-        self._make_title("passgen  |  Password Generator", FONT_TITLE)
+        self._make_title("passgen  -  Password Generator", FONT_TITLE)
 
         # Сид-фраза
-        self._make_label("Сид-фраза:", FONT_REG)
+        self._make_label("Master seed:", FONT_REG)
         self.seed_var = tk.StringVar()
         self.seed_entry = self._make_entry(self.seed_var, FONT_REG)
         self.seed_entry.pack(fill="x", padx=28, pady=(0, 10), ipady=4)
 
         # Сервис
-        self._make_label("Сервис:", FONT_REG)
+        self._make_label("Service:", FONT_REG)
         self.svc_var = tk.StringVar()
         self.svc_combo = ttk.Combobox(self, textvariable=self.svc_var,
                                        font=FONT_REG)
@@ -123,7 +124,7 @@ class PassGenApp(tk.Tk):
         # Длина
         frame_len = tk.Frame(self, bg=BG)
         frame_len.pack(fill="x", padx=28, pady=(0, 12))
-        tk.Label(frame_len, text="Длина:", font=FONT_REG,
+        tk.Label(frame_len, text="Length:", font=FONT_REG,
                  bg=BG, fg=FG).pack(side="left")
         self.len_var = tk.IntVar(value=10)
         self.len_spin = tk.Spinbox(frame_len, from_=1, to=99,
@@ -136,7 +137,7 @@ class PassGenApp(tk.Tk):
         # Чекбоксы
         frame_chk = tk.Frame(self, bg=BG)
         frame_chk.pack(fill="x", padx=28, pady=(0, 12))
-        tk.Label(frame_chk, text="Символы:", font=FONT_REG,
+        tk.Label(frame_chk, text="Charset:", font=FONT_REG,
                  bg=BG, fg=FG).grid(row=0, column=0, sticky="nw",
                                     padx=(0, 18), pady=(2, 0))
 
@@ -148,13 +149,13 @@ class PassGenApp(tk.Tk):
         chk_frame = tk.Frame(frame_chk, bg=BG)
         chk_frame.grid(row=0, column=1, sticky="w")
 
-        self._make_chk(chk_frame, "Заглавные",   self.cap_var, 0, 0, FONT_REG)
-        self._make_chk(chk_frame, "Строчные",     self.low_var, 0, 1, FONT_REG)
-        self._make_chk(chk_frame, "Цифры",        self.dig_var, 1, 0, FONT_REG)
-        self._make_chk(chk_frame, "Спецсимволы",  self.sym_var, 1, 1, FONT_REG)
+        self._make_chk(chk_frame, "Capitals",   self.cap_var, 0, 0, FONT_REG)
+        self._make_chk(chk_frame, "Lowercase",     self.low_var, 0, 1, FONT_REG)
+        self._make_chk(chk_frame, "Digits",        self.dig_var, 1, 0, FONT_REG)
+        self._make_chk(chk_frame, "Symbols",  self.sym_var, 1, 1, FONT_REG)
 
         # Кнопка генерации
-        self.gen_btn = self._make_btn("Сгенерировать", FONT_BOLD,
+        self.gen_btn = self._make_btn("Generate", FONT_BOLD,
                                       BTN_LILAC, self._generate)
         self.gen_btn.pack(fill="x", padx=28, pady=(4, 10), ipady=6)
 
@@ -174,7 +175,7 @@ class PassGenApp(tk.Tk):
         ).pack(anchor="w", padx=28, pady=(0, 6))
 
         # Кнопка копирования
-        self.copy_btn = self._make_btn("Скопировать", FONT_BOLD,
+        self.copy_btn = self._make_btn("Copy", FONT_BOLD,
                                        BTN_VIOLET, self._copy_password)
         self.copy_btn.pack(fill="x", padx=28, pady=(0, 24), ipady=6)
 
@@ -246,10 +247,10 @@ class PassGenApp(tk.Tk):
         seed = self.seed_var.get().strip()
 
         if not seed:
-            messagebox.showwarning("", "Введите сид-фразу")
+            messagebox.showwarning("", "Enter master seed")
             return
         if not service:
-            messagebox.showwarning("", "Введите название сервиса")
+            messagebox.showwarning("", "Enter service name")
             return
 
         try:
@@ -279,7 +280,7 @@ class PassGenApp(tk.Tk):
         self.clipboard_append(pwd)
 
         old = self.copy_btn["text"]
-        self.copy_btn.config(text="[ Скопировано ]")
+        self.copy_btn.config(text="[ Copied ]")
         self.after(1500, lambda: self.copy_btn.config(text=old))
 
     def _on_close(self):
