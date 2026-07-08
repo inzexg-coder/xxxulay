@@ -8,16 +8,17 @@
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   body{
-    background:#f0eef5;font-family:Segoe UI,Arial,sans-serif;
-    display:flex;flex-direction:column;align-items:center;padding:24px 16px
+    background:#eef0f5;font-family:system-ui,Segoe UI,Arial,sans-serif;
+    display:flex;flex-direction:column;align-items:center;padding:20px
   }
   h1{font-size:22px;color:#5b21b6;margin-bottom:2px}
-  .sub{font-size:13px;color:#888;margin-bottom:10px}
+  .sub{font-size:13px;color:#888;margin-bottom:14px}
   .wrap{
     background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.07);
-    padding:20px;width:100%;max-width:1000px;overflow-x:auto
+    padding:16px;width:100%;max-width:1100px;overflow-x:auto
   }
-  .note{max-width:1000px;margin-top:10px;font-size:10px;color:#999;text-align:center;line-height:1.5}
+  .mermaid{display:flex;justify-content:center}
+  .note{max-width:1100px;margin-top:10px;font-size:9.5px;color:#999;text-align:center;line-height:1.5}
 </style>
 </head>
 <body>
@@ -26,108 +27,80 @@
 <div class="sub">Блок-схема вызова функций при генерации пароля и логина</div>
 
 <div class="wrap">
-<div class="mermaid" style="display:flex;justify-content:center">
+<pre class="mermaid">
+%%{init: {'theme': 'base', 'themeVariables': {'fontFamily': 'system-ui,Segoe UI,Arial,sans-serif', 'primaryColor': '#e9ddf7', 'primaryBorderColor': '#9b59b6', 'lineColor': '#7b4da8', 'clusterBkg': '#faf9ff', 'clusterBorder': '#ddd', 'defaultLinkColor': '#7b4da8', 'titleColor': '#5b21b6'}}}%%
+
 flowchart TD
-  %% Styles
   classDef term fill:#d5c4e0,stroke:#9b59b6,stroke-width:2px,color:#111
-  classDef call fill:#e9ddf7,stroke:#9b59b6,stroke-width:2px,color:#111
-  classDef proc fill:#e9ddf7,stroke:#b39ddb,stroke-width:2px,color:#111
+  classDef func fill:#e9ddf7,stroke:#9b59b6,stroke-width:2px,color:#111
   classDef data fill:#d6eaf8,stroke:#2980b9,stroke-width:2px,color:#111
   classDef dec fill:#dcedc8,stroke:#8bc34a,stroke-width:2px,color:#111
   classDef loop fill:#f3e5f5,stroke:#ce93d8,stroke-width:2px,color:#111
   classDef out fill:#fff3e0,stroke:#ffb300,stroke-width:2px,color:#111
   classDef err fill:#ffcdd2,stroke:#e57373,stroke-width:2px,color:#b71c1c
-  classDef param fill:#f5f5f5,stroke:#bbb,stroke-width:1px,color:#555
 
-  subgraph gen["Генерация пароля"]
+  subgraph GEN[ГЕНЕРАЦИЯ ПАРОЛЯ]
     direction TB
-    G0(["Пуск / клик «Создать»"]):::term
-    G1[["gen()"]]:::call
-    G2[/"Чтение DOM: seed, svc, len, state, inv"/]:::data
+    G0(["Пуск / клик Создать"]):::term
+    G1[["gen()"]]:::func
+    G2[/"Чтение DOM seed svc len state inv"/]:::data
     G3{"seed пуст?"}:::dec
-    G3e("Розовая подсветка, «Введите сид», return"):::err
-    G4{"Типы символов выбраны?"}:::dec
-    G4e("Ошибка, «Выберите хотя бы один тип», return"):::err
-    G5[/"Формирование alpha из CHK по state[id]"/]:::data
-    G6[["hmacGen(seed, svc, len, alpha)"]]:::call
-    G6p1["seed = ключ HMAC<br>svc+len = сообщение"]:::param
-    G6p2["alpha = алфавит<br>max = 256-(256%len)"]:::param
+    G3e("Розовая подсветка return"):::err
+    G4{"Типы символов\nвыбраны?"}:::dec
+    G4e("Ошибка return"):::err
+    G5[/"Формирование alpha\nиз CHK по state[id]"/]:::data
+    G6[["hmacGen(seed svc len alpha)"]]:::func
 
-    %% Loop
-    G7{"pwd.length &lt; len?"}:::dec
-    G8["msg = svc + len + ct<br>importKey → sign(HMAC) → 32 байта"]:::loop
-    G9["for each byte:<br>byte &lt; max? → alpha[byte%len] → pwd"]:::loop
-    G10["ct++"]:::loop
+    G7{"pwd.length\n< len ?"}:::dec
+    G8["1. msg = svc + len + ct"]:::loop
+    G9["2. importKey + sign HMAC = 32 байта"]:::loop
+    G10["3. byte < max? alpha[byte%len]"]:::loop
+    G11["4. ct++"]:::loop
 
-    G11{"inv.cap? → toUpperCase()<br>inv.dig? → HMAC seed+'_lastdig' → цифра"}:::dec
-    G12[/"Вывод в #pwd<br>updateStrength(len, sets)<br>Копирование в буфер<br>saveCfg() → perSvc[curSvc]"/]:::out
-    G13(["Конец"]):::term
+    G12{"inv.cap? / inv.dig?"}:::dec
+    G13[/"Вывод в #pwd updateStrength\nкопирование saveCfg()"/]:::out
+    G14(["Конец"]):::term
 
     G0 --> G1 --> G2 --> G3
-    G3 -- "да" --> G3e
-    G3 -- "нет" --> G4
-    G4 -- "да" --> G5
-    G4 -- "нет" --> G4e
-    G5 --> G6
-    G6 --> G7
-    G7 -- "да" --> G8 --> G9 --> G10
-    G10 -- "цикл" --> G7
-    G7 -- "нет" --> G11 --> G12 --> G13
+    G3 -->|да| G3e
+    G3 -->|нет| G4
+    G4 -->|да| G5
+    G4 -->|нет| G4e
+    G5 --> G6 --> G7
+    G7 -->|да| G8 --> G9 --> G10 --> G11
+    G11 -->|цикл| G7
+    G7 -->|нет| G12 --> G13 --> G14
   end
 
-  subgraph login["Генерация логина"]
+  subgraph LOG[ГЕНЕРАЦИЯ ЛОГИНА]
     direction TB
-    L0(["Пуск / клик «Создать логин»"]):::term
-    L1[["genLogin()"]]:::call
-    L2[/"Очистка #login, чтение seed, svc"/]:::data
+    L0(["Пуск / клик Создать логин"]):::term
+    L1[["genLogin()"]]:::func
+    L2[/"Очистка #login чтение seed svc"/]:::data
     L3{"seed пуст?"}:::dec
-    L3e("Ошибка, «Введите сид», return"):::err
+    L3e("Ошибка return"):::err
     L4{"svc пуст?"}:::dec
     L4e("return"):::err
-    L5[/"loginCounter++ (0, 1, 2...)"/]:::data
-    L6[["SHA-256(seed + 'login' + svc + counter)"]]:::call
-    L6p["Вход: seed + 'login' + svc + counter"]:::param
-    L7[/"6 байт из хеша → alpha<br>abcdefghjkmnpqrstuvwxyz23456789"/]:::data
-    L7p["Из alpha исключены:<br>i, l, o, 0, 1 (чтоб не путать)"]:::param
+    L5[/"loginCounter++ (0 1 2...)"/]:::data
+    L6[["SHA-256(seed + login + svc + counter)"]]:::func
+    L7[/"6 байт из хеша alpha\nabcdefghjkmnpqrstuvwxyz23456789"/]:::data
     L8[/"Вывод login в #login"/]:::out
     L9(["Конец"]):::term
 
     L0 --> L1 --> L2 --> L3
-    L3 -- "да" --> L3e
-    L3 -- "нет" --> L4
-    L4 -- "да" --> L4e
-    L4 -- "нет" --> L5 --> L6 --> L7 --> L8 --> L9
+    L3 -->|да| L3e
+    L3 -->|нет| L4
+    L4 -->|да| L4e
+    L4 -->|нет| L5 --> L6 --> L7 --> L8 --> L9
   end
-</div>
+</pre>
 </div>
 
 <div class="note">
-<strong>HMAC-SHA256:</strong> сид = ключ HMAC. Сообщение = svc + len + счётчик ct. Rejection Sampling: max = 256-(256%len), байты &ge; max отбрасываются (гарантия равномерного распределения символов). &nbsp;|&nbsp; <strong>SHA-256 (логин):</strong> обычный хеш (не HMAC). loginCounter при каждом клике даёт новый уникальный логин.
+<strong>HMAC-SHA256:</strong> сид = ключ. Сообщение = svc + len + счётчик ct. Rejection Sampling: max = 256-(256%len), байты &ge; max отбрасываются. &nbsp;|&nbsp; <strong>SHA-256 (логин):</strong> обычный хеш (не HMAC). loginCounter при каждом клике даёт уникальный логин.
 </div>
 
-<script>
-  mermaid.initialize({
-    startOnLoad: true,
-    theme: 'base',
-    themeVariables: {
-      fontFamily: 'Segoe UI, Arial, sans-serif',
-      fontSize: '14px',
-      primaryColor: '#e9ddf7',
-      primaryBorderColor: '#9b59b6',
-      lineColor: '#7b4da8',
-      secondaryColor: '#fff',
-      tertiaryColor: '#f5f5f5',
-      mainBkg: '#fff',
-      nodeBorder: '#aaa',
-      clusterBkg: '#faf9ff',
-      clusterBorder: '#ddd',
-      defaultLinkColor: '#7b4da8',
-      titleColor: '#5b21b6',
-      edgeLabelBackground: '#fff',
-      nodeTextColor: '#111',
-    }
-  });
-</script>
+<script>mermaid.initialize({startOnLoad:true})</script>
 
 </body>
 </html>
