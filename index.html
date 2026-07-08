@@ -348,11 +348,14 @@ function importData(e){
   reader.onload=()=>{
     try{
       const d=JSON.parse(reader.result);
+      if(!d.perSvc && !d.svcs){alert('Файл не содержит данных passgen');return;}
       if(d.perSvc){perSvc=d.perSvc;}
       if(d.svcs){svcs=d.svcs;renderSvcChips();}
       if(perSvc[curSvc]) applyCfg(perSvc[curSvc]);
       saveState();
-    }catch(err){alert('Ошибка импорта');}
+      document.getElementById('msg').textContent='Импорт завершён!';
+      setTimeout(()=>document.getElementById('msg').textContent='',3000);
+    }catch(err){alert('Ошибка импорта: неверный формат файла');}
   };
   reader.readAsText(file);
   e.target.value='';
