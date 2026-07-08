@@ -298,8 +298,7 @@ function applyCfg(cfg){
   renderChk(); renderInv();
 }
 function saveCfg(){
-  const svc=document.getElementById('service').value.trim()||'(empty)';
-  perSvc[svc] = {
+  perSvc[curSvc] = {
     state: {...window.state},
     inv: {...window.inv},
     len: +document.getElementById('length').value
@@ -317,6 +316,10 @@ function init(){
   });
   document.getElementById('seed').addEventListener('keydown',e=>{if(e.key==='Enter')gen()});
   document.getElementById('service').addEventListener('keydown',e=>{if(e.key==='Enter')gen()});
+  document.getElementById('service').addEventListener('blur',()=>{
+    const svc=document.getElementById('service').value.trim()||'(empty)';
+    if(svc!==curSvc){curSvc=svc; if(perSvc[svc]) applyCfg(perSvc[svc]);}
+  });
   if(perSvc[curSvc]) applyCfg(perSvc[curSvc]);
   else {
     curSvc='(empty)'; document.getElementById('service').value='';
@@ -345,6 +348,9 @@ function onSvcChange(){
   if(perSvc[svc]) applyCfg(perSvc[svc]);
 }
 function saveState(){
+  // Keep only entries matching saved services
+  const valid = [...svcs, '(empty)'];
+  Object.keys(perSvc).forEach(k => { if(!valid.includes(k)) delete perSvc[k]; });
   try{localStorage.setItem('passgen_state',JSON.stringify({
     perSvc, svcs, curSvc
   },null,2))}catch(e){}
@@ -367,7 +373,10 @@ function applyPreset(){
   renderChk(); saveCfg();
 }
 function exportData(){
-  const data={svcs,perSvc};
+  // Only export settings for saved services
+  const clean = {};
+  [...svcs, '(empty)'].forEach(k => { if(perSvc[k]) clean[k] = perSvc[k]; });
+  const data = { svcs, perSvc: clean };
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='passgen_export.json';a.click();
 }
