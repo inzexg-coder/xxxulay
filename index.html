@@ -261,60 +261,79 @@ const POPULAR = [
   {n:'telegram',l:'T', c:'#0088cc'},
 ];
 
-let state = {capitals:1,lowercase:1,digits:0,symbols:1};
-let inv = {cap:0,dig:0};
+let perSvc = {};
+let curSvc = '(empty)';
 let svcs = [];
 
+function getCfg(svc){
+  if(!perSvc[svc]) perSvc[svc]={state:{capitals:1,lowercase:1,digits:0,symbols:1},inv:{cap:0,dig:0},len:10};
+  return perSvc[svc];
+}
+function applyCfg(cfg){
+  window.state=cfg.state; window.inv=cfg.inv;
+  document.getElementById('length').value=cfg.len;
+  renderChk(); renderInv();
+}
+function saveCfg(){
+  const svc=document.getElementById('service').value.trim()||'(empty)';
+  const cfg=getCfg(svc); cfg.state=window.state; cfg.inv=window.inv;
+  cfg.len=+document.getElementById('length').value;
+  saveState();
+}
+
 function init(){
-  renderChk();
-  renderInv();
   loadState();
+  document.getElementById('seed').classList.remove('error');
+  document.getElementById('seedErr').textContent='';
   document.getElementById('seed').addEventListener('input',()=>{
     document.getElementById('seed').classList.remove('error');
     document.getElementById('seedErr').textContent='';
   });
   document.getElementById('seed').addEventListener('keydown',e=>{if(e.key==='Enter')gen()});
   document.getElementById('service').addEventListener('keydown',e=>{if(e.key==='Enter')gen()});
-
+  document.getElementById('service').addEventListener('input',onSvcChange);
+  const cfg=getCfg(curSvc); applyCfg(cfg);
+  renderSvcChips();
 }
 
 function loadState(){
   const saved = localStorage.getItem('passgen_state');
   if(saved) try {
     const d = JSON.parse(saved);
-    state = d.state || state;
-    inv = d.inv || {cap:0,dig:0};
-    svcs = d.svcs || [];
-    document.getElementById('length').value = d.len || 10;
-    renderChk();
-    renderInv();
-    
-    renderSvcChips();
+    if(d.perSvc) perSvc = d.perSvc;
+    if(d.svcs) svcs = d.svcs;
   }catch(e){}
+}
+function onSvcChange(){
+  const svc=document.getElementById('service').value.trim()||'(empty)';
+  curSvc=svc;
+  const cfg=getCfg(svc); applyCfg(cfg);
 }
 function saveState(){
   try{localStorage.setItem('passgen_state',JSON.stringify({
-    state, svcs, inv, len: +document.getElementById('length').value
+    perSvc, svcs
   }))}catch(e){}
 }
 
 function toggleInv(id){
-  inv[id]=+!inv[id];
-  document.getElementById('inv'+id.charAt(0).toUpperCase()+id.slice(1)).className='chk-circle'+(inv[id]?' on':'');
+  window.inv[id]=+!window.inv[id];
+  document.getElementById('inv'+id.charAt(0).toUpperCase()+id.slice(1)).className='chk-circle'+(window.inv[id]?' on':'');
+  saveCfg();
 }
 
 function applyPreset(){
   const v=document.getElementById('preset').value;
   if(v==='custom')return;
   switch(v){
-    case'min':state={capitals:1,lowercase:1,digits:1,symbols:0};document.getElementById('length').value=8;break;
-    case'std':state={capitals:1,lowercase:1,digits:1,symbols:0};document.getElementById('length').value=10;break;
-    case'max':state={capitals:1,lowercase:1,digits:1,symbols:1};document.getElementById('length').value=16;break;
+    case'min':window.state={capitals:1,lowercase:1,digits:1,symbols:0};document.getElementById('length').value=8;break;
+    case'std':window.state={capitals:1,lowercase:1,digits:1,symbols:0};document.getElementById('length').value=10;break;
+    case'max':window.state={capitals:1,lowercase:1,digits:1,symbols:1};document.getElementById('length').value=16;break;
   }
-  renderChk();
+  renderChk(); saveCfg();
 }
 function exportData(){
-  const data={svcs,state,inv,len:+document.getElementById('length').value};
+  cfg=getCfg(document.getElementById('service').value.trim()||'(empty)');
+  const data={svcs,perSvc};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='passgen_export.json';a.click();
 }
@@ -324,10 +343,9 @@ function importData(e){
   reader.onload=()=>{
     try{
       const d=JSON.parse(reader.result);
+      if(d.perSvc){perSvc=d.perSvc;}
       if(d.svcs){svcs=d.svcs;renderSvcChips();}
-      if(d.state){state=d.state;renderChk();}
-      if(d.inv){inv=d.inv;renderInv();}
-      if(d.len){document.getElementById('length').value=d.len;}
+      const cfg=getCfg(curSvc); applyCfg(cfg);
       saveState();
     }catch(err){alert('Ошибка импорта');}
   };
@@ -346,22 +364,22 @@ function toggleAdvanced(){
   }
 }
 function renderInv(){
-  document.getElementById('invCap').className='chk-circle'+(inv.cap?' on':'');
-  document.getElementById('invDig').className='chk-circle'+(inv.dig?' on':'');
+  document.getElementById('invCap').className='chk-circle'+(window.inv.cap?' on':'');
+  document.getElementById('invDig').className='chk-circle'+(window.inv.dig?' on':'');
 }
 function renderChk(){
   const g=document.getElementById('chkGrid');g.innerHTML='';
   for(const[id,lbl]of CHK){
     const d=document.createElement('div');d.className='chk-item';
-    d.onclick=()=>{state[id]=+!state[id];renderChk();saveState();};
+    d.onclick=()=>{window.state[id]=+!window.state[id];renderChk();saveCfg();};
     const c=document.createElement('span');
-    c.className='chk-circle'+(state[id]?' on':'');
+    c.className='chk-circle'+(window.state[id]?' on':'');
     const t=document.createElement('span');t.textContent=lbl;
     d.appendChild(c);d.appendChild(t);g.appendChild(d);
   }
 }
 
-function adj(d){const i=document.getElementById('length');let v=+i.value+d;i.value=v<1?1:v>99?99:v;}
+function adj(d){const i=document.getElementById('length');let v=+i.value+d;i.value=v<1?1:v>99?99:v;saveCfg();}
 
 function toggleSvcPanel(){
   const p=document.getElementById('svcPanel');
@@ -403,6 +421,8 @@ function chip(item, hasLogo, deletable){
     document.getElementById('service').value=name;
     document.getElementById('svcPanel').classList.remove('open');
     document.getElementById('svcToggle').classList.remove('open');
+    curSvc=name;
+    const cfg=getCfg(name); applyCfg(cfg);
   };
   if(deletable){
     d.oncontextmenu=(e)=>{
@@ -448,7 +468,7 @@ async function gen(){
   if(!svcs.includes(svc)&&svc!=='(empty)'){
     svcs.push(svc);svcs.sort();renderSvcChips();
   }
-  saveState();
+  saveCfg();
 }
 
 async function hmacGen(seed,svc,len,alpha){
@@ -467,9 +487,15 @@ async function hmacGen(seed,svc,len,alpha){
 }
 
 function genLogin(){
+  document.getElementById('login').value='';
   const seed=document.getElementById('seed').value.trim();
   const svc=document.getElementById('service').value.trim()||'(empty)';
-  if(!seed||!svc)return;
+  if(!seed){
+    document.getElementById('seed').classList.add('error');
+    document.getElementById('seedErr').textContent='Введите сид';
+    return;
+  }
+  if(!svc)return;
   const enc=new TextEncoder().encode(seed+'login'+svc);
   crypto.subtle.digest('SHA-256',enc).then(buf=>{
     const alpha='abcdefghjkmnpqrstuvwxyz23456789';
