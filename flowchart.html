@@ -2,285 +2,97 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>passgen — Блок-схема</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>passgen — Blok-shema</title>
+<script src="mermaid.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{
-  background:#f0eef5;font-family:'Segoe UI',Arial,sans-serif;
-  padding:20px;display:flex;flex-direction:column;align-items:center
-}
+body{background:#f0eef5;font-family:Segoe UI,Arial,sans-serif;padding:24px;display:flex;flex-direction:column;align-items:center}
 h1{font-size:22px;color:#5b21b6;margin-bottom:2px}
 .sub{font-size:13px;color:#888;margin-bottom:14px}
-
-.leg{
-  display:flex;flex-wrap:wrap;gap:8px;justify-content:center;
-  background:#fff;border-radius:8px;padding:7px 14px;margin-bottom:14px;
-  box-shadow:0 1px 4px rgba(0,0,0,.05);font-size:11px
-}
-.leg-item{display:flex;align-items:center;gap:4px;color:#444}
-
-.wrap{
-  display:flex;gap:0;background:#fff;border-radius:10px;
-  box-shadow:0 2px 10px rgba(0,0,0,.06);overflow:hidden;width:100%;max-width:900px
-}
-.half{flex:1;padding:16px 12px 12px;display:flex;flex-direction:column;align-items:center}
-.half+.half{border-left:2px dashed #e0dce8}
-
-.h2{
-  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;
-  color:#7c3aed;margin-bottom:10px;text-align:center
-}
-
-/* Flow blocks */
-.flow{display:flex;flex-direction:column;align-items:center;width:100%}
-.row{display:flex;align-items:center;justify-content:center;gap:8px;width:100%}
-
-/* Arrow down */
-.ad{display:flex;flex-direction:column;align-items:center;line-height:0}
-.ad .l{width:2px;height:12px;background:#7b4da8}
-.ad .h{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid #7b4da8}
-
-/* Arrow right */
-.ar{display:inline-flex;align-items:center;gap:0;flex-shrink:0}
-.ar .l{width:12px;height:2px;background:#7b4da8}
-.ar .h{width:0;height:0;border-top:4px solid transparent;border-bottom:4px solid transparent;border-left:5px solid #7b4da8}
-
-/* Shapes */
-.term{
-  background:#d5c4e0;border:2px solid #9b59b6;
-  border-radius:50px;padding:4px 22px;text-align:center;font-size:12px;font-weight:700;color:#111;line-height:1.3
-}
-.term small{font-size:10px;font-weight:400;color:#444;display:block}
-
-.proc{
-  background:#e9ddf7;border:2px solid #9b59b6;
-  border-radius:5px;padding:5px 14px;text-align:center;font-size:11px;font-weight:700;color:#111;line-height:1.3
-}
-.proc small{font-size:9px;font-weight:400;color:#444;display:block}
-
-.call{
-  background:#e9ddf7;border:2px solid #9b59b6;border-left:5px solid #9b59b6;border-right:5px solid #9b59b6;
-  border-radius:5px;padding:5px 14px;text-align:center;font-size:11px;font-weight:700;color:#111;line-height:1.3
-}
-.call small{font-size:9px;font-weight:400;color:#444;display:block}
-
-.data{
-  background:#d6eaf8;border:2px solid #2980b9;
-  border-radius:5px;padding:5px 14px;text-align:center;font-size:11px;font-weight:700;color:#111;line-height:1.3
-}
-.data small{font-size:9px;font-weight:400;color:#444;display:block}
-
-.diamond{
-  width:70px;height:70px;display:flex;align-items:center;justify-content:center;
-  background:#dcedc8;border:2px solid #8bc34a;transform:rotate(45deg);flex-shrink:0
-}
-.diamond-inner{transform:rotate(-45deg);text-align:center;font-size:11px;font-weight:700;color:#111;line-height:1.2}
-.diamond-inner small{font-size:8px;font-weight:400;display:block}
-
-.loop{
-  background:#f3e5f5;border:2px solid #ce93d8;
-  border-radius:5px;padding:4px 10px;text-align:center;font-size:10px;color:#111;line-height:1.25;width:100%
-}
-.loop .t{font-weight:700;font-size:10px;display:block}
-.loop .s{font-size:8.5px;color:#555;display:block}
-
-.out{
-  background:#fff3e0;border:2px solid #ffb300;
-  border-radius:5px;padding:5px 14px;text-align:center;font-size:11px;font-weight:700;color:#111;line-height:1.3
-}
-.out small{font-size:9px;font-weight:400;color:#444;display:block}
-
-.err{
-  background:#ffcdd2;border:2px solid #e57373;
-  border-radius:5px;padding:3px 8px;text-align:center;font-size:10px;font-weight:700;color:#b71c1c;line-height:1.2
-}
-
-.param{
-  background:#f5f5f5;border:1.5px solid #ccc;
-  border-radius:4px;padding:3px 7px;text-align:center;font-size:8.5px;color:#555;line-height:1.25
-}
-
-.pg{display:flex;flex-direction:column;gap:3px;flex-shrink:0}
-
-/* Labels on arrows */
-.al{font-size:8px;font-weight:600;color:#7b4da8;line-height:0;margin:1px 0}
-
-/* Loop back arrow - positioned with margin */
-.loop-back{display:flex;align-items:center;gap:0;margin:2px 0 2px 40px;align-self:flex-end}
-.loop-back .l{width:18px;height:2px;background:#7b4da8}
-.loop-back .h{width:0;height:0;border-top:4px solid transparent;border-bottom:4px solid transparent;border-left:5px solid #7b4da8}
-
-/* Right side needs room */
-.spacer{height:6px}
+.wrap{background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.07);padding:16px;width:100%;max-width:1100px;overflow-x:auto}
+.mermaid{display:flex;justify-content:center}
+.note{max-width:1100px;margin-top:10px;font-size:9.5px;color:#999;text-align:center;line-height:1.5}
 </style>
 </head>
 <body>
 
 <h1>passgen</h1>
-<div class="sub">Блок-схема вызова функций при генерации пароля и логина</div>
-
-<div class="leg">
-  <span class="leg-item"><span style="width:14px;height:8px;border-radius:10px;background:#d5c4e0;border:1.5px solid #9b59b6;display:inline-block"></span>Терминатор</span>
-  <span class="leg-item"><span style="width:14px;height:8px;border-radius:2px;background:#e9ddf7;border:1.5px solid #9b59b6;display:inline-block"></span>Процесс</span>
-  <span class="leg-item"><span style="width:12px;height:12px;border-radius:2px;background:#dcedc8;border:1.5px solid #8bc34a;display:inline-block;transform:rotate(45deg)"></span>Решение</span>
-  <span class="leg-item"><span style="width:14px;height:8px;border-radius:2px;background:#d6eaf8;border:1.5px solid #2980b9;display:inline-block"></span>Данные</span>
-  <span class="leg-item"><span style="width:14px;height:8px;border-radius:2px;background:#f3e5f5;border:1.5px solid #ce93d8;display:inline-block"></span>Цикл</span>
-  <span class="leg-item"><span style="width:14px;height:8px;border-radius:2px;background:#fff3e0;border:1.5px solid #ffb300;display:inline-block"></span>Вывод</span>
-  <span class="leg-item"><span style="width:14px;height:8px;border-radius:2px;background:#ffcdd2;border:1.5px solid #e57373;display:inline-block"></span>Ошибка</span>
-  <span class="leg-item"><span style="width:14px;height:8px;border-radius:2px;background:#f5f5f5;border:1.5px solid #ccc;display:inline-block"></span>Параметр</span>
-</div>
+<div class="sub">Blok-shema vyzova funkcij pri generacii parolja i logina</div>
 
 <div class="wrap">
+<pre class="mermaid">
+%%{init: {'theme': 'base', 'themeVariables': {'fontFamily': 'Arial', 'primaryColor': '#e9ddf7', 'primaryBorderColor': '#9b59b6', 'lineColor': '#7b4da8', 'clusterBkg': '#faf9ff', 'clusterBorder': '#ddd', 'defaultLinkColor': '#7b4da8', 'titleColor': '#5b21b6', 'fontSize': '14px'}}}%%
 
-<!-- ========== LEFT: gen() ========== -->
-<div class="half">
-  <div class="h2">Генерация пароля</div>
-  <div class="flow">
+flowchart TD
+  classDef term fill:#d5c4e0,stroke:#9b59b6
+  classDef func fill:#e9ddf7,stroke:#9b59b6
+  classDef data fill:#d6eaf8,stroke:#2980b9
+  classDef dec fill:#dcedc8,stroke:#8bc34a
+  classDef loop fill:#f3e5f5,stroke:#ce93d8
+  classDef out fill:#fff3e0,stroke:#ffb300
+  classDef err fill:#ffcdd2,stroke:#e57373
 
-    <div class="term">Пуск<small>клик Создать</small></div>
-    <div class="ad"><div class="l"></div><div class="h"></div></div>
+  subgraph GEN[GENERACIJA PAROLJA]
+    direction TB
+    G0(["Pusk"]):::term
+    G1[["gen()"]]:::func
+    G2[/"seed svc len state inv"/]:::data
+    G3{"seed?"}:::dec
+    G3e("oshibka"):::err
+    G4{"chars?"}:::dec
+    G4e("oshibka"):::err
+    G5[/"alpha"/]:::data
+    G6[["hmacGen"]]:::func
+    G7{"pwd < len ?"}:::dec
+    G8["msg=svc+len+ct"]:::loop
+    G9["HMAC 32 byte"]:::loop
+    G10["byte<max"]:::loop
+    G11["ct++"]:::loop
+    G12{"inv?"}:::dec
+    G13[/"pwd"/]:::out
+    G14(["Konec"]):::term
 
-    <div class="call">gen()</div>
-    <div class="ad"><div class="l"></div><div class="h"></div></div>
+    G0 --> G1 --> G2 --> G3
+    G3 -->|da| G3e
+    G3 -->|net| G4
+    G4 -->|da| G5
+    G4 -->|net| G4e
+    G5 --> G6 --> G7
+    G7 -->|da| G8 --> G9 --> G10 --> G11
+    G11 -->|cikl| G7
+    G7 -->|net| G12 --> G13 --> G14
+  end
 
-    <div class="data">Чтение DOM<small>seed svc len state inv</small></div>
-    <div class="ad"><div class="l"></div><div class="h"></div></div>
+  subgraph LOG[GENERACIJA LOGINA]
+    direction TB
+    L0(["Pusk"]):::term
+    L1[["genLogin()"]]:::func
+    L2[/"seed svc"/]:::data
+    L3{"seed?"}:::dec
+    L3e("oshibka"):::err
+    L4{"svc?"}:::dec
+    L4e("vyhod"):::err
+    L5[/"loginCounter++"/]:::data
+    L6[["SHA-256"]]:::func
+    L7[/"6 byte->alpha"/]:::data
+    L8[/"login"/]:::out
+    L9(["Konec"]):::term
 
-    <div class="row">
-      <div style="display:flex;flex-direction:column;align-items:center">
-        <div class="diamond"><div class="diamond-inner">seed<small>пуст?</small></div></div>
-      </div>
-      <div class="ar"><div class="l"></div><div class="h"></div></div>
-      <div class="err">Розовая подсветка<br>return</div>
-    </div>
-    <div class="ad"><div class="l"></div><div class="h"></div></div>
-
-    <div class="row">
-      <div style="display:flex;flex-direction:column;align-items:center">
-        <div class="diamond"><div class="diamond-inner">Типы символов<small>выбраны?</small></div></div>
-      </div>
-      <div class="ar"><div class="l"></div><div class="h"></div></div>
-      <div class="err">Ошибка<br>return</div>
-    </div>
-    <div class="ad"><div class="l"></div><div class="h"></div></div>
-
-    <div class="data">Формирование alpha<small>из CHK по state[id]</small></div>
-    <div class="ad"><div class="l"></div><div class="h"></div></div>
-
-    <div class="row">
-      <div class="call">hmacGen(<small>seed svc len alpha</small>)</div>
-      <div class="pg">
-        <div class="param">seed = ключ HMAC<br>svc+len = сообщение</div>
-        <div class="param">alpha = алфавит<br>max = 256-(256%len)</div>
-      </div>
-    </div>
-    <div class="ad"><div class="l"></div><div class="h"></div></div>
-
-    <!-- LOOP -->
-    <div class="row">
-      <div style="display:flex;flex-direction:column;align-items:center">
-        <div class="diamond" style="width:80px;height:80px"><div class="diamond-inner">pwd.length<small>&lt; len?</small></div></div>
-      </div>
-    </div>
-    <div class="al">да</div>
-    <div class="ad"><div class="l"></div><div class="h"></div></div>
-
-    <div class="loop" style="max-width:180px"><span class="t">1. msg = svc + len + ct</span></div>
-    <div class="ad"><div class="l"></div><div class="h"></div></div>
-
-    <div class="loop" style="max-width:180px"><span class="t">2. importKey + sign</span><span class="s">32 байта</span></div>
-    <div class="ad"><div class="l"></div><div class="h"></div></div>
-
-    <div class="loop" style="max-width:180px"><span class="t">3. byte &lt; max</span><span class="s">alpha[byte%len]</span></div>
-    <div class="ad"><div class="l"></div><div class="h"></div></div>
-
-    <div class="loop" style="max-width:180px"><span class="t">4. ct++</span></div>
-
-    <div class="loop-back"><span class="l"></span><span class="h"></span><span style="font-size:8px;color:#7b4da8;font-weight:600;margin-left:3px">цикл</span></div>
-
-    <div style="font-size:8px;color:#e53935;font-weight:600;align-self:flex-start;margin-left:10px">нет</div>
-    <div class="ad"><div class="l"></div><div class="h"></div></div>
-
-    <div class="row">
-      <div style="display:flex;flex-direction:column;align-items:center">
-        <div class="diamond" style="width:80px;height:80px"><div class="diamond-inner">inv.cap?<small>toUpperCase</small>inv.dig?<small>HMAC цифра</small></div></div>
-      </div>
-    </div>
-    <div class="ad"><div class="l"></div><div class="h"></div></div>
-
-    <div class="out">Вывод в #pwd<small>updateStrength() копирование saveCfg()</small></div>
-    <div class="ad"><div class="l"></div><div class="h"></div></div>
-
-    <div class="term">Конец</div>
-
-  </div>
+    L0 --> L1 --> L2 --> L3
+    L3 -->|da| L3e
+    L3 -->|net| L4
+    L4 -->|da| L4e
+    L4 -->|net| L5 --> L6 --> L7 --> L8 --> L9
+  end
+</pre>
 </div>
 
-<!-- ========== RIGHT: genLogin() ========== -->
-<div class="half">
-  <div class="h2">Генерация логина</div>
-  <div class="flow">
-
-    <div class="term">Пуск<small>клик Создать логин</small></div>
-    <div class="ad"><div class="l"></div><div class="h"></div></div>
-
-    <div class="call">genLogin()</div>
-    <div class="ad"><div class="l"></div><div class="h"></div></div>
-
-    <div class="data">Очистка #login<small>чтение seed svc</small></div>
-    <div class="ad"><div class="l"></div><div class="h"></div></div>
-
-    <div class="row">
-      <div style="display:flex;flex-direction:column;align-items:center">
-        <div class="diamond"><div class="diamond-inner">seed<small>пуст?</small></div></div>
-      </div>
-      <div class="ar"><div class="l"></div><div class="h"></div></div>
-      <div class="err">Ошибка<br>return</div>
-    </div>
-    <div class="ad"><div class="l"></div><div class="h"></div></div>
-
-    <div class="row">
-      <div style="display:flex;flex-direction:column;align-items:center">
-        <div class="diamond"><div class="diamond-inner">svc<small>пуст?</small></div></div>
-      </div>
-      <div class="ar"><div class="l"></div><div class="h"></div></div>
-      <div class="err">return</div>
-    </div>
-    <div class="ad"><div class="l"></div><div class="h"></div></div>
-
-    <div class="data">loginCounter++<small>(0 1 2...)</small></div>
-    <div class="ad"><div class="l"></div><div class="h"></div></div>
-
-    <div class="row">
-      <div class="call">SHA-256(<small>seed + login + svc + counter</small>)</div>
-      <div class="pg">
-        <div class="param">вход:<br>seed+login+svc+counter</div>
-      </div>
-    </div>
-    <div class="ad"><div class="l"></div><div class="h"></div></div>
-
-    <div class="row">
-      <div class="data">6 байт из хеша alpha</div>
-      <div class="pg">
-        <div class="param">исключены:<br>i l o 0 1</div>
-      </div>
-    </div>
-    <div style="font-size:7.5px;color:#888;text-align:center;margin:1px 0">abcdefghjkmnpqrstuvwxyz23456789</div>
-    <div class="ad"><div class="l"></div><div class="h"></div></div>
-
-    <div class="out">Вывод login в #login</div>
-    <div class="ad"><div class="l"></div><div class="h"></div></div>
-
-    <div class="term">Конец</div>
-
-  </div>
+<div class="note">
+<strong>HMAC-SHA256:</strong> sid = kljuch. Soobshenie = svc + len + schjotchik. Rejection Sampling: max = 256-(256%len). | <strong>SHA-256 (login):</strong> obychnyj hash (ne HMAC). loginCounter unikalen.
 </div>
 
-</div>
-
-<div style="max-width:900px;margin-top:10px;font-size:9.5px;color:#999;text-align:center;line-height:1.5">
-<b>HMAC-SHA256:</b> сид = ключ. Сообщение = svc + len + счётчик ct. Rejection Sampling: max = 256-(256%len), байты &ge; max отбрасываются. | <b>SHA-256 (логин):</b> обычный хеш (не HMAC). loginCounter при каждом клике даёт уникальный логин.
-</div>
+<script>mermaid.initialize({startOnLoad:true})</script>
 
 </body>
 </html>
