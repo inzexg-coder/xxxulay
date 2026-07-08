@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import http.server
 import socketserver
 import webbrowser
@@ -8,7 +6,6 @@ import shutil
 import threading
 import os
 import sys
-import signal
 
 PORT = 8765
 DIR = os.path.dirname(os.path.abspath(__file__))
@@ -28,9 +25,12 @@ def open_app_mode(url):
         ("chromium-browser",    ["--app=" + url, "--window-size=420,620", "--no-first-run"]),
         ("chromium",            ["--app=" + url, "--window-size=420,620", "--no-first-run"]),
         ("brave-browser",       ["--app=" + url, "--window-size=420,620"]),
+        ("brave",               ["--app=" + url, "--window-size=420,620"]),
         ("vivaldi",             ["--app=" + url, "--window-size=420,620"]),
-        ("firefox",             ["--new-window", url]),
+        ("chrome",              ["--app=" + url, "--window-size=420,620", "--no-first-run"]),
+        ("msedge",              ["--app=" + url, "--window-size=420,620"]),
         ("microsoft-edge",      ["--app=" + url, "--window-size=420,620"]),
+        ("firefox",             ["--new-window", url]),
     ]
     for name, args in browsers:
         path = shutil.which(name)
@@ -63,7 +63,7 @@ if __name__ == "__main__":
     print("Press Ctrl+C to stop")
 
     try:
-        signal.pause()
+        threading.Event().wait()
     except KeyboardInterrupt:
         httpd.shutdown()
         print("\nBye!")
