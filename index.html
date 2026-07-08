@@ -305,6 +305,9 @@ function loadState(){
     const d = JSON.parse(saved);
     if(d.perSvc) perSvc = d.perSvc;
     if(d.svcs) svcs = d.svcs;
+    // Clean up entries not matching any saved service
+    const valid = [...svcs, '(empty)'];
+    Object.keys(perSvc).forEach(k => { if(!valid.includes(k)) delete perSvc[k]; });
   }catch(e){}
 }
 function onSvcChange(){
