@@ -14,235 +14,244 @@
   .sub{font-size:13px;color:#888;margin-bottom:12px}
   .wrap{background:#fff;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.07);padding:8px;overflow-x:auto}
   svg{display:block;max-width:100%;height:auto}
-  .note{max-width:880px;margin-top:10px;font-size:9.5px;color:#999;text-align:center;line-height:1.5}
+  .note{max-width:900px;margin-top:10px;font-size:9.5px;color:#999;text-align:center;line-height:1.5}
 </style>
 </head>
 <body>
 <h1>passgen</h1>
 <div class="sub">Блок-схема вызова функций при генерации пароля и логина</div>
 <div class="wrap">
-<svg width="900" height="720" viewBox="0 0 900 720" xmlns="http://www.w3.org/2000/svg">
+<svg width="900" height="850" viewBox="0 0 900 850" xmlns="http://www.w3.org/2000/svg">
 <defs>
   <style>
-    text{font-family:Arial,Helvetica,sans-serif;font-size:11px;fill:#1a1a2e}
-    .t{font-weight:700;font-size:12px;text-anchor:middle}
-    .s{font-size:9.5px;text-anchor:middle;fill:#444}
-    .p{font-size:8.5px;text-anchor:middle;fill:#555}
-    .e{font-size:9.5px;font-weight:700;text-anchor:middle;fill:#b71c1c}
+    text{font-family:Arial,Helvetica,sans-serif;font-size:10px;fill:#1a1a2e}
+    .t{font-weight:700;font-size:11px;text-anchor:middle}
+    .s{font-size:9px;text-anchor:middle;fill:#444}
+    .p{font-size:8px;text-anchor:middle;fill:#555}
+    .e{font-size:9px;font-weight:700;text-anchor:middle;fill:#b71c1c}
     .l{font-size:9px;font-weight:600;text-anchor:middle;fill:#7b4da8}
-    .h{font-size:13px;font-weight:700;text-anchor:middle;fill:#5b21b6}
+    .h{font-size:12px;font-weight:700;text-anchor:middle;fill:#5b21b6}
   </style>
   <marker id="a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
     <path d="M0,0 L8,4 L0,8 Z" fill="#7b4da8"/>
   </marker>
 </defs>
 
-<rect width="900" height="720" fill="#faf9ff"/>
-<line x1="449" y1="10" x2="449" y2="700" stroke="#d5d0e0" stroke-width="1" stroke-dasharray="4,4"/>
+<rect width="900" height="850" fill="#faf9ff"/>
+<line x1="450" y1="10" x2="450" y2="810" stroke="#d5d0e0" stroke-width="1" stroke-dasharray="4,4"/>
 
 <text x="225" y="22" class="h">ГЕНЕРАЦИЯ ПАРОЛЯ</text>
 <text x="675" y="22" class="h">ГЕНЕРАЦИЯ ЛОГИНА</text>
 
-<!-- ==================== LEFT ==================== -->
+<!-- ==================== LEFT: gen() ==================== -->
 
-<!-- 1. Start -->
-<ellipse cx="225" cy="55" rx="60" ry="16" fill="#d5c4e0" stroke="#9b59b6" stroke-width="1.5"/>
-<text x="225" y="51" class="t">Пуск</text>
-<text x="225" y="63" class="s">клик Создать</text>
-<line x1="225" y1="71" x2="225" y2="85" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
+<!-- 1. Пуск -->
+<ellipse cx="225" cy="50" rx="55" ry="15" fill="#d5c4e0" stroke="#9b59b6" stroke-width="1.5"/>
+<text x="225" y="47" class="t">Пуск</text>
+<text x="225" y="58" class="s">клик Создать</text>
+<line x1="225" y1="65" x2="225" y2="80" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
 
-<!-- 2. gen() call -->
-<rect x="179" y="88" width="92" height="26" rx="4" fill="#e9ddf7" stroke="#9b59b6" stroke-width="1.5"/>
-<line x1="183" y1="88" x2="183" y2="114" stroke="#9b59b6" stroke-width="2.5"/>
-<line x1="267" y1="88" x2="267" y2="114" stroke="#9b59b6" stroke-width="2.5"/>
-<text x="225" y="105" class="t">gen()</text>
-<line x1="225" y1="114" x2="225" y2="128" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
+<!-- 2. gen() -->
+<rect x="175" y="83" width="100" height="24" rx="4" fill="#e9ddf7" stroke="#9b59b6" stroke-width="1.5"/>
+<line x1="179" y1="83" x2="179" y2="107" stroke="#9b59b6" stroke-width="2.5"/>
+<line x1="271" y1="83" x2="271" y2="107" stroke="#9b59b6" stroke-width="2.5"/>
+<text x="225" y="99" class="t">gen()</text>
+<line x1="225" y1="107" x2="225" y2="122" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
 
-<!-- 3. Read DOM -->
-<polygon points="155,131 295,131 281,151 141,151" fill="#d6eaf8" stroke="#2980b9" stroke-width="1.2"/>
-<text x="218" y="141" class="t" font-size="10px">Чтение DOM</text>
-<text x="218" y="151" class="s" font-size="8px">seed svc len state inv</text>
-<line x1="225" y1="151" x2="225" y2="167" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
+<!-- 3. Данные -->
+<polygon points="155,125 295,125 281,145 141,145" fill="#d6eaf8" stroke="#2980b9" stroke-width="1.2"/>
+<text x="218" y="136" class="t" font-size="10px">Чтение DOM</text>
+<text x="218" y="145" class="s" font-size="8px">seed svc len state inv</text>
+<line x1="225" y1="145" x2="225" y2="160" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
 
-<!-- 4. Decision: seed empty? -->
-<polygon points="225,170 286,212 225,254 164,212" fill="#dcedc8" stroke="#8bc34a" stroke-width="1.5"/>
-<text x="225" y="208" class="t" font-size="11px">seed</text>
-<text x="225" y="220" class="t" font-size="11px">пуст?</text>
-<line x1="286" y1="212" x2="318" y2="212" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
-<rect x="320" y="200" width="78" height="24" rx="3" fill="#ffcdd2" stroke="#e57373" stroke-width="1.2"/>
-<text x="359" y="212" class="e" font-size="9px">Розовая подсветка</text>
-<text x="359" y="222" class="e" font-size="8px">return</text>
-<line x1="225" y1="254" x2="225" y2="270" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
+<!-- 4. seed пуст? -->
+<polygon points="225,163 286,205 225,247 164,205" fill="#dcedc8" stroke="#8bc34a" stroke-width="1.5"/>
+<text x="225" y="201" class="t" font-size="11px">seed</text>
+<text x="225" y="213" class="t" font-size="11px">пуст?</text>
+<line x1="286" y1="205" x2="318" y2="205" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
+<rect x="320" y="194" width="80" height="22" rx="3" fill="#ffcdd2" stroke="#e57373" stroke-width="1.2"/>
+<text x="360" y="205" class="e">Розовая подсветка</text>
+<text x="360" y="215" class="e" font-size="8px">return</text>
+<line x1="225" y1="247" x2="225" y2="262" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
 
-<!-- 5. Decision: chars selected? -->
-<polygon points="225,273 286,315 225,357 164,315" fill="#dcedc8" stroke="#8bc34a" stroke-width="1.5"/>
-<text x="225" y="309" class="t" font-size="10px">Типы символов</text>
-<text x="225" y="321" class="t" font-size="10px">выбраны?</text>
-<line x1="286" y1="315" x2="318" y2="315" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
-<rect x="320" y="304" width="78" height="22" rx="3" fill="#ffcdd2" stroke="#e57373" stroke-width="1.2"/>
-<text x="359" y="316" class="e" font-size="9px">Ошибка</text>
-<text x="359" y="326" class="e" font-size="8px">return</text>
-<line x1="225" y1="357" x2="225" y2="373" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
+<!-- 5. Типы выбраны? -->
+<polygon points="225,265 286,307 225,349 164,307" fill="#dcedc8" stroke="#8bc34a" stroke-width="1.5"/>
+<text x="225" y="302" class="t" font-size="10px">Типы символов</text>
+<text x="225" y="314" class="t" font-size="10px">выбраны?</text>
+<line x1="286" y1="307" x2="318" y2="307" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
+<rect x="320" y="296" width="80" height="22" rx="3" fill="#ffcdd2" stroke="#e57373" stroke-width="1.2"/>
+<text x="360" y="309" class="e">Ошибка</text>
+<text x="360" y="317" class="e" font-size="8px">return</text>
+<line x1="225" y1="349" x2="225" y2="364" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
 
-<!-- 6. Alpha -->
-<polygon points="147,376 303,376 289,396 133,396" fill="#d6eaf8" stroke="#2980b9" stroke-width="1.2"/>
-<text x="218" y="387" class="t" font-size="10px">Формирование alpha</text>
-<text x="218" y="396" class="s" font-size="8px">из CHK по state[id]</text>
-<line x1="225" y1="396" x2="225" y2="414" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
+<!-- 6. alpha -->
+<polygon points="145,367 305,367 291,387 131,387" fill="#d6eaf8" stroke="#2980b9" stroke-width="1.2"/>
+<text x="218" y="378" class="t" font-size="10px">Формирование alpha</text>
+<text x="218" y="387" class="s" font-size="8px">из CHK по state[id]</text>
+<line x1="225" y1="387" x2="225" y2="404" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
 
 <!-- 7. hmacGen -->
-<rect x="173" y="417" width="104" height="30" rx="4" fill="#e9ddf7" stroke="#9b59b6" stroke-width="1.5"/>
-<line x1="177" y1="417" x2="177" y2="447" stroke="#9b59b6" stroke-width="2.5"/>
-<line x1="273" y1="417" x2="273" y2="447" stroke="#9b59b6" stroke-width="2.5"/>
-<text x="225" y="432" class="t" font-size="10px">hmacGen(</text>
-<text x="225" y="445" class="s" font-size="9px">seed svc len alpha)</text>
-<rect x="291" y="420" width="82" height="13" rx="2" fill="#f0f0f0" stroke="#ccc" stroke-width="1"/>
-<text x="332" y="429" class="s" font-size="8px">seed = ключ HMAC</text>
-<rect x="291" y="435" width="82" height="13" rx="2" fill="#f0f0f0" stroke="#ccc" stroke-width="1"/>
-<text x="332" y="444" class="s" font-size="8px">svc+len = сообщение</text>
-<line x1="225" y1="447" x2="225" y2="465" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
+<rect x="173" y="407" width="104" height="28" rx="4" fill="#e9ddf7" stroke="#9b59b6" stroke-width="1.5"/>
+<line x1="177" y1="407" x2="177" y2="435" stroke="#9b59b6" stroke-width="2.5"/>
+<line x1="273" y1="407" x2="273" y2="435" stroke="#9b59b6" stroke-width="2.5"/>
+<text x="225" y="422" class="t" font-size="10px">hmacGen(</text>
+<text x="225" y="434" class="s" font-size="9px">seed svc len alpha)</text>
+<rect x="291" y="409" width="82" height="12" rx="2" fill="#f0f0f0" stroke="#ccc" stroke-width="1"/>
+<text x="332" y="418" class="s" font-size="7.5px">seed = ключ HMAC</text>
+<rect x="291" y="423" width="82" height="12" rx="2" fill="#f0f0f0" stroke="#ccc" stroke-width="1"/>
+<text x="332" y="432" class="s" font-size="7.5px">svc+len = сообщение</text>
+<line x1="225" y1="435" x2="225" y2="452" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
 
 <!-- ===== LOOP ===== -->
+<!-- Условие -->
+<polygon points="225,455 290,502 225,549 160,502" fill="#dcedc8" stroke="#8bc34a" stroke-width="1.5"/>
+<text x="225" y="498" class="t" font-size="10px">pwd.length</text>
+<text x="225" y="508" class="t" font-size="10px">&lt; len?</text>
+<text x="260" y="480" class="l">нет</text>
+<line x1="225" y1="549" x2="225" y2="564" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
+<text x="235" y="557" class="l" font-size="8px">да</text>
 
-<!-- Condition -->
-<polygon points="225,468 290,515 225,562 160,515" fill="#dcedc8" stroke="#8bc34a" stroke-width="1.5"/>
-<text x="225" y="510" class="t" font-size="10px">pwd.length</text>
-<text x="225" y="522" class="t" font-size="10px">&lt; len?</text>
+<!-- Тело цикла 1 -->
+<rect x="170" y="567" width="110" height="18" rx="3" fill="#f3e5f5" stroke="#ce93d8" stroke-width="1.2"/>
+<text x="225" y="579" class="s" font-size="9px">1. msg = svc + len + ct</text>
+<line x1="225" y1="585" x2="225" y2="595" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
 
-<!-- yes arrow -->
-<line x1="225" y1="562" x2="225" y2="578" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
+<!-- Тело цикла 2 -->
+<rect x="170" y="598" width="110" height="18" rx="3" fill="#f3e5f5" stroke="#ce93d8" stroke-width="1.2"/>
+<text x="225" y="610" class="s" font-size="9px">2. importKey + sign</text>
+<line x1="225" y1="616" x2="225" y2="626" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
 
-<!-- Loop body 1 -->
-<rect x="180" y="581" width="90" height="18" rx="3" fill="#f3e5f5" stroke="#ce93d8" stroke-width="1.2"/>
-<text x="225" y="593" class="s" font-size="9px">msg = svc+len+ct</text>
-<line x1="225" y1="599" x2="225" y2="609" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
+<!-- Тело цикла 3 -->
+<rect x="170" y="629" width="110" height="18" rx="3" fill="#f3e5f5" stroke="#ce93d8" stroke-width="1.2"/>
+<text x="225" y="641" class="s" font-size="9px">3. byte &lt; max</text>
+<line x1="225" y1="647" x2="225" y2="657" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
 
-<!-- Loop body 2 -->
-<rect x="180" y="612" width="90" height="18" rx="3" fill="#f3e5f5" stroke="#ce93d8" stroke-width="1.2"/>
-<text x="225" y="621" class="s" font-size="9px">importKey + sign</text>
-<text x="225" y="630" class="s" font-size="8px">32 байта</text>
-<line x1="225" y1="630" x2="225" y2="640" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
+<!-- Тело цикла 4 -->
+<rect x="170" y="660" width="110" height="18" rx="3" fill="#f3e5f5" stroke="#ce93d8" stroke-width="1.2"/>
+<text x="225" y="672" class="s" font-size="9px">4. ct++</text>
 
-<!-- Loop body 3 -->
-<rect x="180" y="643" width="90" height="18" rx="3" fill="#f3e5f5" stroke="#ce93d8" stroke-width="1.2"/>
-<text x="225" y="655" class="s" font-size="9px">byte &lt; max? alpha</text>
-<line x1="225" y1="661" x2="225" y2="671" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
+<!-- Стрелка назад (цикл) -->
+<line x1="280" y1="669" x2="325" y2="669" stroke="#7b4da8" stroke-width="1.2"/>
+<line x1="325" y1="669" x2="325" y2="502" stroke="#7b4da8" stroke-width="1.2"/>
+<line x1="325" y1="502" x2="292" y2="502" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
+<text x="327" y="586" class="l">цикл</text>
 
-<!-- Loop body 4 -->
-<rect x="180" y="674" width="90" height="18" rx="3" fill="#f3e5f5" stroke="#ce93d8" stroke-width="1.2"/>
-<text x="225" y="686" class="s" font-size="9px">ct++</text>
+<!-- Выход из цикла -->
+<line x1="225" y1="678" x2="225" y2="693" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
 
-<!-- Back arrow -->
-<line x1="270" y1="683" x2="320" y2="683" stroke="#7b4da8" stroke-width="1.2"/>
-<line x1="320" y1="683" x2="320" y2="515" stroke="#7b4da8" stroke-width="1.2"/>
-<line x1="320" y1="515" x2="292" y2="515" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
-<text x="322" y="600" class="l">цикл</text>
+<!-- Инверсии -->
+<polygon points="225,696 290,748 225,800 160,748" fill="#dcedc8" stroke="#8bc34a" stroke-width="1.5"/>
+<text x="225" y="742" class="t" font-size="10px">inv.cap?</text>
+<text x="225" y="752" class="s" font-size="8px">toUpperCase()</text>
+<text x="225" y="765" class="t" font-size="10px">inv.dig?</text>
+<text x="225" y="775" class="s" font-size="8px">HMAC цифра</text>
 
-<!-- exit no -->
-<text x="262" y="495" class="l">нет</text>
-<line x1="225" y1="692" x2="225" y2="706" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
+<line x1="225" y1="800" x2="225" y2="815" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
 
-<!-- Inversions -->
-<polygon points="225,709 286,751 225,793 164,751" fill="#dcedc8" stroke="#8bc34a" stroke-width="1.5"/>
-<text x="225" y="745" class="t" font-size="10px">inv.cap?</text>
-<text x="225" y="755" class="s" font-size="8px">toUpperCase()</text>
+<!-- Конец левой части - без "Конец" терминатора, т.к. не влезает -->
 
-<!-- ==================== RIGHT ==================== -->
+<!-- ==================== RIGHT: genLogin() ==================== -->
 
-<!-- 1. Start -->
-<ellipse cx="675" cy="55" rx="60" ry="16" fill="#d5c4e0" stroke="#9b59b6" stroke-width="1.5"/>
-<text x="675" y="51" class="t">Пуск</text>
-<text x="675" y="63" class="s">клик Создать логин</text>
-<line x1="675" y1="71" x2="675" y2="85" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
+<!-- 1. Пуск -->
+<ellipse cx="675" cy="50" rx="58" ry="15" fill="#d5c4e0" stroke="#9b59b6" stroke-width="1.5"/>
+<text x="675" y="47" class="t">Пуск</text>
+<text x="675" y="58" class="s">клик Создать логин</text>
+<line x1="675" y1="65" x2="675" y2="80" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
 
 <!-- 2. genLogin() -->
-<rect x="629" y="88" width="92" height="26" rx="4" fill="#e9ddf7" stroke="#9b59b6" stroke-width="1.5"/>
-<line x1="633" y1="88" x2="633" y2="114" stroke="#9b59b6" stroke-width="2.5"/>
-<line x1="717" y1="88" x2="717" y2="114" stroke="#9b59b6" stroke-width="2.5"/>
-<text x="675" y="105" class="t">genLogin()</text>
-<line x1="675" y1="114" x2="675" y2="128" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
+<rect x="625" y="83" width="100" height="24" rx="4" fill="#e9ddf7" stroke="#9b59b6" stroke-width="1.5"/>
+<line x1="629" y1="83" x2="629" y2="107" stroke="#9b59b6" stroke-width="2.5"/>
+<line x1="721" y1="83" x2="721" y2="107" stroke="#9b59b6" stroke-width="2.5"/>
+<text x="675" y="99" class="t">genLogin()</text>
+<line x1="675" y1="107" x2="675" y2="122" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
 
-<!-- 3. Clear + read -->
-<polygon points="605,131 745,131 731,151 591,151" fill="#d6eaf8" stroke="#2980b9" stroke-width="1.2"/>
-<text x="668" y="141" class="t" font-size="10px">Очистка #login</text>
-<text x="668" y="151" class="s" font-size="8px">чтение seed svc</text>
-<line x1="675" y1="151" x2="675" y2="167" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
+<!-- 3. Очистка -->
+<polygon points="605,125 745,125 731,145 591,145" fill="#d6eaf8" stroke="#2980b9" stroke-width="1.2"/>
+<text x="668" y="136" class="t" font-size="10px">Очистка #login</text>
+<text x="668" y="145" class="s" font-size="8px">чтение seed svc</text>
+<line x1="675" y1="145" x2="675" y2="160" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
 
-<!-- 4. seed empty? -->
-<polygon points="675,170 736,212 675,254 614,212" fill="#dcedc8" stroke="#8bc34a" stroke-width="1.5"/>
-<text x="675" y="208" class="t" font-size="11px">seed</text>
-<text x="675" y="220" class="t" font-size="11px">пуст?</text>
-<line x1="736" y1="212" x2="760" y2="212" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
-<rect x="762" y="200" width="72" height="24" rx="3" fill="#ffcdd2" stroke="#e57373" stroke-width="1.2"/>
-<text x="798" y="212" class="e" font-size="9px">Ошибка</text>
-<text x="798" y="222" class="e" font-size="8px">return</text>
-<line x1="675" y1="254" x2="675" y2="270" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
+<!-- 4. seed пуст? -->
+<polygon points="675,163 736,205 675,247 614,205" fill="#dcedc8" stroke="#8bc34a" stroke-width="1.5"/>
+<text x="675" y="201" class="t" font-size="11px">seed</text>
+<text x="675" y="213" class="t" font-size="11px">пуст?</text>
+<line x1="736" y1="205" x2="760" y2="205" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
+<rect x="762" y="195" width="70" height="20" rx="3" fill="#ffcdd2" stroke="#e57373" stroke-width="1.2"/>
+<text x="797" y="205" class="e">Ошибка</text>
+<text x="797" y="214" class="e" font-size="8px">return</text>
+<line x1="675" y1="247" x2="675" y2="262" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
 
-<!-- 5. svc empty? -->
-<polygon points="675,273 736,315 675,357 614,315" fill="#dcedc8" stroke="#8bc34a" stroke-width="1.5"/>
-<text x="675" y="310" class="t" font-size="11px">svc</text>
-<text x="675" y="322" class="t" font-size="11px">пуст?</text>
-<line x1="736" y1="315" x2="760" y2="315" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
-<rect x="762" y="304" width="60" height="22" rx="3" fill="#ffcdd2" stroke="#e57373" stroke-width="1.2"/>
-<text x="792" y="318" class="e" font-size="9px">return</text>
-<line x1="675" y1="357" x2="675" y2="373" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
+<!-- 5. svc пуст? -->
+<polygon points="675,265 736,307 675,349 614,307" fill="#dcedc8" stroke="#8bc34a" stroke-width="1.5"/>
+<text x="675" y="302" class="t" font-size="11px">svc</text>
+<text x="675" y="314" class="t" font-size="11px">пуст?</text>
+<line x1="736" y1="307" x2="760" y2="307" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
+<rect x="762" y="297" width="60" height="20" rx="3" fill="#ffcdd2" stroke="#e57373" stroke-width="1.2"/>
+<text x="792" y="309" class="e">return</text>
+<line x1="675" y1="349" x2="675" y2="364" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
 
-<!-- 6. counter++ -->
-<polygon points="615,376 735,376 721,396 601,396" fill="#d6eaf8" stroke="#2980b9" stroke-width="1.2"/>
-<text x="668" y="387" class="t" font-size="10px">loginCounter++</text>
-<line x1="675" y1="396" x2="675" y2="414" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
+<!-- 6. loginCounter++ -->
+<polygon points="605,367 745,367 731,387 591,387" fill="#d6eaf8" stroke="#2980b9" stroke-width="1.2"/>
+<text x="668" y="378" class="t" font-size="10px">loginCounter++</text>
+<line x1="675" y1="387" x2="675" y2="404" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
 
 <!-- 7. SHA-256 -->
-<rect x="623" y="417" width="104" height="30" rx="4" fill="#e9ddf7" stroke="#9b59b6" stroke-width="1.5"/>
-<line x1="627" y1="417" x2="627" y2="447" stroke="#9b59b6" stroke-width="2.5"/>
-<line x1="723" y1="417" x2="723" y2="447" stroke="#9b59b6" stroke-width="2.5"/>
-<text x="675" y="430" class="t" font-size="10px">SHA-256(</text>
-<text x="675" y="444" class="s" font-size="9px">seed+login+svc+counter)</text>
-<rect x="740" y="422" width="82" height="13" rx="2" fill="#f0f0f0" stroke="#ccc" stroke-width="1"/>
-<text x="781" y="431" class="s" font-size="8px">seed+login+svc+counter</text>
-<line x1="675" y1="447" x2="675" y2="465" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
+<rect x="623" y="407" width="104" height="28" rx="4" fill="#e9ddf7" stroke="#9b59b6" stroke-width="1.5"/>
+<line x1="627" y1="407" x2="627" y2="435" stroke="#9b59b6" stroke-width="2.5"/>
+<line x1="723" y1="407" x2="723" y2="435" stroke="#9b59b6" stroke-width="2.5"/>
+<text x="675" y="420" class="t" font-size="10px">SHA-256(</text>
+<text x="675" y="434" class="s" font-size="8px">seed+login+svc+counter)</text>
+<rect x="740" y="411" width="80" height="12" rx="2" fill="#f0f0f0" stroke="#ccc" stroke-width="1"/>
+<text x="780" y="420" class="s" font-size="7.5px">входные данные</text>
+<text x="780" y="428" class="s" font-size="7px">seed+login+svc+counter</text>
+<line x1="675" y1="435" x2="675" y2="452" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
 
-<!-- 8. 6 bytes -> alpha -->
-<polygon points="525,468 825,468 811,488 511,488" fill="#d6eaf8" stroke="#2980b9" stroke-width="1.2"/>
-<text x="675" y="479" class="t" font-size="10px">6 байт из хеша alpha</text>
-<text x="675" y="488" class="s" font-size="7px">abcdefghjkmnpqrstuvwxyz23456789</text>
-<rect x="828" y="470" width="60" height="16" rx="2" fill="#f0f0f0" stroke="#ccc" stroke-width="1"/>
-<text x="858" y="478" class="s" font-size="7px">i l o 0 1</text>
-<text x="858" y="486" class="s" font-size="7px">исключены</text>
-<line x1="675" y1="488" x2="675" y2="506" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
+<!-- 8. 6 байт -->
+<polygon points="530,455 820,455 806,475 516,475" fill="#d6eaf8" stroke="#2980b9" stroke-width="1.2"/>
+<text x="675" y="466" class="t" font-size="10px">6 байт из хеша alpha</text>
+<text x="675" y="475" class="s" font-size="7px">abcdefghjkmnpqrstuvwxyz23456789</text>
+<rect x="825" y="457" width="62" height="16" rx="2" fill="#f0f0f0" stroke="#ccc" stroke-width="1"/>
+<text x="856" y="465" class="s" font-size="7px">i l o 0 1</text>
+<text x="856" y="473" class="s" font-size="7px">исключены</text>
+<line x1="675" y1="475" x2="675" y2="492" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
 
-<!-- 9. Output -->
-<polygon points="615,509 735,509 721,529 601,529" fill="#fff3e0" stroke="#ffb300" stroke-width="1.2"/>
-<text x="668" y="520" class="t" font-size="10px">Вывод login в #login</text>
-<line x1="675" y1="529" x2="675" y2="565" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
+<!-- 9. Вывод -->
+<polygon points="615,495 735,495 721,515 601,515" fill="#fff3e0" stroke="#ffb300" stroke-width="1.2"/>
+<text x="668" y="506" class="t" font-size="10px">Вывод login в #login</text>
+<line x1="675" y1="515" x2="675" y2="552" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#a)"/>
 
-<!-- End -->
-<ellipse cx="675" cy="580" rx="50" ry="16" fill="#d5c4e0" stroke="#9b59b6" stroke-width="1.5"/>
-<text x="675" y="584" class="t">Конец</text>
+<!-- Конец -->
+<ellipse cx="675" cy="570" rx="50" ry="15" fill="#d5c4e0" stroke="#9b59b6" stroke-width="1.5"/>
+<text x="675" y="574" class="t">Конец</text>
 
-<!-- Legend -->
-<rect x="10" y="700" width="880" height="18" rx="4" fill="#f5f3ff" stroke="#d5d0e0" stroke-width="1"/>
-<text x="20" y="712" font-family="Arial,sans-serif" font-size="9px" fill="#555" font-weight="700">Условные обозначения:</text>
-<rect x="132" y="706" width="14" height="7" rx="10" fill="#d5c4e0" stroke="#9b59b6" stroke-width="1"/>
-<text x="150" y="713" font-family="Arial,sans-serif" font-size="8px" fill="#555">Терминатор</text>
-<rect x="217" y="706" width="14" height="7" rx="2" fill="#e9ddf7" stroke="#9b59b6" stroke-width="1"/>
-<text x="235" y="713" font-family="Arial,sans-serif" font-size="8px" fill="#555">Процесс</text>
-<rect x="292" y="706" width="10" height="10" fill="#dcedc8" stroke="#8bc34a" stroke-width="1" transform="rotate(45,297,711)"/>
-<text x="308" y="713" font-family="Arial,sans-serif" font-size="8px" fill="#555">Решение</text>
-<polygon points="370,706 377,713 370,720 363,713" fill="#d6eaf8" stroke="#2980b9" stroke-width="1"/>
-<text x="383" y="713" font-family="Arial,sans-serif" font-size="8px" fill="#555">Данные</text>
-<rect x="438" y="706" width="14" height="7" rx="2" fill="#f3e5f5" stroke="#ce93d8" stroke-width="1"/>
-<text x="456" y="713" font-family="Arial,sans-serif" font-size="8px" fill="#555">Тело цикла</text>
-<rect x="527" y="706" width="14" height="7" rx="2" fill="#fff3e0" stroke="#ffb300" stroke-width="1"/>
-<text x="545" y="713" font-family="Arial,sans-serif" font-size="8px" fill="#555">Вывод</text>
-<rect x="590" y="706" width="14" height="7" rx="2" fill="#ffcdd2" stroke="#e57373" stroke-width="1"/>
-<text x="608" y="713" font-family="Arial,sans-serif" font-size="8px" fill="#555">Ошибка</text>
-<rect x="660" y="706" width="14" height="7" rx="2" fill="#f0f0f0" stroke="#ccc" stroke-width="1"/>
-<text x="678" y="713" font-family="Arial,sans-serif" font-size="8px" fill="#555">Параметр</text>
+<!-- ==================== Выходы из цикла (левая половина) ==================== -->
+<!-- Конец левой части -->
+<ellipse cx="225" cy="830" rx="50" ry="15" fill="#d5c4e0" stroke="#9b59b6" stroke-width="1.5"/>
+<text x="225" y="834" class="t">Конец</text>
+
+<!-- ==================== LEGEND ==================== -->
+<rect x="10" y="815" width="880" height="20" rx="4" fill="#f5f3ff" stroke="#d5d0e0" stroke-width="1"/>
+<text x="20" y="828" font-family="Arial,sans-serif" font-size="9px" fill="#555" font-weight="700">Условные обозначения:</text>
+<ellipse cx="140" cy="824" rx="10" ry="5" fill="#d5c4e0" stroke="#9b59b6" stroke-width="1"/>
+<text x="155" y="828" font-family="Arial,sans-serif" font-size="8px" fill="#555">Терминатор</text>
+<rect x="230" y="820" width="14" height="8" rx="2" fill="#e9ddf7" stroke="#9b59b6" stroke-width="1"/>
+<text x="249" y="828" font-family="Arial,sans-serif" font-size="8px" fill="#555">Процесс</text>
+<rect x="310" y="819" width="10" height="10" fill="#dcedc8" stroke="#8bc34a" stroke-width="1" transform="rotate(45,315,824)"/>
+<text x="330" y="828" font-family="Arial,sans-serif" font-size="8px" fill="#555">Решение</text>
+<polygon points="395,820 402,828 395,836 388,828" fill="#d6eaf8" stroke="#2980b9" stroke-width="1"/>
+<text x="410" y="828" font-family="Arial,sans-serif" font-size="8px" fill="#555">Данные</text>
+<rect x="470" y="820" width="14" height="8" rx="2" fill="#f3e5f5" stroke="#ce93d8" stroke-width="1"/>
+<text x="489" y="828" font-family="Arial,sans-serif" font-size="8px" fill="#555">Тело цикла</text>
+<rect x="565" y="820" width="14" height="8" rx="2" fill="#fff3e0" stroke="#ffb300" stroke-width="1"/>
+<text x="584" y="828" font-family="Arial,sans-serif" font-size="8px" fill="#555">Вывод</text>
+<rect x="635" y="820" width="14" height="8" rx="2" fill="#ffcdd2" stroke="#e57373" stroke-width="1"/>
+<text x="654" y="828" font-family="Arial,sans-serif" font-size="8px" fill="#555">Ошибка</text>
+<rect x="710" y="820" width="14" height="8" rx="2" fill="#f0f0f0" stroke="#ccc" stroke-width="1"/>
+<text x="729" y="828" font-family="Arial,sans-serif" font-size="8px" fill="#555">Параметр</text>
 </svg>
 </div>
 <div class="note">
-<strong>HMAC-SHA256:</strong> сид = ключ. Сообщение = svc + len + счётчик ct. Rejection Sampling: max = 256-(256%len), байты &ge; max отбрасываются. &nbsp;|&nbsp; <strong>SHA-256 (логин):</strong> обычный хеш (не HMAC). loginCounter при каждом клике даёт уникальный логин.
+<b>HMAC-SHA256:</b> сид = ключ. Сообщение = svc + len + счётчик ct. Rejection Sampling: max = 256-(256%len), байты &ge; max отбрасываются. | <b>SHA-256 (логин):</b> обычный хеш (не HMAC). loginCounter при каждом клике даёт уникальный логин.
 </div>
 </body>
 </html>
