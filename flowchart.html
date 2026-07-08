@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>passgen — Blok-shema</title>
+<title>passgen — Блок-схема</title>
 <script src="mermaid.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -18,11 +18,11 @@ h1{font-size:22px;color:#5b21b6;margin-bottom:2px}
 <body>
 
 <h1>passgen</h1>
-<div class="sub">Blok-shema vyzova funkcij pri generacii parolja i logina</div>
+<div class="sub">Блок-схема вызова функций при генерации пароля и логина</div>
 
 <div class="wrap">
 <pre class="mermaid">
-%%{init: {'theme': 'base', 'themeVariables': {'fontFamily': 'Arial', 'primaryColor': '#e9ddf7', 'primaryBorderColor': '#9b59b6', 'lineColor': '#7b4da8', 'clusterBkg': '#faf9ff', 'clusterBorder': '#ddd', 'defaultLinkColor': '#7b4da8', 'titleColor': '#5b21b6', 'fontSize': '14px'}}}%%
+%%{init: {"theme": "base", "themeVariables": {"fontFamily": "Arial", "primaryColor": "#e9ddf7", "primaryBorderColor": "#9b59b6", "lineColor": "#7b4da8", "clusterBkg": "#faf9ff", "clusterBorder": "#ddd", "defaultLinkColor": "#7b4da8", "titleColor": "#5b21b6", "fontSize": "14px"}}}%%
 
 flowchart TD
   classDef term fill:#d5c4e0,stroke:#9b59b6
@@ -33,63 +33,67 @@ flowchart TD
   classDef out fill:#fff3e0,stroke:#ffb300
   classDef err fill:#ffcdd2,stroke:#e57373
 
-  subgraph GEN[GENERACIJA PAROLJA]
+  subgraph GEN[ГЕНЕРАЦИЯ ПАРОЛЯ]
     direction TB
-    G0(["Pusk"]):::term
+    G0(["Пуск"]):::term
     G1[["gen()"]]:::func
-    G2[/"seed svc len state inv"/]:::data
-    G3{"seed?"}:::dec
-    G3e("oshibka"):::err
-    G4{"chars?"}:::dec
-    G4e("oshibka"):::err
-    G5[/"alpha"/]:::data
-    G6[["hmacGen"]]:::func
-    G7{"pwd < len ?"}:::dec
-    G8["msg=svc+len+ct"]:::loop
-    G9["HMAC 32 byte"]:::loop
-    G10["byte<max"]:::loop
-    G11["ct++"]:::loop
-    G12{"inv?"}:::dec
-    G13[/"pwd"/]:::out
-    G14(["Konec"]):::term
+    G2[/"Данные seed svc len"/]:::data
+    G3{"seed пустая?"}:::dec
+    G3e("Ошибка подсветка"):::err
+    G4{"Набор символов
+выбран?"}:::dec
+    G4e("Ошибка выход"):::err
+    G5[/"Алфавит alpha"/]:::data
+    G6[["hmacGen(seed svc len alpha)"]]:::func
+    G7{"pwd.length
+меньше len?"}:::dec
+    G8["msg = svc + len + ct"]:::loop
+    G9["HMAC - 32 байта"]:::loop
+    G10["Если byte меньше max
+alpha[byte%len]"]:::loop
+    G11["ct + 1"]:::loop
+    G12{"Инверсия
+cap или dig?"}:::dec
+    G13[/"Пароль pwd"/]:::out
+    G14(["Конец"]):::term
 
     G0 --> G1 --> G2 --> G3
-    G3 -->|da| G3e
-    G3 -->|net| G4
-    G4 -->|da| G5
-    G4 -->|net| G4e
+    G3 -- да --> G3e
+    G3 -- нет --> G4
+    G4 -- да --> G5
+    G4 -- нет --> G4e
     G5 --> G6 --> G7
-    G7 -->|da| G8 --> G9 --> G10 --> G11
-    G11 -->|cikl| G7
-    G7 -->|net| G12 --> G13 --> G14
+    G7 -- да --> G8 --> G9 --> G10 --> G11
+    G11 -- цикл --> G7
+    G7 -- нет --> G12 --> G13 --> G14
   end
 
-  subgraph LOG[GENERACIJA LOGINA]
+  subgraph LOG[ГЕНЕРАЦИЯ ЛОГИНА]
     direction TB
-    L0(["Pusk"]):::term
+    L0(["Пуск"]):::term
     L1[["genLogin()"]]:::func
-    L2[/"seed svc"/]:::data
-    L3{"seed?"}:::dec
-    L3e("oshibka"):::err
-    L4{"svc?"}:::dec
-    L4e("vyhod"):::err
-    L5[/"loginCounter++"/]:::data
-    L6[["SHA-256"]]:::func
-    L7[/"6 byte->alpha"/]:::data
-    L8[/"login"/]:::out
-    L9(["Konec"]):::term
+    L2[/"Данные seed svc"/]:::data
+    L3{"seed пустая?"}:::dec
+    L3e("Ошибка выход"):::err
+    L4{"svc пустая?"}:::dec
+    L4e("Выход"):::err
+    L5[/"Счётчик +1"/]:::data
+    L6[["SHA-256(seed+login+svc+counter)"]]:::func
+    L7[/"6 байт в alpha"/]:::data
+    L8[/"Логин login"/]:::out
+    L9(["Конец"]):::term
 
     L0 --> L1 --> L2 --> L3
-    L3 -->|da| L3e
-    L3 -->|net| L4
-    L4 -->|da| L4e
-    L4 -->|net| L5 --> L6 --> L7 --> L8 --> L9
+    L3 -- да --> L3e
+    L3 -- нет --> L4
+    L4 -- да --> L4e
+    L4 -- нет --> L5 --> L6 --> L7 --> L8 --> L9
   end
 </pre>
 </div>
 
 <div class="note">
-<strong>HMAC-SHA256:</strong> sid = kljuch. Soobshenie = svc + len + schjotchik. Rejection Sampling: max = 256-(256%len). | <strong>SHA-256 (login):</strong> obychnyj hash (ne HMAC). loginCounter unikalen.
+<strong>HMAC-SHA256:</strong> сид = ключ. Сообщение = svc + len + счётчик ct. Rejection Sampling: max = 256 - (256 % длина_алфавита), байты больше или равные max отбрасываются. Все символы в пароле встречаются одинаково часто. | <strong>SHA-256 (логин):</strong> обычный хеш (не HMAC). Счётчик loginCounter увеличивается при каждом нажатии, поэтому каждый логин уникальный.
 </div>
 
 <script>mermaid.initialize({startOnLoad:true})</script>
