@@ -7,334 +7,276 @@
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   body{
-    background:#f5f5f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-    display:flex;flex-direction:column;align-items:center;padding:28px 16px
+    background:#f8f8f8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    display:flex;flex-direction:column;align-items:center;padding:24px 12px
   }
   h1{font-size:20px;color:#5b21b6;margin-bottom:2px;font-weight:700}
-  .sub{font-size:12px;color:#999;margin-bottom:16px}
-
-  /* === Legend === */
-  .legend{
-    display:flex;gap:12px;flex-wrap:wrap;justify-content:center;
-    background:#fff;border-radius:8px;padding:8px 16px;
-    box-shadow:0 1px 4px rgba(0,0,0,.05);margin-bottom:20px;font-size:11px
-  }
-  .leg{display:flex;align-items:center;gap:5px;color:#444}
-  .leg-shape{flex-shrink:0;display:flex;align-items:center;justify-content:center}
-
-  /* === Chart === */
-  .chart-wrap{
-    display:flex;gap:0;background:#fff;border-radius:10px;
-    box-shadow:0 2px 10px rgba(0,0,0,.06);overflow:hidden;max-width:900px;width:100%
-  }
-  .half{flex:1;padding:16px 14px 12px;display:flex;flex-direction:column;align-items:center;min-width:0}
-  .half:first-child{border-right:1px solid #eee}
-  .half-title{
-    font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;
-    color:#7c3aed;text-align:center;margin-bottom:10px;width:100%
-  }
-
-  /* === Node === */
-  .node{
-    display:flex;flex-direction:column;align-items:center;width:100%;
-    margin-bottom:0
-  }
-  .node > .row{display:flex;align-items:center;justify-content:center;gap:8px;width:100%}
-
-  /* === Shapes === */
-  .sh-terminator{
-    background:#d5c4e0;border:1.5px solid #b39ddb;color:#1a1a2e;
-    border-radius:20px;padding:4px 16px;font-size:10.5px;line-height:1.4;
-    text-align:center;font-weight:600
-  }
-  .sh-process{
-    background:#e9ddf7;border:1.5px solid #c8b0e8;color:#1a1a2e;
-    border-radius:4px;padding:5px 12px;font-size:10.5px;line-height:1.4;
-    text-align:center
-  }
-  .sh-decision{
-    background:#dcedc8;border:1.5px solid #aed581;color:#1a1a2e;
-    width:94px;height:94px;font-size:10px;line-height:1.3;
-    display:flex;align-items:center;justify-content:center;text-align:center;
-    clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);padding:18px 12px
-  }
-  .sh-data{
-    background:#d6eaf8;border:1.5px solid #85c1e9;color:#1a1a2e;
-    border-radius:4px;font-size:10.5px;line-height:1.4;
-    text-align:center;padding:5px 12px;
-    transform:skewX(-6deg);margin:0 3px
-  }
-  .sh-data > *{transform:skewX(6deg)}
-  .sh-loop{
-    background:#f3e5f5;border:1.5px solid #ce93d8;color:#1a1a2e;
-    font-size:10px;line-height:1.4;text-align:center;padding:6px 10px;
-    clip-path:polygon(8% 0%,92% 0%,100% 50%,92% 100%,8% 100%,0% 50%)
-  }
-  .sh-output{
-    background:#fff3e0;border:1.5px solid #ffcc80;color:#4e342e;
-    border-radius:4px;padding:5px 12px;font-size:10.5px;line-height:1.4;
-    text-align:center
-  }
-  .sh-error{
-    background:#ffcdd2;border:1.5px solid #ef9a9a;color:#b71c1c;
-    border-radius:4px;padding:4px 8px;font-size:9px;line-height:1.3;
-    text-align:center
-  }
-  .sh-param{
-    background:#eceff1;border:1px solid #cfd8dc;color:#37474f;
-    border-radius:4px;padding:3px 7px;font-size:8.5px;line-height:1.35;
-    text-align:center
-  }
-  .sh-call{
-    background:#e9ddf7;border:1.5px solid #c8b0e8;color:#1a1a2e;
-    border-radius:4px;padding:5px 10px;font-size:10.5px;line-height:1.4;
-    text-align:center;border-left:4px solid #9b59b6;border-right:4px solid #9b59b6
-  }
-
-  .sh-terminator b,.sh-process b,.sh-call b,.sh-data b,.sh-loop b,.sh-output b{font-weight:700}
-
-  /* === Arrows === */
-  .arr-down{
-    display:flex;flex-direction:column;align-items:center;padding:1px 0;
-    color:#9b59b6;font-size:9px;line-height:1;user-select:none
-  }
-  .arr-down .l{width:1.5px;height:7px;background:#9b59b6}
-  .arr-down .h{
-    width:0;height:0;border-left:4.5px solid transparent;
-    border-right:4.5px solid transparent;border-top:5.5px solid #9b59b6
-  }
-  .arr-right{
-    display:inline-flex;align-items:center;color:#9b59b6;font-size:9px;flex-shrink:0
-  }
-  .arr-right .l{width:12px;height:1.5px;background:#9b59b6}
-  .arr-right .h{
-    width:0;height:0;border-top:4px solid transparent;
-    border-bottom:4px solid transparent;border-left:5px solid #9b59b6
-  }
-
-  /* === Param group === */
-  .param-group{
-    display:flex;flex-direction:column;gap:3px;flex-shrink:0
-  }
-
-  /* === Note at bottom === */
-  .bottom-note{
-    max-width:900px;width:100%;margin-top:12px;
-    font-size:9.5px;color:#999;line-height:1.5;text-align:center
-  }
-
-  @media(max-width:700px){
-    .chart-wrap{flex-direction:column}
-    .half:first-child{border-right:none;border-bottom:1px solid #eee}
-  }
+  .sub{font-size:12px;color:#999;margin-bottom:14px}
+  svg{display:block;max-width:100%;height:auto}
+  .wrap{background:#fff;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.06);padding:10px;overflow-x:auto}
 </style>
 </head>
 <body>
 
 <h1>passgen</h1>
-<div class="sub">Блок-схема вызова функций при генерации пароля и логина (ГОСТ 19.701-90)</div>
+<div class="sub">Блок-схема вызова функций при генерации пароля и логина</div>
 
-<div class="legend">
-  <span class="leg"><span class="leg-shape sh-terminator" style="padding:1px 8px;font-size:8px">Пуск</span> Терминатор</span>
-  <span class="leg"><span class="leg-shape sh-process" style="padding:1px 6px;font-size:8px">Проц</span> Процесс</span>
-  <span class="leg"><span class="leg-shape sh-decision" style="width:40px;height:40px;font-size:7px;padding:6px">?</span> Решение</span>
-  <span class="leg"><span class="leg-shape sh-data" style="padding:1px 6px;font-size:8px">Данные</span> Данные</span>
-  <span class="leg"><span class="leg-shape sh-loop" style="padding:2px 8px;font-size:7px">Цикл</span> Цикл</span>
-  <span class="leg"><span class="leg-shape sh-call" style="padding:1px 6px;font-size:8px">Вызов</span> Вызов</span>
-  <span class="leg"><span class="leg-shape sh-output" style="padding:1px 6px;font-size:8px">Вывод</span> Вывод</span>
-  <span class="leg"><span class="leg-shape sh-error" style="padding:1px 6px;font-size:8px">Ошибка</span> Ошибка</span>
-</div>
+<div class="wrap">
+<svg viewBox="0 0 900 760" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
 
-<div class="chart-wrap">
+  <defs>
+    <!-- Arrow marker -->
+    <marker id="arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#7b4da8"/>
+    </marker>
+    <!-- Fonts -->
+    <style>
+      .title{font-size:11px;font-weight:700;fill:#5b21b6;text-anchor:middle}
+      .t{font-size:10px;font-weight:700;text-anchor:middle;fill:#1a1a2e}
+      .st{font-size:8.5px;text-anchor:middle;fill:#1a1a2e}
+      .stl{font-size:8px;text-anchor:start;fill:#1a1a2e}
+      .param{font-size:7.5px;text-anchor:middle;fill:#37474f}
+      .err{font-size:8px;font-weight:700;text-anchor:middle;fill:#b71c1c}
+      .note{font-size:7px;text-anchor:middle;fill:#999}
+      .leg{font-size:9px;fill:#444}
+    </style>
+  </defs>
 
-<!-- ============ LEFT: gen() ============ -->
-<div class="half">
-  <div class="half-title">Генерация пароля</div>
+  <!-- ============ BACKGROUND DIVIDER ============ -->
+  <line x1="448" y1="8" x2="448" y2="720" stroke="#e0dce8" stroke-width="1" stroke-dasharray="3,3"/>
 
-  <!-- 1. Terminator -->
-  <div class="node">
-    <div class="sh-terminator"><b>Пуск</b><br>клик «Создать»</div>
-    <div class="arr-down"><span class="l"></span><span class="h"></span></div>
-  </div>
+  <!-- ============ TITLES ============ -->
+  <text x="224" y="22" class="title">ГЕНЕРАЦИЯ ПАРОЛЯ</text>
+  <text x="674" y="22" class="title">ГЕНЕРАЦИЯ ЛОГИНА</text>
 
-  <!-- 2. Process: gen() call -->
-  <div class="node">
-    <div class="sh-call"><b>gen()</b></div>
-    <div class="arr-down"><span class="l"></span><span class="h"></span></div>
-  </div>
+  <!-- ============ LEFT: gen() FLOW ============ -->
 
-  <!-- 3. Data: read DOM -->
-  <div class="node">
-    <div class="sh-data"><span>Чтение DOM:<br><b>seed, svc, len, state, inv</b></span></div>
-    <div class="arr-down"><span class="l"></span><span class="h"></span></div>
-  </div>
+  <!-- 1. Start -->
+  <ellipse cx="224" cy="50" rx="50" ry="16" fill="#d5c4e0" stroke="#b39ddb" stroke-width="1.5"/>
+  <text x="224" y="46" class="t">Пуск</text>
+  <text x="224" y="58" class="st">клик «Создать»</text>
+
+  <line x1="224" y1="66" x2="224" y2="82" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <!-- 2. gen() call -->
+  <rect x="174" y="85" width="100" height="28" rx="3" fill="#e9ddf7" stroke="#b39ddb" stroke-width="1.5"/>
+  <line x1="178" y1="85" x2="178" y2="113" stroke="#9b59b6" stroke-width="2"/>
+  <line x1="270" y1="85" x2="270" y2="113" stroke="#9b59b6" stroke-width="2"/>
+  <text x="224" y="103" class="t">gen()</text>
+
+  <line x1="224" y1="113" x2="224" y2="129" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <!-- 3. Read DOM -->
+  <polygon points="170,132 278,132 264,154 156,154" fill="#d6eaf8" stroke="#85c1e9" stroke-width="1.2"/>
+  <text x="217" y="144" class="st">Чтение DOM</text>
+  <text x="217" y="152" class="st" font-size="7.5">seed, svc, len, state, inv</text>
+
+  <line x1="224" y1="154" x2="224" y2="170" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#arr)"/>
 
   <!-- 4. Decision: seed empty? -->
-  <div class="node">
-    <div class="row">
-      <div class="sh-decision"><b>seed<br>пуст?</b></div>
-      <div class="arr-right" style="align-self:center"><span class="l"></span><span class="h"></span></div>
-      <div class="sh-error"><b>Розовая подсветка</b><br>«Введите сид»<br>return</div>
-    </div>
-    <div class="arr-down"><span class="l"></span><span class="h"></span></div>
-  </div>
+  <polygon points="224,173 280,210 224,247 168,210" fill="#dcedc8" stroke="#aed581" stroke-width="1.2"/>
+  <text x="224" y="207" class="st" font-weight="700">seed</text>
+  <text x="224" y="217" class="st" font-weight="700">пуст?</text>
+  <!-- Error branch -->
+  <line x1="280" y1="210" x2="310" y2="210" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#arr)"/>
+  <rect x="312" y="195" width="85" height="30" rx="3" fill="#ffcdd2" stroke="#ef9a9a" stroke-width="1.2"/>
+  <text x="354" y="210" class="err">Розовая подсветка</text>
+  <text x="354" y="221" class="err" font-size="7">return</text>
+
+  <line x1="224" y1="247" x2="224" y2="265" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#arr)"/>
 
   <!-- 5. Decision: chars selected? -->
-  <div class="node">
-    <div class="row">
-      <div class="sh-decision"><b>Типы<br>символов<br>выбраны?</b></div>
-      <div class="arr-right"><span class="l"></span><span class="h"></span></div>
-      <div class="sh-error"><b>Ошибка</b><br>«Выберите хотя бы<br>один тип символов»<br>return</div>
-    </div>
-    <div class="arr-down"><span class="l"></span><span class="h"></span></div>
-  </div>
+  <polygon points="224,268 280,305 224,342 168,305" fill="#dcedc8" stroke="#aed581" stroke-width="1.2"/>
+  <text x="224" y="299" class="st" font-weight="700">Типы</text>
+  <text x="224" y="309" class="st" font-weight="700">символов</text>
+  <text x="224" y="319" class="st" font-weight="700">выбраны?</text>
+  <!-- Error branch -->
+  <line x1="280" y1="305" x2="310" y2="305" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#arr)"/>
+  <rect x="312" y="293" width="85" height="24" rx="3" fill="#ffcdd2" stroke="#ef9a9a" stroke-width="1.2"/>
+  <text x="354" y="308" class="err">Ошибка</text>
+  <text x="354" y="318" class="err" font-size="7">return</text>
 
-  <!-- 6. Data: build alpha -->
-  <div class="node">
-    <div class="sh-data"><span>Формирование <b>alpha</b><br>из CHK по state[id]</span></div>
-    <div class="arr-down"><span class="l"></span><span class="h"></span></div>
-  </div>
+  <line x1="224" y1="342" x2="224" y2="360" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#arr)"/>
 
-  <!-- 7. Call: hmacGen with params -->
-  <div class="node">
-    <div class="row" style="align-items:stretch">
-      <div class="sh-call"><b>hmacGen(</b><br>seed, svc,<br>len, alpha<b>)</b></div>
-      <div class="param-group">
-        <div class="sh-param">seed = <b>ключ HMAC</b><br>svc+len = <b>сообщение</b></div>
-        <div class="sh-param">alpha = <b>алфавит</b><br>max = 256-(256%len)</div>
-      </div>
-    </div>
-    <div class="arr-down"><span class="l"></span><span class="h"></span></div>
-  </div>
+  <!-- 6. Build alpha -->
+  <polygon points="162,363 286,363 272,385 148,385" fill="#d6eaf8" stroke="#85c1e9" stroke-width="1.2"/>
+  <text x="217" y="375" class="st">Формирование alpha</text>
+  <text x="217" y="383" class="st" font-size="7">из CHK по state[id]</text>
 
-  <!-- 8. Loop: HMAC generation -->
-  <div class="node">
-    <div class="sh-loop" style="max-width:245px">
-      <b>Цикл генерации пароля</b><br>
-      msg = svc + len + ct → sign(HMAC) → 32 байта<br>
-      for byte: byte &lt; max? → alpha[byte % len(alpha)] → pwd<br>
-      пока pwd.length &lt; len
-    </div>
-    <div style="display:flex;align-items:center;gap:4px;margin:1px 0">
-      <span style="font-size:8px;color:#9b59b6">ct = 0, 1, 2...</span>
-    </div>
-    <div class="arr-down"><span class="l"></span><span class="h"></span></div>
-  </div>
+  <line x1="224" y1="385" x2="224" y2="403" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#arr)"/>
 
-  <!-- 9. Decision: inversions -->
-  <div class="node">
-    <div class="sh-decision" style="width:110px;height:110px;font-size:9.5px">
-      <b>inv.cap?</b><br>→ toUpperCase()<br><br><b>inv.dig?</b><br>→ HMAC(seed+<br>'_lastdig') → цифра
-    </div>
-    <div class="arr-down"><span class="l"></span><span class="h"></span></div>
-  </div>
+  <!-- 7. hmacGen call -->
+  <rect x="164" y="406" width="120" height="32" rx="3" fill="#e9ddf7" stroke="#b39ddb" stroke-width="1.5"/>
+  <line x1="168" y1="406" x2="168" y2="438" stroke="#9b59b6" stroke-width="2"/>
+  <line x1="280" y1="406" x2="280" y2="438" stroke="#9b59b6" stroke-width="2"/>
+  <text x="224" y="421" class="t" font-size="9">hmacGen(</text>
+  <text x="224" y="433" class="st">seed, svc, len, alpha)</text>
+
+  <!-- Params right of hmacGen -->
+  <rect x="300" y="408" width="80" height="14" rx="2" fill="#eceff1" stroke="#cfd8dc" stroke-width="1"/>
+  <text x="340" y="419" class="param">seed = ключ HMAC</text>
+  <rect x="300" y="424" width="80" height="14" rx="2" fill="#eceff1" stroke="#cfd8dc" stroke-width="1"/>
+  <text x="340" y="435" class="param">svc+len = сообщение</text>
+  <rect x="300" y="440" width="80" height="14" rx="2" fill="#eceff1" stroke="#cfd8dc" stroke-width="1"/>
+  <text x="340" y="451" class="param">alpha = алфавит</text>
+
+  <line x1="224" y1="438" x2="224" y2="458" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <!-- 8. Loop (hexagon) -->
+  <polygon points="158,461 290,461 302,480 290,499 158,499 146,480" fill="#f3e5f5" stroke="#ce93d8" stroke-width="1.3"/>
+  <text x="224" y="476" class="st" font-weight="700">Цикл генерации</text>
+  <text x="224" y="486" class="st" font-size="7.5">msg = svc+len+ct → HMAC → 32 байта</text>
+  <text x="224" y="496" class="st" font-size="7">byte &lt; max? → alpha[byte%len] → pwd</text>
+
+  <line x1="224" y1="499" x2="224" y2="513" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <!-- Loop back arrow (right side) -->
+  <text x="310" y="484" class="note" font-size="6.5">ct = 0,1,2...</text>
+
+  <line x1="224" y1="513" x2="224" y2="528" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <!-- 9. Inversions decision -->
+  <polygon points="224,531 290,575 224,619 158,575" fill="#dcedc8" stroke="#aed581" stroke-width="1.2"/>
+  <text x="224" y="567" class="st" font-weight="700">inv.cap?</text>
+  <text x="224" y="577" class="st" font-size="7">→ toUpperCase()</text>
+  <text x="224" y="591" class="st" font-weight="700">inv.dig?</text>
+  <text x="224" y="601" class="st" font-size="7">→ HMAC → цифра</text>
+
+  <line x1="224" y1="619" x2="224" y2="637" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#arr)"/>
 
   <!-- 10. Output -->
-  <div class="node">
-    <div class="sh-output">
-      <b>Вывод в #pwd</b><br>
-      updateStrength(len, sets)<br>
-      Копирование в буфер<br>
-      saveCfg() → perSvc[curSvc]
-    </div>
-  </div>
-  
-  <!-- 11. Terminator -->
-  <div class="node" style="margin-top:6px">
-    <div class="arr-down"><span class="l"></span><span class="h"></span></div>
-    <div class="sh-terminator"><b>Конец</b></div>
-  </div>
+  <polygon points="168,640 280,640 266,662 154,662" fill="#fff3e0" stroke="#ffcc80" stroke-width="1.2"/>
+  <text x="217" y="650" class="st" font-weight="700">Вывод в #pwd</text>
+  <text x="217" y="660" class="st" font-size="7">updateStrength()</text>
+
+  <line x1="224" y1="662" x2="224" y2="678" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <!-- 11. End -->
+  <ellipse cx="224" cy="695" rx="50" ry="16" fill="#d5c4e0" stroke="#b39ddb" stroke-width="1.5"/>
+  <text x="224" y="699" class="t">Конец</text>
+
+
+  <!-- ============ RIGHT: genLogin() FLOW ============ -->
+
+  <!-- 1. Start -->
+  <ellipse cx="674" cy="50" rx="55" ry="16" fill="#d5c4e0" stroke="#b39ddb" stroke-width="1.5"/>
+  <text x="674" y="46" class="t">Пуск</text>
+  <text x="674" y="58" class="st">клик «Создать логин»</text>
+
+  <line x1="674" y1="66" x2="674" y2="82" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <!-- 2. genLogin() -->
+  <rect x="624" y="85" width="100" height="28" rx="3" fill="#e9ddf7" stroke="#b39ddb" stroke-width="1.5"/>
+  <line x1="628" y1="85" x2="628" y2="113" stroke="#9b59b6" stroke-width="2"/>
+  <line x1="720" y1="85" x2="720" y2="113" stroke="#9b59b6" stroke-width="2"/>
+  <text x="674" y="103" class="t">genLogin()</text>
+
+  <line x1="674" y1="113" x2="674" y2="129" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <!-- 3. Clear + read -->
+  <polygon points="620,132 728,132 714,154 606,154" fill="#d6eaf8" stroke="#85c1e9" stroke-width="1.2"/>
+  <text x="667" y="143" class="st">Очистка #login</text>
+  <text x="667" y="152" class="st">чтение seed, svc</text>
+
+  <line x1="674" y1="154" x2="674" y2="170" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <!-- 4. seed empty? -->
+  <polygon points="674,173 730,210 674,247 618,210" fill="#dcedc8" stroke="#aed581" stroke-width="1.2"/>
+  <text x="674" y="207" class="st" font-weight="700">seed</text>
+  <text x="674" y="217" class="st" font-weight="700">пуст?</text>
+  <line x1="730" y1="210" x2="755" y2="210" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#arr)"/>
+  <rect x="757" y="197" width="70" height="26" rx="3" fill="#ffcdd2" stroke="#ef9a9a" stroke-width="1.2"/>
+  <text x="792" y="210" class="err">Ошибка</text>
+  <text x="792" y="220" class="err" font-size="7">return</text>
+
+  <line x1="674" y1="247" x2="674" y2="265" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <!-- 5. svc empty? -->
+  <polygon points="674,268 730,305 674,342 618,305" fill="#dcedc8" stroke="#aed581" stroke-width="1.2"/>
+  <text x="674" y="302" class="st" font-weight="700">svc</text>
+  <text x="674" y="312" class="st" font-weight="700">пуст?</text>
+  <line x1="730" y1="305" x2="755" y2="305" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#arr)"/>
+  <rect x="757" y="295" width="50" height="20" rx="3" fill="#ffcdd2" stroke="#ef9a9a" stroke-width="1.2"/>
+  <text x="782" y="309" class="err" font-size="7">return</text>
+
+  <line x1="674" y1="342" x2="674" y2="360" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <!-- 6. loginCounter++ -->
+  <polygon points="628,363 720,363 706,385 614,385" fill="#d6eaf8" stroke="#85c1e9" stroke-width="1.2"/>
+  <text x="667" y="374" class="st" font-weight="700">loginCounter++</text>
+  <text x="667" y="383" class="st" font-size="7">(0, 1, 2...)</text>
+
+  <line x1="674" y1="385" x2="674" y2="403" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <!-- 7. SHA-256 -->
+  <rect x="624" y="406" width="100" height="28" rx="3" fill="#e9ddf7" stroke="#b39ddb" stroke-width="1.5"/>
+  <line x1="628" y1="406" x2="628" y2="434" stroke="#9b59b6" stroke-width="2"/>
+  <line x1="720" y1="406" x2="720" y2="434" stroke="#9b59b6" stroke-width="2"/>
+  <text x="674" y="420" class="t" font-size="9">SHA-256(</text>
+  <text x="674" y="431" class="st" font-size="7.5">seed+'login'+svc+counter)</text>
+
+  <!-- Params -->
+  <rect x="740" y="410" width="70" height="20" rx="2" fill="#eceff1" stroke="#cfd8dc" stroke-width="1"/>
+  <text x="775" y="420" class="param">Входные данные</text>
+  <text x="775" y="428" class="param" font-size="7">seed+'login'+svc+counter</text>
+
+  <line x1="674" y1="434" x2="674" y2="452" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <!-- 8. 6 bytes -> alpha -->
+  <polygon points="550,455 798,455 784,477 536,477" fill="#d6eaf8" stroke="#85c1e9" stroke-width="1.2"/>
+  <text x="674" y="466" class="st" font-weight="700">6 байт из хеша → alpha</text>
+  <text x="674" y="476" class="st" font-size="6">abcdefghjkmnpqrstuvwxyz23456789</text>
+
+  <!-- Note about alpha -->
+  <rect x="810" y="458" width="68" height="18" rx="2" fill="#eceff1" stroke="#cfd8dc" stroke-width="1"/>
+  <text x="844" y="466" class="param">Из alpha исключены:</text>
+  <text x="844" y="474" class="param" font-size="7">i, l, o, 0, 1</text>
+
+  <line x1="674" y1="477" x2="674" y2="495" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <!-- 9. Output -->
+  <polygon points="628,498 720,498 706,520 614,520" fill="#fff3e0" stroke="#ffcc80" stroke-width="1.2"/>
+  <text x="667" y="511" class="st" font-weight="700">Вывод login в #login</text>
+
+  <line x1="674" y1="520" x2="674" y2="680" stroke="#7b4da8" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <!-- 10. End -->
+  <ellipse cx="674" cy="695" rx="50" ry="16" fill="#d5c4e0" stroke="#b39ddb" stroke-width="1.5"/>
+  <text x="674" y="699" class="t">Конец</text>
+
+  <!-- ============ LEGEND ============ -->
+  <rect x="20" y="730" width="860" height="24" rx="4" fill="#f8f4ff" stroke="#e0dce8" stroke-width="1"/>
+  <text x="30" y="745" class="leg" font-weight="700">Условные обозначения:</text>
+
+  <ellipse cx="105" cy="743" rx="14" ry="7" fill="#d5c4e0" stroke="#b39ddb" stroke-width="1"/>
+  <text x="125" y="746" class="leg">Терминатор</text>
+
+  <rect x="205" y="737" width="20" height="12" rx="2" fill="#e9ddf7" stroke="#b39ddb" stroke-width="1"/>
+  <text x="230" y="746" class="leg">Процесс</text>
+
+  <polygon points="328,737 348,743 328,749 308,743" fill="#dcedc8" stroke="#aed581" stroke-width="1"/>
+  <text x="356" y="746" class="leg">Решение</text>
+
+  <polygon points="428,737 448,743 438,749 418,749" fill="#d6eaf8" stroke="#85c1e9" stroke-width="1"/>
+  <text x="456" y="746" class="leg">Данные</text>
+
+  <polygon points="518,737 534,743 518,749 502,749" fill="#f3e5f5" stroke="#ce93d8" stroke-width="1"/>
+  <text x="542" y="746" class="leg">Цикл</text>
+
+  <rect x="598" y="737" width="20" height="12" rx="2" fill="#fff3e0" stroke="#ffcc80" stroke-width="1"/>
+  <text x="623" y="746" class="leg">Вывод</text>
+
+  <rect x="678" y="737" width="20" height="12" rx="2" fill="#ffcdd2" stroke="#ef9a9a" stroke-width="1"/>
+  <text x="703" y="746" class="leg">Ошибка</text>
+
+  <rect x="755" y="737" width="20" height="12" rx="2" fill="#eceff1" stroke="#cfd8dc" stroke-width="1"/>
+  <text x="780" y="746" class="leg">Параметр</text>
+
+</svg>
 </div>
 
-<!-- ============ RIGHT: genLogin() ============ -->
-<div class="half">
-  <div class="half-title">Генерация логина</div>
-
-  <!-- 1 -->
-  <div class="node">
-    <div class="sh-terminator"><b>Пуск</b><br>клик «Создать логин»</div>
-    <div class="arr-down"><span class="l"></span><span class="h"></span></div>
-  </div>
-
-  <!-- 2 -->
-  <div class="node">
-    <div class="sh-call"><b>genLogin()</b></div>
-    <div class="arr-down"><span class="l"></span><span class="h"></span></div>
-  </div>
-
-  <!-- 3 -->
-  <div class="node">
-    <div class="sh-data"><span>Очистка #login<br>чтение <b>seed</b>, <b>svc</b></span></div>
-    <div class="arr-down"><span class="l"></span><span class="h"></span></div>
-  </div>
-
-  <!-- 4 -->
-  <div class="node">
-    <div class="row">
-      <div class="sh-decision"><b>seed<br>пуст?</b></div>
-      <div class="arr-right"><span class="l"></span><span class="h"></span></div>
-      <div class="sh-error"><b>Ошибка</b><br>«Введите сид»<br>return</div>
-    </div>
-    <div class="arr-down"><span class="l"></span><span class="h"></span></div>
-  </div>
-
-  <!-- 5 -->
-  <div class="node">
-    <div class="row">
-      <div class="sh-decision"><b>svc<br>пуст?</b></div>
-      <div class="arr-right"><span class="l"></span><span class="h"></span></div>
-      <div class="sh-error"><b>return</b></div>
-    </div>
-    <div class="arr-down"><span class="l"></span><span class="h"></span></div>
-  </div>
-
-  <!-- 6 -->
-  <div class="node">
-    <div class="sh-data"><span><b>loginCounter++</b><br>(0, 1, 2...)</span></div>
-    <div class="arr-down"><span class="l"></span><span class="h"></span></div>
-  </div>
-
-  <!-- 7 -->
-  <div class="node">
-    <div class="row" style="align-items:stretch">
-      <div class="sh-call"><b>SHA-256(</b><br>seed + 'login' +<br>svc + counter<b>)</b></div>
-      <div class="param-group">
-        <div class="sh-param">Входные данные:<br><b>seed</b> + 'login'<br>+ <b>svc</b> + <b>counter</b></div>
-      </div>
-    </div>
-    <div class="arr-down"><span class="l"></span><span class="h"></span></div>
-  </div>
-
-  <!-- 8 -->
-  <div class="node">
-    <div class="row" style="align-items:stretch">
-      <div class="sh-data" style="max-width:180px">
-        <span><b>6 байт из хеша → alpha</b><br>
-        abcdefghjkmnpqrstuvwxyz<br>23456789</span>
-      </div>
-      <div class="param-group">
-        <div class="sh-param">Из alpha исключены:<br><b>i, l, o, 0, 1</b><br>(чтобы не путать)</div>
-      </div>
-    </div>
-    <div class="arr-down"><span class="l"></span><span class="h"></span></div>
-  </div>
-
-  <!-- 9 -->
-  <div class="node">
-    <div class="sh-output"><b>Вывод login в #login</b></div>
-  </div>
-
-  <!-- 10 -->
-  <div class="node" style="margin-top:6px">
-    <div class="arr-down"><span class="l"></span><span class="h"></span></div>
-    <div class="sh-terminator"><b>Конец</b></div>
-  </div>
-</div>
-
-</div><!-- /chart-wrap -->
-
-<div class="bottom-note">
-  <b>HMAC-SHA256:</b> сид = ключ HMAC. Сообщение = svc + len + счётчик ct. Rejection Sampling: max = 256-(256%len), байты &ge; max отбрасываются, чтобы все символы алфавита встречались равновероятно. &nbsp;|&nbsp; <b>SHA-256 (для логина):</b> обычный хеш, не HMAC. loginCounter увеличивается при каждом клике — каждый новый логин уникален.
+<div style="max-width:880px;margin-top:8px;font-size:8.5px;color:#999;text-align:center;line-height:1.5">
+<strong>HMAC-SHA256:</strong> сид = ключ HMAC. Сообщение = svc + len + счётчик. Rejection Sampling: max = 256-(256%len), байты &ge; max отбрасываются. | <strong>SHA-256 (логин):</strong> обычный хеш (не HMAC). loginCounter при каждом клике даёт уникальный логин.
 </div>
 
 </body>
