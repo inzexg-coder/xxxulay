@@ -52,10 +52,6 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 input[type="number"]{-moz-appearance:textfield}
 input.error{border-color:var(--error);animation:glow 1.5s ease infinite}
 
-
-
-
-
 .svc-header{display:flex;align-items:center;gap:6px;margin-bottom:3px}
 .svc-header label{margin-bottom:0;flex:1}
 .svc-expand{
@@ -77,7 +73,6 @@ input.error{border-color:var(--error);animation:glow 1.5s ease infinite}
 }
 .svc-chip:hover{border-color:var(--lilac);background:var(--bg);transform:translateY(-1px)}
 .svc-chip:active{transform:scale(.96)}
-
 
 .row{display:flex;gap:24px;align-items:flex-start}
 .col{flex:0 0 auto}
@@ -270,7 +265,6 @@ let state = {capitals:1,lowercase:1,digits:0,symbols:1};
 let inv = {cap:0,dig:0};
 let svcs = [];
 
-
 function init(){
   renderChk();
   renderInv();
@@ -283,7 +277,6 @@ function init(){
   document.getElementById('service').addEventListener('keydown',e=>{if(e.key==='Enter')gen()});
 
 }
-
 
 function loadState(){
   const saved = localStorage.getItem('passgen_state');
@@ -370,11 +363,6 @@ function renderChk(){
 
 function adj(d){const i=document.getElementById('length');let v=+i.value+d;i.value=v<1?1:v>99?99:v;}
 
-
-
-
-
-
 function toggleSvcPanel(){
   const p=document.getElementById('svcPanel');
   const t=document.getElementById('svcToggle');
@@ -385,11 +373,11 @@ function toggleSvcPanel(){
 function renderSvcChips(){
   const g=document.getElementById('svcGrid');g.innerHTML='';
   const shown=new Set();
-  // Popular first
+
   for(const s of POPULAR){
     if(svcs.indexOf(s.n)===-1){g.appendChild(chip(s,true,false));shown.add(s.n);}
   }
-  // User saved after
+
   for(const s of svcs){
     g.appendChild(chip(s,false,true));
   }
@@ -442,11 +430,11 @@ async function gen(){
   if(!sets){document.getElementById('seedErr').textContent='Выберите хотя бы один тип символов';return;}
   const alpha=CHK.filter(([id])=>state[id]).map(([,,l])=>l).join('');
   const pwd=await hmacGen(seed,svc,len,alpha);
-  // Apply inversion
+
   let finalPwd=pwd;
   if(inv.cap&&finalPwd.length>0)finalPwd=finalPwd[0].toUpperCase()+finalPwd.slice(1);
   if(inv.dig&&finalPwd.length>0){
-    // Get a deterministic digit from HMAC
+
     const dk=await crypto.subtle.importKey('raw',new TextEncoder().encode(seed+'_lastdig'),{name:'HMAC',hash:'SHA-256'},false,['sign']);
     const ds=await crypto.subtle.sign('HMAC',dk,new TextEncoder().encode(svc+len));
     const dd=new Uint8Array(ds);
@@ -455,7 +443,7 @@ async function gen(){
   }
   document.getElementById('pwd').value=finalPwd;
   updateStrength(len,sets);
-  // Auto copy
+
   try{navigator.clipboard.writeText(finalPwd);document.getElementById('msg').textContent='Скопировано!';setTimeout(()=>document.getElementById('msg').textContent='',2000);}catch(e){}
   if(!svcs.includes(svc)&&svc!=='(empty)'){
     svcs.push(svc);svcs.sort();renderSvcChips();

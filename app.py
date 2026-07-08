@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-"""passgen — desktop app (no browser chrome)"""
 
 import http.server
 import socketserver
@@ -13,7 +12,6 @@ import signal
 
 PORT = 8765
 DIR = os.path.dirname(os.path.abspath(__file__))
-# URL built after port detection
 
 
 class QuietHandler(http.server.SimpleHTTPRequestHandler):
@@ -24,7 +22,6 @@ class QuietHandler(http.server.SimpleHTTPRequestHandler):
 
 
 def open_app_mode(url):
-    """Open URL without browser chrome (address bar, tabs)."""
     browsers = [
         ("google-chrome-stable", ["--app=" + url, "--window-size=420,620", "--no-first-run"]),
         ("google-chrome",       ["--app=" + url, "--window-size=420,620", "--no-first-run"]),
@@ -46,7 +43,6 @@ def open_app_mode(url):
 
 
 if __name__ == "__main__":
-    # Find available port
     port = PORT
     while True:
         try:
@@ -61,7 +57,6 @@ if __name__ == "__main__":
     print(f"  passgen — http://localhost:{port}")
     print()
 
-    # Try app mode first
     if not open_app_mode(url):
         webbrowser.open(url)
 

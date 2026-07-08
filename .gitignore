@@ -1,7 +1,3 @@
 __pycache__/
 *.pyc
 *.pyo
-
-# Build artifacts (extracted C# project)
-extracted/passgen/bin/
-extracted/passgen/obj/

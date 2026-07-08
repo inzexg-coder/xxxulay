@@ -1,8 +1,0 @@
-D:\passgen\bin\Debug\passgen.exe.config
-D:\passgen\bin\Debug\passgen.exe
-D:\passgen\bin\Debug\passgen.pdb
-D:\passgen\obj\Debug\passgen.csprojResolveAssemblyReference.cache
-D:\passgen\obj\Debug\passgen.MainForm.resources
-D:\passgen\obj\Debug\passgen.csproj.GenerateResource.Cache
-D:\passgen\obj\Debug\passgen.exe
-D:\passgen\obj\Debug\passgen.pdb
