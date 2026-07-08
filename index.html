@@ -276,8 +276,11 @@ function applyCfg(cfg){
 }
 function saveCfg(){
   const svc=document.getElementById('service').value.trim()||'(empty)';
-  const cfg=getCfg(svc); cfg.state=window.state; cfg.inv=window.inv;
-  cfg.len=+document.getElementById('length').value;
+  perSvc[svc] = {
+    state: {...window.state},
+    inv: {...window.inv},
+    len: +document.getElementById('length').value
+  };
   saveState();
 }
 
@@ -291,8 +294,8 @@ function init(){
   });
   document.getElementById('seed').addEventListener('keydown',e=>{if(e.key==='Enter')gen()});
   document.getElementById('service').addEventListener('keydown',e=>{if(e.key==='Enter')gen()});
-  document.getElementById('service').addEventListener('input',onSvcChange);
-  const cfg=getCfg(curSvc); applyCfg(cfg);
+  if(perSvc[curSvc]) applyCfg(perSvc[curSvc]);
+  else { curSvc='(empty)'; document.getElementById('service').value=''; }
   renderSvcChips();
 }
 
@@ -307,12 +310,12 @@ function loadState(){
 function onSvcChange(){
   const svc=document.getElementById('service').value.trim()||'(empty)';
   curSvc=svc;
-  const cfg=getCfg(svc); applyCfg(cfg);
+  if(perSvc[svc]) applyCfg(perSvc[svc]);
 }
 function saveState(){
   try{localStorage.setItem('passgen_state',JSON.stringify({
     perSvc, svcs
-  }))}catch(e){}
+  },null,2))}catch(e){}
 }
 
 function toggleInv(id){
@@ -332,7 +335,6 @@ function applyPreset(){
   renderChk(); saveCfg();
 }
 function exportData(){
-  cfg=getCfg(document.getElementById('service').value.trim()||'(empty)');
   const data={svcs,perSvc};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='passgen_export.json';a.click();
@@ -345,7 +347,7 @@ function importData(e){
       const d=JSON.parse(reader.result);
       if(d.perSvc){perSvc=d.perSvc;}
       if(d.svcs){svcs=d.svcs;renderSvcChips();}
-      const cfg=getCfg(curSvc); applyCfg(cfg);
+      if(perSvc[curSvc]) applyCfg(perSvc[curSvc]);
       saveState();
     }catch(err){alert('Ошибка импорта');}
   };
@@ -422,7 +424,7 @@ function chip(item, hasLogo, deletable){
     document.getElementById('svcPanel').classList.remove('open');
     document.getElementById('svcToggle').classList.remove('open');
     curSvc=name;
-    const cfg=getCfg(name); applyCfg(cfg);
+    if(perSvc[name]) applyCfg(perSvc[name]);
   };
   if(deletable){
     d.oncontextmenu=(e)=>{
@@ -468,6 +470,7 @@ async function gen(){
   if(!svcs.includes(svc)&&svc!=='(empty)'){
     svcs.push(svc);svcs.sort();renderSvcChips();
   }
+  curSvc=svc;
   saveCfg();
 }
 
