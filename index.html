@@ -287,6 +287,7 @@ const POPULAR = [
 let perSvc = {};
 let curSvc = '(empty)';
 let svcs = [];
+let loginCounter = 0;
 
 function getCfg(svc){
   if(!perSvc[svc]) perSvc[svc]={state:{capitals:1,lowercase:1,digits:0,symbols:1},inv:{cap:0,dig:0},len:10};
@@ -318,7 +319,7 @@ function init(){
   document.getElementById('service').addEventListener('keydown',e=>{if(e.key==='Enter')gen()});
   document.getElementById('service').addEventListener('blur',()=>{
     const svc=document.getElementById('service').value.trim()||'(empty)';
-    if(svc!==curSvc){curSvc=svc; if(perSvc[svc]) applyCfg(perSvc[svc]);}
+    if(svc!==curSvc){curSvc=svc; if(perSvc[svc]) applyCfg(perSvc[svc]); else if(svc!=='(empty)') { perSvc[svc]={state:{...window.state},inv:{...window.inv},len:+document.getElementById('length').value}; }}
   });
   if(perSvc[curSvc]) applyCfg(perSvc[curSvc]);
   else {
@@ -350,7 +351,6 @@ function saveState(){}
 function toggleInv(id){
   window.inv[id]=+!window.inv[id];
   document.getElementById('inv'+id.charAt(0).toUpperCase()+id.slice(1)).className='chk-circle'+(window.inv[id]?' on':'');
-  saveCfg();
 }
 
 function applyPreset(){
@@ -444,7 +444,7 @@ function renderChk(){
   const g=document.getElementById('chkGrid');g.innerHTML='';
   for(const[id,lbl]of CHK){
     const d=document.createElement('div');d.className='chk-item';
-    d.onclick=()=>{window.state[id]=+!window.state[id];renderChk();saveCfg();};
+    d.onclick=()=>{window.state[id]=+!window.state[id];renderChk();};
     const c=document.createElement('span');
     c.className='chk-circle'+(window.state[id]?' on':'');
     const t=document.createElement('span');t.textContent=lbl;
@@ -452,7 +452,7 @@ function renderChk(){
   }
 }
 
-function adj(d){const i=document.getElementById('length');let v=+i.value+d;i.value=v<1?1:v>99?99:v;saveCfg();}
+function adj(d){const i=document.getElementById('length');let v=+i.value+d;i.value=v<1?1:v>99?99:v;}
 
 function toggleSvcPanel(){
   const p=document.getElementById('svcPanel');
@@ -570,7 +570,8 @@ function genLogin(){
     return;
   }
   if(!svc)return;
-  const enc=new TextEncoder().encode(seed+'login'+svc);
+  loginCounter++;
+  const enc=new TextEncoder().encode(seed+'login'+svc+loginCounter);
   crypto.subtle.digest('SHA-256',enc).then(buf=>{
     const alpha='abcdefghjkmnpqrstuvwxyz23456789';
     const bytes=new Uint8Array(buf);
