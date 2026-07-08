@@ -294,7 +294,7 @@ function loadState(){
 }
 function saveState(){
   try{localStorage.setItem('passgen_state',JSON.stringify({
-    state, svcs, len: +document.getElementById('length').value
+    state, svcs, inv, len: +document.getElementById('length').value
   }))}catch(e){}
 }
 
