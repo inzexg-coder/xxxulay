@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>passgen — Блок-схема</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    background:#f8f8f8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    display:flex;flex-direction:column;align-items:center;padding:30px 20px
+  }
+  h1{font-size:22px;color:#5b21b6;margin-bottom:4px}
+  .sub{font-size:13px;color:#999;margin-bottom:20px}
+  .legend{
+    display:flex;gap:16px;flex-wrap:wrap;justify-content:center;
+    background:#fff;border-radius:10px;padding:10px 18px;
+    box-shadow:0 1px 4px rgba(0,0,0,.06);margin-bottom:24px
+  }
+  .leg-item{display:flex;align-items:center;gap:6px;font-size:12px;color:#555}
+  .leg-sq{width:14px;height:14px;border-radius:3px;border:1px solid rgba(0,0,0,.1);flex-shrink:0}
+  .chart-wrap{
+    display:flex;gap:0;background:#fff;border-radius:12px;
+    box-shadow:0 2px 12px rgba(0,0,0,.07);overflow:hidden;max-width:880px;width:100%
+  }
+  .half{flex:1;padding:18px 22px 14px;min-width:0}
+  .half:first-child{border-right:1px solid #eee}
+  .half-title{
+    font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;
+    color:#7c3aed;text-align:center;margin-bottom:12px
+  }
+  .node{
+    display:flex;flex-direction:column;align-items:center;margin-bottom:0
+  }
+  .box{
+    border-radius:7px;padding:5px 12px;font-size:11px;line-height:1.45;
+    text-align:center;border:1.5px solid transparent;width:100%;max-width:220px;
+    transition:box-shadow .15s
+  }
+  .box:hover{box-shadow:0 2px 8px rgba(0,0,0,.08)}
+  .box b{font-weight:700}
+  .box i{font-style:normal;color:#666}
+
+  /* Colors */
+  .func{background:#e9ddf7;border-color:#c8b0e8;color:#1a1a2e}
+  .check{background:#dcedc8;border-color:#aed581;color:#1a1a2e}
+  .data{background:#d6eaf8;border-color:#85c1e9;color:#1a1a2e}
+  .action{background:#ffe0b2;border-color:#ffb74d;color:#4e342e}
+  .output{background:#fff3e0;border-color:#ffcc80;color:#4e342e}
+  .error{background:#ffcdd2;border-color:#ef9a9a;color:#b71c1c}
+
+  .arrow{
+    display:flex;flex-direction:column;align-items:center;
+    color:#9b59b6;font-size:10px;padding:1px 0;line-height:1;user-select:none
+  }
+  .arrow-line{width:1.5px;height:8px;background:#9b59b6}
+  .arrow-head{
+    width:0;height:0;border-left:5px solid transparent;
+    border-right:5px solid transparent;border-top:6px solid #9b59b6
+  }
+  .arrow-right{
+    display:inline-flex;align-items:center;color:#9b59b6;font-size:10px
+  }
+  .arrow-right-l{width:14px;height:1.5px;background:#9b59b6}
+  .arrow-right-h{
+    width:0;height:0;border-top:4px solid transparent;
+    border-bottom:4px solid transparent;border-left:5px solid #9b59b6
+  }
+
+  .row-node{
+    display:flex;align-items:flex-start;gap:8px;justify-content:center;width:100%
+  }
+  .err-box{max-width:120px;font-size:9px;padding:4px 8px;flex-shrink:0}
+
+  .param-side{
+    display:flex;flex-direction:column;gap:3px;margin-top:2px
+  }
+  .param-box{
+    background:#eceff1;border:1px solid #cfd8dc;border-radius:5px;
+    padding:3px 7px;font-size:8.5px;line-height:1.35;color:#37474f;
+    text-align:center
+  }
+
+  .loop-box{
+    max-width:260px;font-size:9.5px;padding:5px 8px;
+    text-align:left;line-height:1.4
+  }
+
+  .bottom-note{
+    max-width:880px;width:100%;margin-top:14px;
+    font-size:10px;color:#999;line-height:1.5;text-align:center
+  }
+  @media(max-width:700px){
+    .chart-wrap{flex-direction:column}
+    .half:first-child{border-right:none;border-bottom:1px solid #eee}
+  }
+</style>
+</head>
+<body>
+
+<h1>passgen</h1>
+<div class="sub">Блок-схема вызова функций при генерации пароля и логина</div>
+
+<div class="legend">
+  <span class="leg-item"><span class="leg-sq" style="background:#e9ddf7"></span> Функция</span>
+  <span class="leg-item"><span class="leg-sq" style="background:#dcedc8"></span> Проверка</span>
+  <span class="leg-item"><span class="leg-sq" style="background:#d6eaf8"></span> Данные</span>
+  <span class="leg-item"><span class="leg-sq" style="background:#ffe0b2"></span> Действие</span>
+  <span class="leg-item"><span class="leg-sq" style="background:#fff3e0"></span> Вывод</span>
+  <span class="leg-item"><span class="leg-sq" style="background:#ffcdd2"></span> Ошибка</span>
+</div>
+
+<div class="chart-wrap">
+
+<!-- LEFT: gen() -->
+<div class="half">
+  <div class="half-title">Генерация пароля</div>
+
+  <!-- 1 -->
+  <div class="node">
+    <div class="box action"><b>Пользователь</b><br>клик «Создать»</div>
+    <div class="arrow"><span class="arrow-line"></span><span class="arrow-head"></span></div>
+  </div>
+
+  <!-- 2 -->
+  <div class="node">
+    <div class="box func"><b>gen()</b><br>запуск</div>
+    <div class="arrow"><span class="arrow-line"></span><span class="arrow-head"></span></div>
+  </div>
+
+  <!-- 3 -->
+  <div class="node">
+    <div class="box data">Чтение DOM:<br>seed, svc, len, state, inv</div>
+    <div class="arrow"><span class="arrow-line"></span><span class="arrow-head"></span></div>
+  </div>
+
+  <!-- 4: seed check -->
+  <div class="node">
+    <div class="row-node">
+      <div class="box check"><b>seed пуст?</b></div>
+      <div style="display:flex;align-items:center;gap:3px">
+        <div style="display:flex;align-items:center;gap:2px">
+          <span class="arrow-right-l"></span><span class="arrow-right-h"></span>
+        </div>
+        <div class="box error err-box"><b>Розовая подсветка</b><br>return</div>
+      </div>
+    </div>
+    <div class="arrow"><span class="arrow-line"></span><span class="arrow-head"></span></div>
+  </div>
+
+  <!-- 5: chars check -->
+  <div class="node">
+    <div class="row-node">
+      <div class="box check"><b>Типы символов<br>выбраны?</b></div>
+      <div style="display:flex;align-items:center;gap:3px">
+        <div style="display:flex;align-items:center;gap:2px">
+          <span class="arrow-right-l"></span><span class="arrow-right-h"></span>
+        </div>
+        <div class="box error err-box"><b>Ошибка</b><br>return</div>
+      </div>
+    </div>
+    <div class="arrow"><span class="arrow-line"></span><span class="arrow-head"></span></div>
+  </div>
+
+  <!-- 6 -->
+  <div class="node">
+    <div class="box data">Формирование <b>alpha</b><br>из CHK по state[id]</div>
+    <div class="arrow"><span class="arrow-line"></span><span class="arrow-head"></span></div>
+  </div>
+
+  <!-- 7: hmacGen -->
+  <div class="node">
+    <div class="row-node" style="align-items:stretch">
+      <div class="box func"><b>hmacGen(</b><br>seed, svc, len, alpha<b>)</b></div>
+      <div class="param-side">
+        <div class="param-box">seed = <b>ключ HMAC</b><br>svc+len = <b>сообщение</b></div>
+        <div class="param-box">alpha = <b>алфавит</b><br>max = 256-(256%len)</div>
+      </div>
+    </div>
+    <div class="arrow"><span class="arrow-line"></span><span class="arrow-head"></span></div>
+  </div>
+
+  <!-- 8: HMAC loop -->
+  <div class="node">
+    <div class="box func loop-box">
+      <b>Цикл:</b> msg = svc + len + counter → importKey → sign(HMAC) → 32 байта<br>
+      for byte: <i>если byte &lt; max</i> → alpha[byte % len(alpha)] → pwd
+    </div>
+    <div class="arrow"><span class="arrow-line"></span><span class="arrow-head"></span></div>
+  </div>
+
+  <!-- 9: Inversions -->
+  <div class="node">
+    <div class="box check">
+      <b>inv.cap?</b> → toUpperCase() первого символа<br>
+      <b>inv.dig?</b> → HMAC(seed+'_lastdig') → цифра
+    </div>
+    <div class="arrow"><span class="arrow-line"></span><span class="arrow-head"></span></div>
+  </div>
+
+  <!-- 10: Output -->
+  <div class="node">
+    <div class="box output">
+      <b>Вывод в #pwd</b><br>
+      updateStrength(len, sets)<br>
+      Копирование в буфер<br>
+      saveCfg() → perSvc[curSvc]
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT: genLogin() -->
+<div class="half">
+  <div class="half-title">Генерация логина</div>
+
+  <!-- 1 -->
+  <div class="node">
+    <div class="box action"><b>Пользователь</b><br>клик «Создать логин»</div>
+    <div class="arrow"><span class="arrow-line"></span><span class="arrow-head"></span></div>
+  </div>
+
+  <!-- 2 -->
+  <div class="node">
+    <div class="box func"><b>genLogin()</b><br>запуск</div>
+    <div class="arrow"><span class="arrow-line"></span><span class="arrow-head"></span></div>
+  </div>
+
+  <!-- 3 -->
+  <div class="node">
+    <div class="box data">Очистка #login<br>чтение seed, svc</div>
+    <div class="arrow"><span class="arrow-line"></span><span class="arrow-head"></span></div>
+  </div>
+
+  <!-- 4: seed check -->
+  <div class="node">
+    <div class="row-node">
+      <div class="box check"><b>seed пуст?</b></div>
+      <div style="display:flex;align-items:center;gap:3px">
+        <div style="display:flex;align-items:center;gap:2px">
+          <span class="arrow-right-l"></span><span class="arrow-right-h"></span>
+        </div>
+        <div class="box error err-box"><b>Ошибка</b><br>return</div>
+      </div>
+    </div>
+    <div class="arrow"><span class="arrow-line"></span><span class="arrow-head"></span></div>
+  </div>
+
+  <!-- 5: svc check -->
+  <div class="node">
+    <div class="row-node">
+      <div class="box check"><b>svc пуст?</b></div>
+      <div style="display:flex;align-items:center;gap:3px">
+        <div style="display:flex;align-items:center;gap:2px">
+          <span class="arrow-right-l"></span><span class="arrow-right-h"></span>
+        </div>
+        <div class="box error err-box"><b>return</b></div>
+      </div>
+    </div>
+    <div class="arrow"><span class="arrow-line"></span><span class="arrow-head"></span></div>
+  </div>
+
+  <!-- 6 -->
+  <div class="node">
+    <div class="box data"><b>loginCounter++</b><br>(0, 1, 2...)</div>
+    <div class="arrow"><span class="arrow-line"></span><span class="arrow-head"></span></div>
+  </div>
+
+  <!-- 7: SHA-256 -->
+  <div class="node">
+    <div class="row-node" style="align-items:stretch">
+      <div class="box func"><b>SHA-256(</b><br>seed + 'login' +<br>svc + counter<b>)</b></div>
+      <div class="param-side">
+        <div class="param-box">Входные данные:<br>seed + 'login'<br>+ svc + counter</div>
+      </div>
+    </div>
+    <div class="arrow"><span class="arrow-line"></span><span class="arrow-head"></span></div>
+  </div>
+
+  <!-- 8 -->
+  <div class="node">
+    <div class="row-node" style="align-items:stretch">
+      <div class="box data"><b>6 байт из хеша → alpha</b><br>abcdefghjkmnpqrstuvwxyz<br>23456789</div>
+      <div class="param-side">
+        <div class="param-box">Из alpha исключены:<br><b>i, l, o, 0, 1</b><br>(чтоб не путать)</div>
+      </div>
+    </div>
+    <div class="arrow"><span class="arrow-line"></span><span class="arrow-head"></span></div>
+  </div>
+
+  <!-- 9 -->
+  <div class="node">
+    <div class="box output"><b>Вывод login в #login</b></div>
+  </div>
+</div>
+
+</div><!-- /chart-wrap -->
+
+<div class="bottom-note">
+  <b>HMAC-SHA256:</b> сид = ключ. svc+len+счётчик = сообщение. Rejection Sampling: max = 256-(256%len). Байты &ge; max отбрасываются.<br>
+  <b>SHA-256 (для логина):</b> обычный хеш (не HMAC). loginCounter увеличивается при каждом клике, гарантируя уникальность.
+</div>
+
+</body>
+</html>
