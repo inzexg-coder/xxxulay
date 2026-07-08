@@ -331,30 +331,21 @@ function init(){
 }
 
 function loadState(){
-  const saved = localStorage.getItem('passgen_state');
-  if(saved) try {
-    const d = JSON.parse(saved);
-    if(d.perSvc) perSvc = d.perSvc;
-    if(d.svcs) svcs = d.svcs;
-    if(d.curSvc) { curSvc = d.curSvc; document.getElementById('service').value = curSvc === '(empty)' ? '' : curSvc; }
-    // Clean up entries not matching any saved service
-    const valid = [...svcs, '(empty)'];
-    Object.keys(perSvc).forEach(k => { if(!valid.includes(k)) delete perSvc[k]; });
-  }catch(e){}
+  try{localStorage.removeItem('passgen_state');}catch(e){}
+  perSvc = {};
+  svcs = [];
+  curSvc = '(empty)';
+  window.state = {capitals:1,lowercase:1,digits:0,symbols:1};
+  window.inv = {cap:0,dig:0};
+  document.getElementById('length').value = 10;
+  document.getElementById('service').value = '';
 }
 function onSvcChange(){
   const svc=document.getElementById('service').value.trim()||'(empty)';
   curSvc=svc;
   if(perSvc[svc]) applyCfg(perSvc[svc]);
 }
-function saveState(){
-  // Keep only entries matching saved services
-  const valid = [...svcs, '(empty)'];
-  Object.keys(perSvc).forEach(k => { if(!valid.includes(k)) delete perSvc[k]; });
-  try{localStorage.setItem('passgen_state',JSON.stringify({
-    perSvc, svcs, curSvc
-  },null,2))}catch(e){}
-}
+function saveState(){}
 
 function toggleInv(id){
   window.inv[id]=+!window.inv[id];
