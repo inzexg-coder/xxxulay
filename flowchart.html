@@ -22,7 +22,7 @@
 <div class="sub">Блок-схема вызова функций при генерации пароля и логина</div>
 
 <div class="wrap">
-<svg viewBox="0 0 900 760" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
+<svg width="900" height="760" viewBox="0 0 900 760" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
 
   <defs>
     <!-- Arrow marker -->
@@ -276,7 +276,7 @@
 </div>
 
 <div style="max-width:880px;margin-top:8px;font-size:8.5px;color:#999;text-align:center;line-height:1.5">
-<strong>HMAC-SHA256:</strong> сид = ключ HMAC. Сообщение = svc + len + счётчик. Rejection Sampling: max = 256-(256%len), байты &ge; max отбрасываются. | <strong>SHA-256 (логин):</strong> обычный хеш (не HMAC). loginCounter при каждом клике даёт уникальный логин.
+<strong>HMAC-SHA256:</strong> сид = ключ HMAC. Сообщение = svc + len + счётчик. Rejection Sampling: max = 256-(256%len), байты &gt;= max отбрасываются. | <strong>SHA-256 (логин):</strong> обычный хеш (не HMAC). loginCounter при каждом клике даёт уникальный логин.
 </div>
 
 </body>
