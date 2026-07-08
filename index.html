@@ -144,6 +144,19 @@ input.error{border-color:var(--error);animation:glow 1.5s ease infinite}
 .error{font-size:12px;color:var(--error);min-height:16px;margin-top:2px}
 
 .msg{text-align:center;font-size:13px;color:var(--lilac);font-weight:600;min-height:20px;margin-top:3px}
+
+.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.3);z-index:100;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal-box{background:#fff;border-radius:14px;padding:18px;max-width:320px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.15);max-height:80vh;overflow-y:auto}
+.modal-title{font-size:14px;font-weight:700;color:var(--lilac2);margin-bottom:10px}
+.modal-svc{display:flex;align-items:center;gap:7px;padding:5px 0;font-size:13px;color:var(--fg);cursor:pointer}
+.modal-svc input{accent-color:var(--lilac);width:16px;height:16px;cursor:pointer}
+.modal-actions{display:flex;gap:8px;margin-top:12px}
+.modal-btn{flex:1;padding:8px;font-size:12px;font-weight:600;border:none;border-radius:8px;cursor:pointer;transition:transform .1s}
+.modal-btn:active{transform:scale(.96)}
+.modal-btn-primary{background:linear-gradient(135deg,var(--lilac),var(--lilac2));color:#fff}
+.modal-btn-secondary{background:var(--border);color:var(--fg)}
+
 </style>
 </head>
 <body>
@@ -154,6 +167,16 @@ input.error{border-color:var(--error);animation:glow 1.5s ease infinite}
     <span style="font-size:11px;color:var(--muted);cursor:pointer;user-select:none" onclick="exportData()">Экспорт</span>
     <span style="font-size:11px;color:var(--muted);cursor:pointer;user-select:none" onclick="document.getElementById('importFile').click()">Импорт</span>
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+    <div class="modal-overlay" id="importModal">
+      <div class="modal-box">
+        <div class="modal-title">Выберите сервисы для импорта</div>
+        <div id="modalList"></div>
+        <div class="modal-actions">
+          <button class="modal-btn modal-btn-secondary" onclick="closeImportModal()">Отмена</button>
+          <button class="modal-btn modal-btn-primary" onclick="confirmImport()">Импортировать</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -342,6 +365,8 @@ function exportData(){
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='passgen_export.json';a.click();
 }
+let importDataCache = null;
+
 function importData(e){
   const file=e.target.files[0];if(!file)return;
   const reader=new FileReader();
@@ -349,16 +374,50 @@ function importData(e){
     try{
       const d=JSON.parse(reader.result);
       if(!d.perSvc && !d.svcs){alert('Файл не содержит данных passgen');return;}
-      if(d.perSvc){perSvc=d.perSvc;}
-      if(d.svcs){svcs=d.svcs;renderSvcChips();}
-      if(perSvc[curSvc]) applyCfg(perSvc[curSvc]);
-      saveState();
-      document.getElementById('msg').textContent='Импорт завершён!';
-      setTimeout(()=>document.getElementById('msg').textContent='',3000);
+      importDataCache = d;
+      showImportModal(d);
     }catch(err){alert('Ошибка импорта: неверный формат файла');}
   };
   reader.readAsText(file);
   e.target.value='';
+}
+
+function showImportModal(d){
+  const list=document.getElementById('modalList');list.innerHTML='';
+  const services=Object.keys(d.perSvc||{}).sort();
+  if(services.length===0){alert('Нет сервисов для импорта');return;}
+  services.forEach(s=>{
+    const label=document.createElement('label');label.className='modal-svc';
+    const cb=document.createElement('input');cb.type='checkbox';cb.checked=true;cb.dataset.svc=s;
+    label.appendChild(cb);
+    const span=document.createElement('span');span.textContent=s;
+    label.appendChild(span);
+    list.appendChild(label);
+  });
+  document.getElementById('importModal').classList.add('open');
+}
+
+function closeImportModal(){
+  document.getElementById('importModal').classList.remove('open');
+  importDataCache=null;
+}
+
+function confirmImport(){
+  const d=importDataCache; if(!d){closeImportModal();return;}
+  const checks=document.querySelectorAll('#modalList input[type=checkbox]:checked');
+  if(checks.length===0){alert('Выберите хотя бы один сервис');return;}
+  checks.forEach(cb=>{
+    const svc=cb.dataset.svc;
+    if(d.perSvc[svc]) perSvc[svc]=d.perSvc[svc];
+    if(!svcs.includes(svc)) svcs.push(svc);
+  });
+  svcs.sort();
+  renderSvcChips();
+  if(perSvc[curSvc]) applyCfg(perSvc[curSvc]);
+  saveState();
+  closeImportModal();
+  document.getElementById('msg').textContent='Импорт завершён!';
+  setTimeout(()=>document.getElementById('msg').textContent='',3000);
 }
 function toggleAdvanced(){
   const p=document.getElementById('advPanel');
