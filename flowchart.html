@@ -10,72 +10,79 @@ body{
   display:flex;flex-direction:column;align-items:center;padding:20px
 }
 h1{font-size:22px;color:#5b21b6;margin-bottom:2px}
-.sub{font-size:13px;color:#888;margin-bottom:16px}
+.sub{font-size:13px;color:#888;margin-bottom:14px}
 
 .leg{
   display:flex;flex-wrap:wrap;gap:10px;justify-content:center;
-  background:#fff;border-radius:8px;padding:8px 14px;margin-bottom:16px;
+  background:#fff;border-radius:8px;padding:8px 14px;margin-bottom:14px;
   box-shadow:0 1px 4px rgba(0,0,0,.06);font-size:12px
 }
 .leg span{display:flex;align-items:center;gap:4px}
 
 .wrap{
   display:flex;gap:0;background:#fff;border-radius:10px;
-  box-shadow:0 2px 10px rgba(0,0,0,.07);overflow:hidden;width:100%;max-width:860px
+  box-shadow:0 2px 10px rgba(0,0,0,.07);overflow:hidden;width:100%;max-width:880px
 }
-.half{flex:1;padding:20px 16px 16px;display:flex;flex-direction:column;align-items:center}
+.half{flex:1;padding:18px 14px 14px;display:flex;flex-direction:column;align-items:center}
 .half+.half{border-left:1.5px dashed #ddd}
 .half h2{
   font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;
-  color:#7c3aed;margin-bottom:14px
+  color:#7c3aed;margin-bottom:12px
 }
 
-/* Cells */
-.c{display:flex;flex-direction:column;align-items:center;width:100%;margin-bottom:0}
-.c>.rw{display:flex;align-items:center;justify-content:center;gap:10px;width:100%}
+/* --- shapes --- */
+.s-term{background:#d5c4e0;border:2px solid #b39ddb;border-radius:20px;padding:5px 20px;text-align:center;font-size:12px;color:#111;line-height:1.3}
+.s-term b{display:block}
 
-/* Shape styles */
-.st{background:#e9ddf7;border:2px solid #c8b0e8;border-radius:5px;padding:6px 14px;text-align:center;font-size:12px;color:#111;line-height:1.35}
-.st b{display:block;font-size:12px}
-.st small{font-size:10px;color:#444}
+.s-proc{background:#e9ddf7;border:2px solid #c8b0e8;border-radius:5px;padding:6px 14px;text-align:center;font-size:12px;color:#111;line-height:1.35}
+.s-proc b{display:block;font-size:12px}
+.s-proc small{font-size:10px;color:#444}
 
-.st-call{background:#e9ddf7;border:2px solid #c8b0e8;border-radius:5px;padding:6px 14px;text-align:center;font-size:12px;color:#111;line-height:1.3;border-left:5px solid #9b59b6;border-right:5px solid #9b59b6}
+.s-call{background:#e9ddf7;border:2px solid #c8b0e8;border-radius:5px;padding:6px 14px;text-align:center;font-size:12px;color:#111;line-height:1.3;border-left:5px solid #9b59b6;border-right:5px solid #9b59b6}
 
-.st-term{background:#d5c4e0;border:2px solid #b39ddb;border-radius:20px;padding:5px 20px;text-align:center;font-size:12px;color:#111;line-height:1.3}
-.st-term b{display:block}
+.s-data{background:#d6eaf8;border:2px solid #85c1e9;border-radius:5px;padding:6px 14px;text-align:center;font-size:12px;color:#111;line-height:1.3}
+.s-data small{font-size:10px;color:#444}
 
-.st-data{background:#d6eaf8;border:2px solid #85c1e9;border-radius:5px;padding:6px 14px;text-align:center;font-size:12px;color:#111;line-height:1.3}
-.st-data small{font-size:10px;color:#444}
+.s-out{background:#fff3e0;border:2px solid #ffcc80;border-radius:5px;padding:6px 14px;text-align:center;font-size:12px;color:#111;line-height:1.3}
 
-.st-out{background:#fff3e0;border:2px solid #ffcc80;border-radius:5px;padding:6px 14px;text-align:center;font-size:12px;color:#111;line-height:1.3}
+.s-err{background:#ffcdd2;border:2px solid #ef9a9a;border-radius:5px;padding:4px 8px;text-align:center;font-size:10px;color:#b71c1c;line-height:1.2}
 
-.st-err{background:#ffcdd2;border:2px solid #ef9a9a;border-radius:5px;padding:4px 8px;text-align:center;font-size:10px;color:#b71c1c;line-height:1.2}
+.s-param{background:#f0f0f0;border:1.5px solid #ccc;border-radius:4px;padding:4px 8px;text-align:center;font-size:10px;color:#444;line-height:1.3}
 
-.st-param{background:#f0f0f0;border:1.5px solid #ccc;border-radius:4px;padding:4px 8px;text-align:center;font-size:10px;color:#444;line-height:1.3}
+/* loop body */
+.s-loop-body{background:#f3e5f5;border:2px solid #ce93d8;border-radius:5px;padding:5px 10px;text-align:center;font-size:11px;color:#111;line-height:1.3}
+.s-loop-body small{font-size:9px;color:#555}
 
-.st-loop{background:#f3e5f5;border:2px solid #ce93d8;border-radius:5px;padding:5px 10px;text-align:center;font-size:11px;color:#111;line-height:1.35}
-.st-loop small{font-size:9px;color:#555}
-
-/* Diamond */
-.diamond-wrap{display:flex;align-items:center;justify-content:center;width:80px;height:80px;position:relative}
-.diamond{
+/* diamond */
+.dw{display:flex;align-items:center;justify-content:center;width:80px;height:80px;position:relative}
+.di{
   width:56px;height:56px;transform:rotate(45deg);
   background:#dcedc8;border:2px solid #8bc34a;display:flex;align-items:center;justify-content:center
 }
-.diamond-inner{transform:rotate(-45deg);font-size:13px;font-weight:700;color:#111;text-align:center;line-height:1.15}
-.diamond-inner small{font-size:9px;font-weight:400;display:block}
+.di-in{transform:rotate(-45deg);font-size:13px;font-weight:700;color:#111;text-align:center;line-height:1.15}
+.di-in small{font-size:9px;font-weight:400;display:block}
 
-/* Arrow down */
-.arr-d{display:flex;flex-direction:column;align-items:center;padding:0;line-height:0}
-.arr-d .l{width:2px;height:14px;background:#9b59b6}
-.arr-d .h{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:7px solid #9b59b6}
+/* arrows */
+.ad{display:flex;flex-direction:column;align-items:center;padding:0;line-height:0}
+.ad .l{width:2px;height:12px;background:#9b59b6}
+.ad .h{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid #9b59b6}
 
-/* Arrow right */
-.arr-r{display:inline-flex;align-items:center;gap:0;flex-shrink:0}
-.arr-r .l{width:16px;height:2px;background:#9b59b6}
-.arr-r .h{width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:6px solid #9b59b6}
+.ar{display:inline-flex;align-items:center;gap:0;flex-shrink:0}
+.ar .l{width:14px;height:2px;background:#9b59b6}
+.ar .h{width:0;height:0;border-top:4px solid transparent;border-bottom:4px solid transparent;border-left:5px solid #9b59b6}
 
 .pg{display:flex;flex-direction:column;gap:4px}
+
+/* loop group */
+.loop-group{display:flex;flex-direction:column;align-items:center;position:relative;width:100%}
+.loop-body{margin:0;padding:4px 0 6px;display:flex;flex-direction:column;align-items:center;position:relative}
+.loop-back{
+  position:absolute;right:-22px;top:50%;display:flex;flex-direction:column;align-items:center
+}
+.loop-back .lb-l{width:2px;height:60px;background:#9b59b6}
+.loop-back .lb-r{display:flex;align-items:center;gap:0}
+.loop-back .lb-r .ll{width:16px;height:2px;background:#9b59b6}
+.loop-back .lb-r .lh{width:0;height:0;border-top:4px solid transparent;border-bottom:4px solid transparent;border-left:5px solid #9b59b6}
 </style>
 </head>
 <body>
@@ -88,7 +95,7 @@ h1{font-size:22px;color:#5b21b6;margin-bottom:2px}
   <span><span style="display:inline-block;width:16px;height:12px;background:#e9ddf7;border:1.5px solid #c8b0e8;border-radius:2px"></span> Процесс</span>
   <span><span style="display:inline-block;width:14px;height:14px;background:#dcedc8;border:1.5px solid #8bc34a;transform:rotate(45deg)"></span> Решение</span>
   <span><span style="display:inline-block;width:16px;height:12px;background:#d6eaf8;border:1.5px solid #85c1e9;border-radius:2px"></span> Данные</span>
-  <span><span style="display:inline-block;width:16px;height:12px;background:#f3e5f5;border:1.5px solid #ce93d8;border-radius:2px"></span> Цикл</span>
+  <span><span style="display:inline-block;width:16px;height:12px;background:#f3e5f5;border:1.5px solid #ce93d8;border-radius:2px"></span> Тело цикла</span>
   <span><span style="display:inline-block;width:16px;height:12px;background:#fff3e0;border:1.5px solid #ffcc80;border-radius:2px"></span> Вывод</span>
   <span><span style="display:inline-block;width:16px;height:12px;background:#ffcdd2;border:1.5px solid #ef9a9a;border-radius:2px"></span> Ошибка</span>
   <span><span style="display:inline-block;width:16px;height:12px;background:#f0f0f0;border:1.5px solid #ccc;border-radius:2px"></span> Параметр</span>
@@ -100,86 +107,93 @@ h1{font-size:22px;color:#5b21b6;margin-bottom:2px}
 <div class="half">
 <h2>Генерация пароля</h2>
 
-<div class="c">
-  <div class="st-term"><b>Пуск</b>клик «Создать»</div>
-  <div class="arr-d"><div class="l"></div><div class="h"></div></div>
-</div>
+<div class="c" style="display:flex;flex-direction:column;align-items:center;width:100%">
+  <div class="s-term"><b>Пуск</b>клик «Создать»</div>
+  <div class="ad"><div class="l"></div><div class="h"></div></div>
 
-<div class="c">
-  <div class="st-call"><b>gen()</b></div>
-  <div class="arr-d"><div class="l"></div><div class="h"></div></div>
-</div>
+  <div class="s-call"><b>gen()</b></div>
+  <div class="ad"><div class="l"></div><div class="h"></div></div>
 
-<div class="c">
-  <div class="st-data">Чтение DOM<b>seed, svc, len, state, inv</b></div>
-  <div class="arr-d"><div class="l"></div><div class="h"></div></div>
-</div>
+  <div class="s-data">Чтение DOM<b>seed, svc, len, state, inv</b></div>
+  <div class="ad"><div class="l"></div><div class="h"></div></div>
 
-<!-- seed check -->
-<div class="c">
-  <div class="rw">
-    <div class="diamond-wrap">
-      <div class="diamond"><div class="diamond-inner">seed<br><small>пуст?</small></div></div>
-    </div>
-    <div class="arr-r"><div class="l"></div><div class="h"></div></div>
-    <div class="st-err"><b>Розовая подсветка</b>«Введите сид»<br>return</div>
+  <!-- seed check -->
+  <div class="rw" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%">
+    <div class="dw"><div class="di"><div class="di-in">seed<br><small>пуст?</small></div></div></div>
+    <div class="ar"><div class="l"></div><div class="h"></div></div>
+    <div class="s-err"><b>Розовая подсветка</b>«Введите сид»<br>return</div>
   </div>
-  <div class="arr-d"><div class="l"></div><div class="h"></div></div>
-</div>
+  <div class="ad"><div class="l"></div><div class="h"></div></div>
 
-<!-- chars check -->
-<div class="c">
-  <div class="rw">
-    <div class="diamond-wrap">
-      <div class="diamond"><div class="diamond-inner">Типы<br><small>выбраны?</small></div></div>
-    </div>
-    <div class="arr-r"><div class="l"></div><div class="h"></div></div>
-    <div class="st-err"><b>Ошибка</b>«Выберите хотя бы<br>один тип символов»<br>return</div>
+  <!-- chars check -->
+  <div class="rw" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%">
+    <div class="dw"><div class="di"><div class="di-in">Типы<br><small>выбраны?</small></div></div></div>
+    <div class="ar"><div class="l"></div><div class="h"></div></div>
+    <div class="s-err"><b>Ошибка</b>«Выберите хотя бы<br>один тип символов»<br>return</div>
   </div>
-  <div class="arr-d"><div class="l"></div><div class="h"></div></div>
-</div>
+  <div class="ad"><div class="l"></div><div class="h"></div></div>
 
-<!-- alpha -->
-<div class="c">
-  <div class="st-data">Формирование <b>alpha</b><small>из CHK по state[id]</small></div>
-  <div class="arr-d"><div class="l"></div><div class="h"></div></div>
-</div>
+  <!-- alpha -->
+  <div class="s-data">Формирование <b>alpha</b><small>из CHK по state[id]</small></div>
+  <div class="ad"><div class="l"></div><div class="h"></div></div>
 
-<!-- hmacGen -->
-<div class="c">
-  <div class="rw" style="align-items:stretch">
-    <div class="st-call"><b>hmacGen(</b>seed, svc,<br>len, alpha<b>)</b></div>
+  <!-- hmacGen -->
+  <div class="rw" style="display:flex;align-items:stretch;justify-content:center;gap:10px;width:100%">
+    <div class="s-call"><b>hmacGen(</b>seed, svc,<br>len, alpha<b>)</b></div>
     <div class="pg">
-      <div class="st-param">seed = <b>ключ HMAC</b><br>svc+len = <b>сообщение</b></div>
-      <div class="st-param">alpha = <b>алфавит</b><br>max = 256-(256%len)</div>
+      <div class="s-param">seed = <b>ключ HMAC</b><br>svc+len = <b>сообщение</b></div>
+      <div class="s-param">alpha = <b>алфавит</b><br>max = 256-(256%len)</div>
     </div>
   </div>
-  <div class="arr-d"><div class="l"></div><div class="h"></div></div>
-</div>
+  <div class="ad"><div class="l"></div><div class="h"></div></div>
 
-<!-- HMAC loop -->
-<div class="c">
-  <div class="st-loop" style="max-width:250px"><b>Цикл генерации пароля</b><small>msg = svc+len+ct → importKey → sign(HMAC) → 32 байта<br>for byte: byte &lt; max → alpha[byte%len] → pwd<br>пока pwd.length &lt; len</small></div>
-  <div style="font-size:9px;color:#9b59b6;margin:1px 0">ct = 0, 1, 2...</div>
-  <div class="arr-d"><div class="l"></div><div class="h"></div></div>
-</div>
+  <!-- ===== LOOP: expanded ===== -->
+  <div class="loop-group" style="display:flex;flex-direction:column;align-items:center;width:100%">
 
-<!-- inversions -->
-<div class="c">
-  <div class="diamond-wrap" style="width:100px;height:100px">
-    <div class="diamond" style="width:70px;height:70px"><div class="diamond-inner" style="font-size:11px">inv.cap?<br><small>toUpperCase()</small><br>inv.dig?<br><small>HMAC→цифра</small></div></div>
+    <!-- condition: pwd.length < len? -->
+    <div class="dw" style="width:100px;height:100px">
+      <div class="di" style="width:72px;height:72px"><div class="di-in" style="font-size:12px">pwd.length<br><small>&lt; len?</small></div></div>
+    </div>
+    <div style="font-size:9px;color:#4caf50;font-weight:600;margin:0">да</div>
+    <div class="ad"><div class="l"></div><div class="h"></div></div>
+
+    <!-- loop body -->
+    <div class="loop-body" style="display:flex;flex-direction:column;align-items:center;position:relative;padding:4px 0">
+      <div class="s-loop-body" style="max-width:230px"><b>msg = svc + len + ct</b><small>importKey → sign(HMAC) → 32 байта</small></div>
+      <div class="ad"><div class="l"></div><div class="h"></div></div>
+      <div class="s-loop-body"><b>byte &lt; max?</b><small>→ alpha[byte % len(alpha)] → pwd</small></div>
+      <div class="ad"><div class="l"></div><div class="h"></div></div>
+      <div class="s-loop-body"><b>ct++</b></div>
+    </div>
+
+    <!-- back arrow to condition -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin:0">
+      <span style="font-size:9px;color:#9b59b6;font-weight:600">цикл</span>
+      <div class="ar"><div class="l" style="width:24px"></div><div class="h"></div></div>
+    </div>
+
+    <!-- exit arrow (no) -->
+    <div style="display:flex;align-items:center;gap:6px;position:relative;left:50px;top:-4px">
+      <span style="font-size:9px;color:#e53935;font-weight:600">нет</span>
+      <div class="ar"><div class="l" style="width:16px"></div><div class="h"></div></div>
+    </div>
   </div>
-  <div class="arr-d"><div class="l"></div><div class="h"></div></div>
-</div>
 
-<!-- output -->
-<div class="c">
-  <div class="st-out"><b>Вывод в #pwd</b><small>updateStrength(len, sets)<br>Копирование в буфер<br>saveCfg() → perSvc[curSvc]</small></div>
-  <div class="arr-d"><div class="l"></div><div class="h"></div></div>
-</div>
+  <div class="ad"><div class="l"></div><div class="h"></div></div>
 
-<div class="c">
-  <div class="st-term"><b>Конец</b></div>
+  <!-- inversions -->
+  <div class="rw" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%">
+    <div class="dw" style="width:100px;height:100px">
+      <div class="di" style="width:72px;height:72px"><div class="di-in" style="font-size:11px">inv.cap?<br><small>toUpperCase()</small><br>inv.dig?<br><small>HMAC→цифра</small></div></div>
+    </div>
+  </div>
+  <div class="ad"><div class="l"></div><div class="h"></div></div>
+
+  <!-- output -->
+  <div class="s-out"><b>Вывод в #pwd</b><small>updateStrength(len, sets)<br>Копирование в буфер<br>saveCfg() → perSvc[curSvc]</small></div>
+  <div class="ad"><div class="l"></div><div class="h"></div></div>
+
+  <div class="s-term"><b>Конец</b></div>
 </div>
 </div>
 
@@ -187,79 +201,57 @@ h1{font-size:22px;color:#5b21b6;margin-bottom:2px}
 <div class="half">
 <h2>Генерация логина</h2>
 
-<div class="c">
-  <div class="st-term"><b>Пуск</b>клик «Создать логин»</div>
-  <div class="arr-d"><div class="l"></div><div class="h"></div></div>
-</div>
+<div class="c" style="display:flex;flex-direction:column;align-items:center;width:100%">
+  <div class="s-term"><b>Пуск</b>клик «Создать логин»</div>
+  <div class="ad"><div class="l"></div><div class="h"></div></div>
 
-<div class="c">
-  <div class="st-call"><b>genLogin()</b></div>
-  <div class="arr-d"><div class="l"></div><div class="h"></div></div>
-</div>
+  <div class="s-call"><b>genLogin()</b></div>
+  <div class="ad"><div class="l"></div><div class="h"></div></div>
 
-<div class="c">
-  <div class="st-data">Очистка #login<br>чтение <b>seed</b>, <b>svc</b></div>
-  <div class="arr-d"><div class="l"></div><div class="h"></div></div>
-</div>
+  <div class="s-data">Очистка #login<br>чтение <b>seed</b>, <b>svc</b></div>
+  <div class="ad"><div class="l"></div><div class="h"></div></div>
 
-<div class="c">
-  <div class="rw">
-    <div class="diamond-wrap">
-      <div class="diamond"><div class="diamond-inner">seed<br><small>пуст?</small></div></div>
-    </div>
-    <div class="arr-r"><div class="l"></div><div class="h"></div></div>
-    <div class="st-err"><b>Ошибка</b>«Введите сид»<br>return</div>
+  <div class="rw" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%">
+    <div class="dw"><div class="di"><div class="di-in">seed<br><small>пуст?</small></div></div></div>
+    <div class="ar"><div class="l"></div><div class="h"></div></div>
+    <div class="s-err"><b>Ошибка</b>«Введите сид»<br>return</div>
   </div>
-  <div class="arr-d"><div class="l"></div><div class="h"></div></div>
-</div>
+  <div class="ad"><div class="l"></div><div class="h"></div></div>
 
-<div class="c">
-  <div class="rw">
-    <div class="diamond-wrap">
-      <div class="diamond"><div class="diamond-inner">svc<br><small>пуст?</small></div></div>
-    </div>
-    <div class="arr-r"><div class="l"></div><div class="h"></div></div>
-    <div class="st-err">return</div>
+  <div class="rw" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%">
+    <div class="dw"><div class="di"><div class="di-in">svc<br><small>пуст?</small></div></div></div>
+    <div class="ar"><div class="l"></div><div class="h"></div></div>
+    <div class="s-err">return</div>
   </div>
-  <div class="arr-d"><div class="l"></div><div class="h"></div></div>
-</div>
+  <div class="ad"><div class="l"></div><div class="h"></div></div>
 
-<div class="c">
-  <div class="st-data"><b>loginCounter++</b><small>(0, 1, 2...)</small></div>
-  <div class="arr-d"><div class="l"></div><div class="h"></div></div>
-</div>
+  <div class="s-data"><b>loginCounter++</b><small>(0, 1, 2...)</small></div>
+  <div class="ad"><div class="l"></div><div class="h"></div></div>
 
-<div class="c">
-  <div class="rw" style="align-items:stretch">
-    <div class="st-call"><b>SHA-256(</b>seed + 'login'<br>+ svc + counter<b>)</b></div>
+  <div class="rw" style="display:flex;align-items:stretch;justify-content:center;gap:10px;width:100%">
+    <div class="s-call"><b>SHA-256(</b>seed + 'login'<br>+ svc + counter<b>)</b></div>
     <div class="pg">
-      <div class="st-param">Вход:<br><b>seed</b>+'login'+<b>svc</b>+<b>counter</b></div>
+      <div class="s-param">Вход:<br><b>seed</b>+'login'+<b>svc</b>+<b>counter</b></div>
     </div>
   </div>
-  <div class="arr-d"><div class="l"></div><div class="h"></div></div>
-</div>
+  <div class="ad"><div class="l"></div><div class="h"></div></div>
 
-<div class="c">
-  <div class="rw" style="align-items:stretch">
-    <div class="st-data"><b>6 байт из хеша → alpha</b><small>abcdefghjkmnpqrstuvwxyz<br>23456789</small></div>
+  <div class="rw" style="display:flex;align-items:stretch;justify-content:center;gap:10px;width:100%">
+    <div class="s-data"><b>6 байт из хеша → alpha</b><small>abcdefghjkmnpqrstuvwxyz<br>23456789</small></div>
     <div class="pg">
-      <div class="st-param">Из alpha исключены:<br><b>i, l, o, 0, 1</b><small>чтоб не путать</small></div>
+      <div class="s-param">Из alpha исключены:<br><b>i, l, o, 0, 1</b><small>чтоб не путать</small></div>
     </div>
   </div>
-  <div class="arr-d"><div class="l"></div><div class="h"></div></div>
-</div>
+  <div class="ad"><div class="l"></div><div class="h"></div></div>
 
-<div class="c">
-  <div class="st-out"><b>Вывод login в #login</b></div>
-  <div class="arr-d"><div class="l"></div><div class="h"></div></div>
-</div>
+  <div class="s-out"><b>Вывод login в #login</b></div>
+  <div class="ad"><div class="l"></div><div class="h"></div></div>
 
-<div class="c">
-  <div class="st-term"><b>Конец</b></div>
+  <div class="s-term"><b>Конец</b></div>
 </div>
 </div>
 
-</div><!-- /wrap -->
+</div>
 
 <div style="max-width:860px;margin-top:10px;font-size:10px;color:#999;text-align:center;line-height:1.5">
 <b>HMAC-SHA256:</b> сид = ключ. svc+len+счётчик ct = сообщение. Rejection Sampling: max = 256-(256%len), байты &ge; max отбрасываются. &nbsp;|&nbsp; <b>SHA-256 (логин):</b> обычный хеш (не HMAC). loginCounter при каждом клике даёт уникальный логин.
