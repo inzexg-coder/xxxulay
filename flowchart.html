@@ -37,65 +37,65 @@ flowchart TD
     direction TB
     G0(["Пуск"]):::term
     G1[["gen()"]]:::func
-    G2[/"Данные seed svc len"/]:::data
+    G2[/"seed svc len state inv"/]:::data
     G3{"seed пустая?"}:::dec
-    G3e("Ошибка подсветка"):::err
-    G4{"Набор символов
-выбран?"}:::dec
-    G4e("Ошибка выход"):::err
+    G3e("Розовая подсветка"):::err
+    G4{"Типы символов
+выбраны?"}:::dec
+    G4e("Ошибка"):::err
     G5[/"Алфавит alpha"/]:::data
     G6[["hmacGen(seed svc len alpha)"]]:::func
-    G7{"pwd.length
+    G7{"pwd длина
 меньше len?"}:::dec
     G8["msg = svc + len + ct"]:::loop
-    G9["HMAC - 32 байта"]:::loop
-    G10["Если byte меньше max
+    G9["HMAC 32 байта"]:::loop
+    G10["byte меньше max
 alpha[byte%len]"]:::loop
     G11["ct + 1"]:::loop
-    G12["inv.cap? Первый символ
-в верхний регистр"]:::func
-    G13["inv.dig? Последний
-символ в цифру"]:::func
+    G12["inv.cap?
+первый ToUpper"]:::func
+    G13["inv.dig?
+последний в цифру"]:::func
     G14[/"Пароль pwd"/]:::out
     G15(["Конец"]):::term
 
     G0 --> G1 --> G2 --> G3
-    G3 -- да --> G3e
-    G3 -- нет --> G4
-    G4 -- да --> G5
-    G4 -- нет --> G4e
+    G3 -->|да| G3e
+    G3 -->|нет| G4
+    G4 -->|да| G5
+    G4 -->|нет| G4e
     G5 --> G6 --> G7
-    G7 -- да --> G8 --> G9 --> G10 --> G11
-    G11 -- цикл --> G7
-    G7 -- нет --> G12 --> G13 --> G14 --> G15
+    G7 -->|да| G8 --> G9 --> G10 --> G11
+    G11 -->|цикл| G7
+    G7 -->|нет| G12 --> G13 --> G14 --> G15
   end
 
   subgraph LOG[ГЕНЕРАЦИЯ ЛОГИНА]
     direction TB
     L0(["Пуск"]):::term
     L1[["genLogin()"]]:::func
-    L2[/"Данные seed svc"/]:::data
+    L2[/"seed svc"/]:::data
     L3{"seed пустая?"}:::dec
-    L3e("Ошибка выход"):::err
+    L3e("Ошибка"):::err
     L4{"svc пустая?"}:::dec
     L4e("Выход"):::err
-    L5[/"Счётчик +1"/]:::data
+    L5[/"loginCounter++"/]:::data
     L6[["SHA-256(seed+login+svc+counter)"]]:::func
     L7[/"6 байт в alpha"/]:::data
     L8[/"Логин login"/]:::out
     L9(["Конец"]):::term
 
     L0 --> L1 --> L2 --> L3
-    L3 -- да --> L3e
-    L3 -- нет --> L4
-    L4 -- да --> L4e
-    L4 -- нет --> L5 --> L6 --> L7 --> L8 --> L9
+    L3 -->|да| L3e
+    L3 -->|нет| L4
+    L4 -->|да| L4e
+    L4 -->|нет| L5 --> L6 --> L7 --> L8 --> L9
   end
 </pre>
 </div>
 
 <div class="note">
-<strong>HMAC-SHA256:</strong> сид = ключ. Сообщение = svc + len + счётчик ct. Rejection Sampling: max = 256 - (256 % длина_алфавита), байты больше или равные max отбрасываются. Все символы в пароле встречаются одинаково часто. | <strong>SHA-256 (логин):</strong> обычный хеш (не HMAC). Счётчик loginCounter увеличивается при каждом нажатии, поэтому каждый логин уникальный.
+<strong>HMAC-SHA256:</strong> сид = ключ. Сообщение = svc + len + счётчик ct. Rejection Sampling: max = 256 - (256 % длина алфавита), байты &ge; max отбрасываются. | <strong>SHA-256 (логин):</strong> обычный хеш (не HMAC). Счётчик loginCounter увеличивается при каждом нажатии.
 </div>
 
 <script>mermaid.initialize({startOnLoad:true})</script>
