@@ -5,6 +5,7 @@
 <meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>passgen</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 
@@ -627,13 +628,15 @@ async function renderRandomart(pwd){
   const enc=new TextEncoder();
   const hash=await crypto.subtle.digest('SHA-256',enc.encode(pwd));
   const bytes=new Uint8Array(hash);
-  const emojis=[
-    {sym:'♥',bg:'#f43f5e'},{sym:'★',bg:'#f59e0b'},{sym:'☀',bg:'#f97316'},
-    {sym:'☁',bg:'#8b5cf6'},{sym:'❄',bg:'#06b6d4'},{sym:'⚡',bg:'#eab308'},
-    {sym:'⚘',bg:'#22c55e'},{sym:'☘',bg:'#16a34a'},{sym:'♈',bg:'#ec4899'},
-    {sym:'☉',bg:'#f472b6'},{sym:'☾',bg:'#6366f1'},{sym:'⭐',bg:'#a855f7'},
-    {sym:'❤',bg:'#e11d48'},{sym:'♦',bg:'#2563eb'},{sym:'☻',bg:'#7c3aed'},
-    {sym:'♠',bg:'#1e293b'}
+  const icons=[
+    'fa-heart','fa-star','fa-sun','fa-cloud','fa-snowflake','fa-bolt',
+    'fa-leaf','fa-seedling','fa-fire','fa-moon','fa-gem','fa-key',
+    'fa-shield-halved','fa-lock','fa-globe','fa-skull'
+  ];
+  const colors=[
+    '#f43f5e','#f59e0b','#f97316','#8b5cf6','#06b6d4','#eab308',
+    '#22c55e','#16a34a','#ef4444','#6366f1','#a855f7','#ec4899',
+    '#2563eb','#7c3aed','#14b8a6','#1e293b'
   ];
   const el=document.getElementById('rart');
   el.innerHTML='';
@@ -641,11 +644,12 @@ async function renderRandomart(pwd){
     const hi=(bytes[i]>>4)&0xf;
     const lo=bytes[i]&0xf;
     for(const v of[hi,lo]){
-      const e=emojis[v];
       const d=document.createElement('div');
       d.className='rart-e';
-      d.style.background=e.bg;
-      d.textContent=e.sym;
+      d.style.background=colors[v];
+      const icon=document.createElement('i');
+      icon.className='fa-solid '+icons[v];
+      d.appendChild(icon);
       el.appendChild(d);
     }
   }
