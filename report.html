@@ -20,8 +20,6 @@ th{background:#f3f0ff;color:#6c3ce0;text-align:left;padding:7px 10px;border:1px 
 td{padding:6px 10px;border:1px solid #e0d8f5}
 tr:nth-child(even){background:#faf8ff}
 .badge{display:inline-block;background:#6c3ce0;color:#fff;padding:2px 8px;border-radius:10px;font-size:9pt;margin-left:6px}
-.flow-box{background:#f8f6ff;border:1.5px solid #d0c4f7;border-radius:8px;padding:12px 16px;margin:10px 0 16px}
-.flow-arrow{text-align:center;color:#6c3ce0;font-size:14pt;margin:2px 0}
 .page-break{page-break-before:always}
 .cover{text-align:center;padding-top:120px}
 .cover h1{font-size:30pt;border:none;margin-bottom:8px}
@@ -62,9 +60,8 @@ tr:nth-child(even){background:#faf8ff}
 <li><a href="#s8">Экспорт и импорт настроек</a></li>
 <li><a href="#s9">Безопасность и хранение данных</a></li>
 <li><a href="#s10">Полный список функций</a></li>
-<li><a href="#s11">Блок-схема генерации</a></li>
-<li><a href="#s12">Результаты тестирования коллизий</a></li>
-<li><a href="#s13">Требования и запуск</a></li>
+<li><a href="#s11">Результаты тестирования коллизий</a></li>
+<li><a href="#s12">Требования и запуск</a></li>
 </ol>
 
 <div class="page-break"></div>
@@ -435,59 +432,17 @@ renderRandomart(pwd):
 
 <div class="page-break"></div>
 
-<!-- 11. БЛОК-СХЕМА -->
-<h2 id="s11">11. Блок-схема генерации</h2>
-
-<p>Порядок вызова функций при нажатии кнопки «Создать»:</p>
-
-<div class="flow-box">
-<strong>gen()</strong> — точка входа
-<div class="flow-arrow">↓</div>
-<strong>Валидация:</strong> проверка сида и наборов символов
-<div class="flow-arrow">↓</div>
-<strong>hmacGen(seed, svc, len, alpha)</strong> — генерация базового пароля
-<div class="flow-arrow">↓</div>
-<strong>Инверсии:</strong> inv.cap → первая заглавная; inv.dig → последняя цифра (отдельный HMAC)
-<div class="flow-arrow">↓</div>
-<strong>Отображение:</strong> запись в поле #pwd
-<div class="flow-arrow">↓</div>
-<strong>renderRandomart(finalPwd)</strong> — эмодзи-код (SHA-256 → 4 иконки)
-<div class="flow-arrow">↓</div>
-<strong>updateStrength(len, sets)</strong> — индикатор надёжности
-<div class="flow-arrow">↓</div>
-<strong>cpy()</strong> — автокопирование в буфер обмена
-<div class="flow-arrow">↓</div>
-<strong>Сохранение:</strong> saveCfg() — запоминание настроек для сервиса
-</div>
-
-<h3>Параметры hmacGen</h3>
-<table>
-<tr><th>Параметр</th><th>Источник</th><th>Описание</th></tr>
-<tr><td><code>seed</code></td><td>Поле ввода #seed</td><td>Секретная фраза пользователя (UTF-8)</td></tr>
-<tr><td><code>svc</code></td><td>Поле ввода #service</td><td>Название сервиса или "(empty)"</td></tr>
-<tr><td><code>len</code></td><td>Поле #length</td><td>Желаемая длина пароля (1–99)</td></tr>
-<tr><td><code>alpha</code></td><td>Чекбоксы символов</td><td>Строка допустимых символов</td></tr>
-</table>
-
-<h3>Параметры renderRandomart</h3>
-<table>
-<tr><th>Параметр</th><th>Источник</th><th>Описание</th></tr>
-<tr><td><code>pwd</code></td><td>Результат hmacGen + инверсии</td><td>Финальный пароль (строка)</td></tr>
-</table>
-
-<div class="page-break"></div>
-
 <!-- 12. ТЕСТИРОВАНИЕ -->
-<h2 id="s12">12. Результаты тестирования коллизий</h2>
+<h2 id="s11">11. Результаты тестирования коллизий</h2>
 
-<h3>12.1 Условия теста</h3>
+<h3>11.1 Условия теста</h3>
 <ul>
 <li>10 000 000 паролей (сгенерированы программно: числовые, буквенные, смешанные)</li>
 <li>Сервис: "google", длина: 16 символов</li>
 <li>Алфавит: 66 символов (a-z, A-Z, 0-9, !@#$%^&amp;*+=-.)</li>
 </ul>
 
-<h3>12.2 Результаты</h3>
+<h3>11.2 Результаты</h3>
 <table>
 <tr><th>Метрика</th><th>Значение</th></tr>
 <tr><td>Время выполнения</td><td>102.3 сек (97 751 пароль/сек)</td></tr>
@@ -496,7 +451,7 @@ renderRandomart(pwd):
 <tr><td>Хэмминг-расстояние</td><td>3.75 / 4 нибла = 93.8%</td></tr>
 </table>
 
-<h3>12.3 Сравнение позиций байтов</h3>
+<h3>11.3 Сравнение позиций байтов</h3>
 <p>Для проверки корректности SHA-256 тестированы разные позиции байтов:</p>
 <table>
 <tr><th>Позиция</th><th>Уникальных</th><th>Среднее</th><th>Хэмминг</th></tr>
@@ -511,7 +466,7 @@ renderRandomart(pwd):
 </div>
 
 <!-- 13. ТРЕБОВАНИЯ -->
-<h2 id="s13">13. Требования и запуск</h2>
+<h2 id="s12">12. Требования и запуск</h2>
 
 <h3>13.1 Системные требования</h3>
 <ul>
