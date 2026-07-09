@@ -469,8 +469,9 @@ function renderSvcChips(){
   }
 
   for(const s of svcs){
-    const pop=POPULAR.find(p=>p.n===s);
-    g.appendChild(pop?chip(pop,true,true):chip(s,false,true));
+    const pop=POPULAR.find(p=>s===p.n||s.startsWith(p.n+'/'));
+    if(pop)g.appendChild(chip({n:s,l:pop.l,c:pop.c,orig:pop.n},true,true));
+    else g.appendChild(chip(s,false,true));
   }
 }
 function chip(item, hasLogo, deletable){
