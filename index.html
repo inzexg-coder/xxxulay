@@ -258,11 +258,7 @@ input.error{border-color:var(--error);animation:glow 1.5s ease infinite}
 <button class="btn btn-primary" onclick="gen()">Создать</button>
 
 <div class="card" style="margin-top:12px">
-  <div class="card-title">Логин и пароль</div>
-  <div style="display:flex;gap:6px;margin-bottom:8px">
-    <input type="text" id="login" readonly style="flex:1;padding:8px 10px;font-size:13px;border:1.5px solid var(--border);border-radius:8px;background:var(--card);color:var(--fg);outline:none;font-family:inherit" placeholder="Логин">
-    <button onclick="genLogin()" style="padding:8px 12px;font-size:12px;font-weight:600;border:none;border-radius:8px;background:linear-gradient(135deg,var(--violet),#8b5cf6);color:#fff;cursor:pointer;white-space:nowrap">Создать логин</button>
-  </div>
+  <div class="card-title">Пароль</div>
   <input class="pwd-field" id="pwd" readonly>
   <div class="str-wrap" id="strWrap">
     <div class="str-bars" id="strBars"></div>
@@ -573,30 +569,6 @@ async function hmacGen(seed,svc,len,alpha){
   return pwd;
 }
 
-function genLogin(){
-  document.getElementById('login').value='';
-  const seed=document.getElementById('seed').value.trim();
-  const svc=document.getElementById('service').value.trim()||'(empty)';
-  if(!seed){
-    document.getElementById('seed').classList.add('error');
-    document.getElementById('seedErr').textContent='Введите сид';
-    return;
-  }
-  if(!svc)return;
-  const enc=new TextEncoder();
-  crypto.subtle.importKey('raw',enc.encode(seed),{name:'HMAC',hash:'SHA-256'},false,['sign']).then(k=>{
-    return crypto.subtle.sign('HMAC',k,enc.encode('login/'+svc));
-  }).then(buf=>{
-    const alpha='abcdefghjkmnpqrstuvwxyz23456789';
-    const bytes=new Uint8Array(buf);
-    let login='';
-    for(let i=0;i<6;i++){
-      login+=alpha[bytes[i]%alpha.length];
-    }
-    login = login[0].toUpperCase() + login.slice(1);
-    document.getElementById('login').value=login;
-  });
-}
 function updateStrength(len,sets){
   const bars=document.getElementById('strBars');bars.innerHTML='';
   const info=document.getElementById('strInfo');
@@ -640,7 +612,7 @@ async function renderRandomart(pwd){
   ];
   const el=document.getElementById('rart');
   el.innerHTML='';
-  for(let i=0;i<2;i++){
+  for(let i=0;i<3;i++){
     const hi=(bytes[i]>>4)&0xf;
     const lo=bytes[i]&0xf;
     for(const v of[hi,lo]){
