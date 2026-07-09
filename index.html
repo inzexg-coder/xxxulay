@@ -160,8 +160,8 @@ input.error{border-color:var(--error);animation:glow 1.5s ease infinite}
 
 .rart-wrap{margin-top:10px}
 .rart-title{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
-.rart{display:flex;flex-wrap:wrap;gap:5px;padding:8px;background:var(--card);border:1.5px solid var(--border);border-radius:10px;justify-content:center}
-.rart-e{width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:18px;transition:transform .2s;cursor:default;flex-shrink:0}
+.rart{display:flex;flex-wrap:wrap;gap:2px;padding:6px 8px;background:var(--card);border:1.5px solid var(--border);border-radius:10px;justify-content:center}
+.rart-e{width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:14px;transition:transform .2s;cursor:default;flex-shrink:0}
 .rart-e:hover{transform:scale(1.2)}
 
 </style>
@@ -640,7 +640,7 @@ async function renderRandomart(pwd){
   ];
   const el=document.getElementById('rart');
   el.innerHTML='';
-  for(let i=0;i<bytes.length;i++){
+  for(let i=0;i<8;i++){
     const hi=(bytes[i]>>4)&0xf;
     const lo=bytes[i]&0xf;
     for(const v of[hi,lo]){
