@@ -157,11 +157,12 @@ input.error{border-color:var(--error);animation:glow 1.5s ease infinite}
 .modal-btn-primary{background:linear-gradient(135deg,var(--lilac),var(--lilac2));color:#fff}
 .modal-btn-secondary{background:var(--border);color:var(--fg)}
 
-
-.rart{display:grid;grid-template-columns:repeat(17,1fr);gap:1px;margin-top:8px;border-radius:6px;overflow:hidden;background:var(--border)}
-.rart-c{aspect-ratio:1;border-radius:1px;transition:background .3s}
 .rart-wrap{margin-top:10px}
 .rart-title{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.rart{display:flex;flex-wrap:wrap;gap:5px;padding:8px;background:var(--card);border:1.5px solid var(--border);border-radius:10px;justify-content:center}
+.rart-e{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;font-weight:700;transition:transform .2s;cursor:default;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.rart-e:hover{transform:scale(1.2)}
+
 </style>
 </head>
 <body>
@@ -267,7 +268,7 @@ input.error{border-color:var(--error);animation:glow 1.5s ease infinite}
     <div class="str-info" id="strInfo"></div>
   </div>
   <div class="rart-wrap" id="rartWrap" style="display:none">
-    <div class="rart-title">Визуальный хэш</div>
+    <div class="rart-title">Эмодзи код</div>
     <div class="rart" id="rart"></div>
   </div>
 </div>
@@ -622,43 +623,34 @@ async function cpy(){
   setTimeout(()=>document.getElementById('msg').textContent='',1500);
 }
 
-
-function renderRandomart(pwd){
-  const W=17,H=9;
-  const grid=Array.from({length:H},()=>new Uint8Array(W));
-  let x=Math.floor(W/2),y=Math.floor(H/2);
-  grid[y][x]=1;
+async function renderRandomart(pwd){
   const enc=new TextEncoder();
-  const bytes=new Uint8Array(enc.encode(pwd));
-  for(const byte of bytes){
-    for(let bit=0;bit<8;bit+=2){
-      const d=(byte>>bit)&3;
-      if(d&1)x=Math.min(x+1,W-1); else x=Math.max(x-1,0);
-      if(d&2)y=Math.min(y+1,H-1); else y=Math.max(y-1,0);
-      grid[y][x]=Math.min(grid[y][x]+1,255);
-    }
-  }
-  let maxV=0;
-  for(const row of grid)for(const v of row)if(v>maxV)maxV=v;
+  const hash=await crypto.subtle.digest('SHA-256',enc.encode(pwd));
+  const bytes=new Uint8Array(hash);
+  const emojis=[
+    {sym:'♥',bg:'#f43f5e'},{sym:'★',bg:'#f59e0b'},{sym:'☀',bg:'#f97316'},
+    {sym:'☁',bg:'#8b5cf6'},{sym:'❄',bg:'#06b6d4'},{sym:'⚡',bg:'#eab308'},
+    {sym:'⚘',bg:'#22c55e'},{sym:'☘',bg:'#16a34a'},{sym:'♈',bg:'#ec4899'},
+    {sym:'☉',bg:'#f472b6'},{sym:'☾',bg:'#6366f1'},{sym:'⭐',bg:'#a855f7'},
+    {sym:'❤',bg:'#e11d48'},{sym:'♦',bg:'#2563eb'},{sym:'☻',bg:'#7c3aed'},
+    {sym:'♠',bg:'#1e293b'}
+  ];
   const el=document.getElementById('rart');
   el.innerHTML='';
-  for(let r=0;r<H;r++){
-    for(let c=0;c<W;c++){
-      const cell=document.createElement('div');
-      cell.className='rart-c';
-      const v=grid[r][c];
-      if(v===0)cell.style.background='var(--border)';
-      else if(v===1)cell.style.background='rgba(168,85,247,.15)';
-      else if(v<=3)cell.style.background='rgba(168,85,247,.3)';
-      else if(v<=6)cell.style.background='rgba(168,85,247,.5)';
-      else if(v<=12)cell.style.background='rgba(139,92,246,.65)';
-      else cell.style.background='rgba(124,58,237,.85)';
-      el.appendChild(cell);
+  for(let i=0;i<bytes.length;i++){
+    const hi=(bytes[i]>>4)&0xf;
+    const lo=bytes[i]&0xf;
+    for(const v of[hi,lo]){
+      const e=emojis[v];
+      const d=document.createElement('div');
+      d.className='rart-e';
+      d.style.background=e.bg;
+      d.textContent=e.sym;
+      el.appendChild(d);
     }
   }
   document.getElementById('rartWrap').style.display='';
-}
-init();
+}init();
 </script>
 </body>
 </html>
