@@ -640,7 +640,7 @@ async function renderRandomart(pwd){
   ];
   const el=document.getElementById('rart');
   el.innerHTML='';
-  for(let i=0;i<8;i++){
+  for(let i=0;i<4;i++){
     const hi=(bytes[i]>>4)&0xf;
     const lo=bytes[i]&0xf;
     for(const v of[hi,lo]){
