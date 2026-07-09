@@ -33,7 +33,7 @@ flowchart TD
   classDef out fill:#fff3e0,stroke:#ffb300
   classDef err fill:#ffcdd2,stroke:#e57373
 
-  subgraph GEN[ГЕНЕРАЦИЯ ПАРОЛЯ]
+  subgraph GEN["ГЕНЕРАЦИЯ ПАРОЛЯ"]
     direction TB
     G0(["Пуск"]):::term
     G1[["gen()"]]:::func
@@ -70,7 +70,7 @@ alpha[byte%len]"]:::loop
     G7 -->|нет| G12 --> G13 --> G14 --> G15
   end
 
-  subgraph LOG[ГЕНЕРАЦИЯ ЛОГИНА]
+  subgraph LOG["ГЕНЕРАЦИЯ ЛОГИНА"]
     direction TB
     L0(["Пуск"]):::term
     L1[["genLogin()"]]:::func
@@ -79,23 +79,22 @@ alpha[byte%len]"]:::loop
     L3e("Ошибка"):::err
     L4{"svc пустая?"}:::dec
     L4e("Выход"):::err
-    L5[/"loginCounter++"/]:::data
-    L6[["SHA-256(seed+login+svc+counter)"]]:::func
-    L7[/"6 байт в alpha"/]:::data
-    L8[/"Логин login"/]:::out
-    L9(["Конец"]):::term
+    L5[["HMAC-SHA256(seed, login/svc)"]]:::func
+    L6[/"6 байт в alpha"/]:::data
+    L7[/"Логин login"/]:::out
+    L8(["Конец"]):::term
 
     L0 --> L1 --> L2 --> L3
     L3 -->|да| L3e
     L3 -->|нет| L4
     L4 -->|да| L4e
-    L4 -->|нет| L5 --> L6 --> L7 --> L8 --> L9
+    L4 -->|нет| L5 --> L6 --> L7 --> L8
   end
 </pre>
 </div>
 
 <div class="note">
-<strong>HMAC-SHA256:</strong> сид = ключ. Сообщение = svc + len + счётчик ct. Rejection Sampling: max = 256 - (256 % длина алфавита), байты &ge; max отбрасываются. | <strong>SHA-256 (логин):</strong> обычный хеш (не HMAC). Счётчик loginCounter увеличивается при каждом нажатии.
+<strong>HMAC-SHA256:</strong> сид = ключ. Сообщение = svc + len + счётчик ct. Rejection Sampling: max = 256 - (256 % длина алфавита), байты >= max отбрасываются. | <strong>HMAC-SHA256 (логин):</strong> ключ = сид, сообщение = "login" + svc. Логин детерминирован: одинаковый сид + сервис дают одинаковый логин.
 </div>
 
 <script>mermaid.initialize({startOnLoad:true})</script>
