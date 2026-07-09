@@ -161,7 +161,7 @@ input.error{border-color:var(--error);animation:glow 1.5s ease infinite}
 .rart-wrap{margin-top:10px}
 .rart-title{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
 .rart{display:flex;flex-wrap:wrap;gap:5px;padding:8px;background:var(--card);border:1.5px solid var(--border);border-radius:10px;justify-content:center}
-.rart-e{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;font-weight:700;transition:transform .2s;cursor:default;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.rart-e{width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:18px;transition:transform .2s;cursor:default;flex-shrink:0}
 .rart-e:hover{transform:scale(1.2)}
 
 </style>
@@ -646,7 +646,7 @@ async function renderRandomart(pwd){
     for(const v of[hi,lo]){
       const d=document.createElement('div');
       d.className='rart-e';
-      d.style.background=colors[v];
+      d.style.color=colors[v];
       const icon=document.createElement('i');
       icon.className='fa-solid '+icons[v];
       d.appendChild(icon);
