@@ -280,14 +280,13 @@ const POPULAR = [
   {n:'yandex',  l:'Ya',c:'#fc3f1d'},
   {n:'mail',    l:'@', c:'#005ff9'},
   {n:'icloud',  l:'i', c:'#369'},
-  {n:'dropbox', l:'D', c:'#0061ff'},
-  {n:'telegram',l:'T', c:'#0088cc'},
+  {n:'onliner', l:'O', c:'#f60'},
+  {n:'kufar',   l:'K', c:'#66c'},
 ];
 
 let perSvc = {};
 let curSvc = '(empty)';
 let svcs = [];
-let loginCounter = 0;
 
 function getCfg(svc){
   if(!perSvc[svc]) perSvc[svc]={state:{capitals:1,lowercase:1,digits:0,symbols:1},inv:{cap:0,dig:0},len:10};
@@ -319,7 +318,7 @@ function init(){
   document.getElementById('service').addEventListener('keydown',e=>{if(e.key==='Enter')gen()});
   document.getElementById('service').addEventListener('blur',()=>{
     const svc=document.getElementById('service').value.trim()||'(empty)';
-    if(svc!==curSvc){curSvc=svc; if(perSvc[svc]) applyCfg(perSvc[svc]); else if(svc!=='(empty)') { perSvc[svc]={state:{...window.state},inv:{...window.inv},len:+document.getElementById('length').value}; }}
+    if(svc!==curSvc){curSvc=svc; if(perSvc[svc]) applyCfg(perSvc[svc]);}
   });
   if(perSvc[curSvc]) applyCfg(perSvc[curSvc]);
   else {
@@ -470,7 +469,8 @@ function renderSvcChips(){
   }
 
   for(const s of svcs){
-    g.appendChild(chip(s,false,true));
+    const pop=POPULAR.find(p=>p.n===s);
+    g.appendChild(pop?chip(pop,true,true):chip(s,false,true));
   }
 }
 function chip(item, hasLogo, deletable){
@@ -570,15 +570,17 @@ function genLogin(){
     return;
   }
   if(!svc)return;
-  loginCounter++;
-  const enc=new TextEncoder().encode(seed+'login'+svc+loginCounter);
-  crypto.subtle.digest('SHA-256',enc).then(buf=>{
+  const enc=new TextEncoder();
+  crypto.subtle.importKey('raw',enc.encode(seed),{name:'HMAC',hash:'SHA-256'},false,['sign']).then(k=>{
+    return crypto.subtle.sign('HMAC',k,enc.encode('login/'+svc));
+  }).then(buf=>{
     const alpha='abcdefghjkmnpqrstuvwxyz23456789';
     const bytes=new Uint8Array(buf);
     let login='';
     for(let i=0;i<6;i++){
       login+=alpha[bytes[i]%alpha.length];
     }
+    login = login[0].toUpperCase() + login.slice(1);
     document.getElementById('login').value=login;
   });
 }
