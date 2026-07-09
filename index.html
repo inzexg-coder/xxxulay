@@ -465,7 +465,7 @@ function renderSvcChips(){
   const shown=new Set();
 
   for(const s of POPULAR){
-    if(!svcs.some(v=>v===s.n||v.startsWith(s.n+"/"))){g.appendChild(chip(s,true,false));shown.add(s.n);}
+    if(svcs.indexOf(s.n)===-1){g.appendChild(chip(s,true,false));shown.add(s.n);}
   }
 
   for(const s of svcs){
