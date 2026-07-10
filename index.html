@@ -293,6 +293,7 @@ const POPULAR = [
 let perSvc = {};
 let curSvc = '(empty)';
 let svcs = [];
+let generating = false;
 
 function getCfg(svc){
   if(!perSvc[svc]) perSvc[svc]={state:{capitals:1,lowercase:1,digits:0,symbols:1},inv:{cap:0,dig:0},len:10};
@@ -531,7 +532,11 @@ function chip(item, hasLogo, deletable){
 }
 
 async function gen(){
-  if(!window.crypto||!window.crypto.subtle){document.getElementById('seedErr').textContent='Web Crypto API недоступен';return;}
+  if(generating)return;
+  generating=true;
+  const btn=document.querySelector('.btn-primary');if(btn)btn.disabled=true;
+  if(!window.crypto||!window.crypto.subtle){document.getElementById('seedErr').textContent='Web Crypto API недоступен';generating=false;if(btn)btn.disabled=false;return;}
+  try{
   const seed=document.getElementById('seed').value.trim();
   const svc=document.getElementById('service').value.trim()||'(empty)';
   const len=+document.getElementById('length').value||10;
@@ -566,6 +571,7 @@ async function gen(){
   }
   curSvc=svc;
   saveCfg();
+  }finally{generating=false;const b=document.querySelector('.btn-primary');if(b)b.disabled=false;}
 }
 
 async function hmacGen(seed,svc,len,alpha){
