@@ -342,7 +342,7 @@ function init(){
 }
 
 function loadState(){
-  try{localStorage.removeItem('passgen_state');}catch(e){}
+  try{localStorage.removeItem('passgen_state');}catch(e){console.warn('localStorage cleanup failed:',e);}
   perSvc = {};
   svcs = [];
   curSvc = '(empty)';
