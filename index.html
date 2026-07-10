@@ -598,9 +598,12 @@ async function cpy(){
 async function renderRandomart(pwd){
   const el=document.getElementById('rart');
   el.innerHTML='';
+  const enc=new TextEncoder();
+  const hash=await crypto.subtle.digest('SHA-256',enc.encode(pwd));
+  const hex=Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join('');
   const img=document.createElement('img');
   img.className='rart-img';
-  img.src='https://robohash.org/'+encodeURIComponent(pwd)+'?size=128x128';
+  img.src='https://robohash.org/'+hex+'?size=128x128';
   img.alt='Robot hash';
   img.onerror=function(){this.style.display='none';};
   el.appendChild(img);
