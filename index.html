@@ -314,6 +314,11 @@ function saveCfg(){
 
 function init(){
   loadState();
+  if(!window.crypto||!window.crypto.subtle){
+    document.getElementById('seedErr').textContent='Web Crypto API недоступен. Откройте через HTTPS или localhost.';
+    document.querySelector('.btn-primary').disabled=true;
+    return;
+  }
   document.getElementById('seed').classList.remove('error');
   document.getElementById('seedErr').textContent='';
   document.getElementById('seed').addEventListener('input',()=>{
@@ -517,6 +522,7 @@ function chip(item, hasLogo, deletable){
 }
 
 async function gen(){
+  if(!window.crypto||!window.crypto.subtle){document.getElementById('seedErr').textContent='Web Crypto API недоступен';return;}
   const seed=document.getElementById('seed').value.trim();
   const svc=document.getElementById('service').value.trim()||'(empty)';
   const len=+document.getElementById('length').value||10;
