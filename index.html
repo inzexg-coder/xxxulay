@@ -379,7 +379,7 @@ function exportData(){
   [...svcs, '(empty)'].forEach(k => { if(perSvc[k]) clean[k] = perSvc[k]; });
   const data = { svcs, perSvc: clean };
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='passgen_export.json';a.click();
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='passgen_export.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 let importDataCache = null;
 
