@@ -1,0 +1,10 @@
+This project uses the following third-party resources:
+
+1. Font Awesome 6.5.1 Free
+   License: SIL Open Font License 1.1 (https://scripts.sil.org/OFL)
+   Website: https://fontawesome.com
+   Usage: Icon set for emoji code visualization (loaded via CDN)
+
+2. Robohash
+   License: Free to use (https://robohash.org)
+   Usage: Robot image hash visualization (loaded via API)
