@@ -390,6 +390,8 @@ function importData(e){
     try{
       const d=JSON.parse(reader.result);
       if(!d.perSvc && !d.svcs){alert('Файл не содержит данных passgen');return;}
+      if(d.perSvc && (typeof d.perSvc!=='object'||Array.isArray(d.perSvc))){alert('Неверный формат: perSvc должен быть объектом');return;}
+      if(d.svcs && !Array.isArray(d.svcs)){alert('Неверный формат: svcs должен быть массивом');return;}
       importDataCache = d;
       showImportModal(d);
     }catch(err){alert('Ошибка импорта: неверный формат файла');}
