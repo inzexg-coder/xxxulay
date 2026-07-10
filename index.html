@@ -165,6 +165,8 @@ input.error{border-color:var(--error);animation:glow 1.5s ease infinite}
 .rart{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;background:var(--card);border:1.5px solid var(--border);border-radius:10px;justify-content:center}
 .rart-img{width:128px;height:128px;border-radius:12px;border:1.5px solid var(--border);transition:transform .2s;cursor:default}
 .rart-e{width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:26px;transition:transform .2s;cursor:default;flex-shrink:0}
+.rart-perm{display:flex;gap:8px;justify-content:center;margin-bottom:6px}
+.rart-perm-e{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
 .rart-e:hover{transform:scale(1.2)}
 .rart-loading{font-size:12px;color:var(--muted);padding:40px 0;text-align:center}
 .rart-toggle{display:flex;gap:0;margin-bottom:6px;border:1.5px solid var(--border);border-radius:8px;overflow:hidden}
@@ -274,6 +276,7 @@ input.error{border-color:var(--error);animation:glow 1.5s ease infinite}
   </div>
   <div class="rart-wrap" id="rartWrap" style="display:none">
     <div class="rart-title">Визуальный код</div>
+    <div class="rart-perm" id="rartPerm"></div>
     <div class="rart-toggle" id="rartToggle">
       <button class="active" onclick="setRartMode('robohash',this)">Robohash</button>
       <button onclick="setRartMode('emoji',this)">Emoji</button>
@@ -643,30 +646,44 @@ function setRartMode(mode,btn){
   const p=document.getElementById('pwd').value;if(p)renderRandomart(p);
 }
 async function renderRandomart(pwd){
+  const enc=new TextEncoder();
+  const hash=await crypto.subtle.digest('SHA-256',enc.encode(pwd));
+  const bytes=new Uint8Array(hash);
+  const hex=Array.from(bytes).map(b=>b.toString(16).padStart(2,'0')).join('');
+  const permEl=document.getElementById('rartPerm');
+  permEl.innerHTML='';
+  const sym=['H','S','C','F','B','L','D','K','R','M','G','Z','X','P','W','Q'];
+  const bg=['#f43f5e','#f59e0b','#f97316','#8b5cf6','#06b6d4','#eab308','#22c55e','#16a34a','#ef4444','#6366f1','#a855f7','#ec4899','#2563eb','#7c3aed','#14b8a6','#1e293b'];
+  for(let i=0;i<2;i++){
+    const hi=(bytes[i]>>4)&0xf;
+    const lo=bytes[i]&0xf;
+    for(const v of[hi,lo]){
+      const d=document.createElement('div');
+      d.className='rart-perm-e';
+      d.style.background=bg[v];
+      d.textContent=sym[v];
+      permEl.appendChild(d);
+    }
+  }
   const el=document.getElementById('rart');
   el.innerHTML='';
   if(rartMode==='robohash'){
     el.innerHTML='<div class="rart-loading">Подождите, пожалуйста...</div>';
-    const enc=new TextEncoder();
-    const hash=await crypto.subtle.digest('SHA-256',enc.encode(pwd));
-    const hex=Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join('');
     const img=document.createElement('img');
     img.className='rart-img';
     img.onload=function(){el.innerHTML='';el.appendChild(img);};
     img.onerror=function(){el.innerHTML='<div class="rart-loading">Не удалось загрузить</div>';};
     img.src='https://robohash.org/'+hex+'?size=128x128';
   }else{
-    const hash=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pwd));
-    const bytes=new Uint8Array(hash);
     const icons=['fa-heart','fa-star','fa-sun','fa-cloud','fa-snowflake','fa-bolt','fa-leaf','fa-seedling','fa-fire','fa-moon','fa-gem','fa-key','fa-shield-halved','fa-lock','fa-globe','fa-skull'];
-    const colors=['#f43f5e','#f59e0b','#f97316','#8b5cf6','#06b6d4','#eab308','#22c55e','#16a34a','#ef4444','#6366f1','#a855f7','#ec4899','#2563eb','#7c3aed','#14b8a6','#1e293b'];
+    const faColors=['#f43f5e','#f59e0b','#f97316','#8b5cf6','#06b6d4','#eab308','#22c55e','#16a34a','#ef4444','#6366f1','#a855f7','#ec4899','#2563eb','#7c3aed','#14b8a6','#1e293b'];
     for(let i=0;i<2;i++){
       const hi=(bytes[i]>>4)&0xf;
       const lo=bytes[i]&0xf;
       for(const v of[hi,lo]){
         const d=document.createElement('div');
         d.className='rart-e';
-        d.style.color=colors[v];
+        d.style.color=faColors[v];
         const icon=document.createElement('i');
         icon.className='fa-solid '+icons[v];
         d.appendChild(icon);
