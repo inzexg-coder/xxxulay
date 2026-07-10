@@ -34,7 +34,7 @@ python3 app.py
 
 ## Лицензии
 
-- Иконки: [Font Awesome 6 Free](https://fontawesome.com/) (CC BY 4.0 / MIT)
+- Иконки: [Font Awesome 6 Free](https://fontawesome.com/) (SIL OFL 1.1)
 - Роботы: [Robohash](https://robohash.org/) (доступен бесплатно)
 
 ## Требования
