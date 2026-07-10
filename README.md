@@ -32,6 +32,11 @@ xdg-open index.html
 python3 app.py
 ```
 
+## Лицензии
+
+- Иконки: [Font Awesome 6 Free](https://fontawesome.com/) (CC BY 4.0 / MIT)
+- Роботы: [Robohash](https://robohash.org/) (доступен бесплатно)
+
 ## Требования
 
 - Современный браузер (Chrome 90+, Firefox 90+, Safari 15+, Edge 90+)
