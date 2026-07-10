@@ -402,7 +402,10 @@ function importData(e){
 }
 
 function showImportModal(d){
-  const list=document.getElementById('modalList');list.innerHTML='';
+  const list=document.getElementById('modalList');
+  const modal=document.getElementById('importModal');
+  if(!list||!modal){console.error('Modal DOM elements not found');return;}
+  list.innerHTML='';
   const services=Object.keys(d.perSvc||{}).sort();
   if(services.length===0){alert('Нет сервисов для импорта');return;}
   services.forEach(s=>{
@@ -413,17 +416,20 @@ function showImportModal(d){
     label.appendChild(span);
     list.appendChild(label);
   });
-  document.getElementById('importModal').classList.add('open');
+  modal.classList.add('open');
 }
 
 function closeImportModal(){
-  document.getElementById('importModal').classList.remove('open');
+  const modal=document.getElementById('importModal');
+  if(modal)modal.classList.remove('open');
   importDataCache=null;
 }
 
 function confirmImport(){
   const d=importDataCache; if(!d){closeImportModal();return;}
-  const checks=document.querySelectorAll('#modalList input[type=checkbox]:checked');
+  const list=document.getElementById('modalList');
+  if(!list){console.error('modalList not found');return;}
+  const checks=list.querySelectorAll('input[type=checkbox]:checked');
   if(checks.length===0){alert('Выберите хотя бы один сервис');return;}
   checks.forEach(cb=>{
     const svc=cb.dataset.svc;
