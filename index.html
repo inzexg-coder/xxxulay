@@ -5,7 +5,6 @@
 <meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>passgen</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 
@@ -161,8 +160,8 @@ input.error{border-color:var(--error);animation:glow 1.5s ease infinite}
 .rart-wrap{margin-top:10px}
 .rart-title{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
 .rart{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;background:var(--card);border:1.5px solid var(--border);border-radius:10px;justify-content:center}
-.rart-e{width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:26px;transition:transform .2s;cursor:default;flex-shrink:0}
-.rart-e:hover{transform:scale(1.2)}
+.rart-img{width:128px;height:128px;border-radius:12px;border:1.5px solid var(--border);transition:transform .2s;cursor:default}
+.rart-img:hover{transform:scale(1.05)}
 
 </style>
 </head>
@@ -265,7 +264,7 @@ input.error{border-color:var(--error);animation:glow 1.5s ease infinite}
     <div class="str-info" id="strInfo"></div>
   </div>
   <div class="rart-wrap" id="rartWrap" style="display:none">
-    <div class="rart-title">Эмодзи код</div>
+    <div class="rart-title">Визуальный код</div>
     <div class="rart" id="rart"></div>
   </div>
 </div>
@@ -597,34 +596,14 @@ async function cpy(){
 }
 
 async function renderRandomart(pwd){
-  const enc=new TextEncoder();
-  const hash=await crypto.subtle.digest('SHA-256',enc.encode(pwd));
-  const bytes=new Uint8Array(hash);
-  const icons=[
-    'fa-heart','fa-star','fa-sun','fa-cloud','fa-snowflake','fa-bolt',
-    'fa-leaf','fa-seedling','fa-fire','fa-moon','fa-gem','fa-key',
-    'fa-shield-halved','fa-lock','fa-globe','fa-skull'
-  ];
-  const colors=[
-    '#f43f5e','#f59e0b','#f97316','#8b5cf6','#06b6d4','#eab308',
-    '#22c55e','#16a34a','#ef4444','#6366f1','#a855f7','#ec4899',
-    '#2563eb','#7c3aed','#14b8a6','#1e293b'
-  ];
   const el=document.getElementById('rart');
   el.innerHTML='';
-  for(let i=0;i<2;i++){
-    const hi=(bytes[i]>>4)&0xf;
-    const lo=bytes[i]&0xf;
-    for(const v of[hi,lo]){
-      const d=document.createElement('div');
-      d.className='rart-e';
-      d.style.color=colors[v];
-      const icon=document.createElement('i');
-      icon.className='fa-solid '+icons[v];
-      d.appendChild(icon);
-      el.appendChild(d);
-    }
-  }
+  const img=document.createElement('img');
+  img.className='rart-img';
+  img.src='https://robohash.org/'+encodeURIComponent(pwd)+'?size=128x128';
+  img.alt='Robot hash';
+  img.onerror=function(){this.style.display='none';};
+  el.appendChild(img);
   document.getElementById('rartWrap').style.display='';
 }init();
 </script>
