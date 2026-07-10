@@ -594,8 +594,13 @@ function updateStrength(len,sets){
 async function cpy(){
   const p=document.getElementById('pwd').value;
   if(!p)return;
-  try{await navigator.clipboard.writeText(p);}catch{
-    document.getElementById('pwd').select();document.execCommand('copy');
+  try{await navigator.clipboard.writeText(p);}
+  catch(e){
+    try{document.getElementById('pwd').select();document.execCommand('copy');}
+    catch(e2){
+      document.getElementById('msg').textContent='Не удалось скопировать';
+      setTimeout(()=>document.getElementById('msg').textContent='',2000);return;
+    }
   }
   document.getElementById('msg').textContent='Скопировано!';
   setTimeout(()=>document.getElementById('msg').textContent='',1500);
