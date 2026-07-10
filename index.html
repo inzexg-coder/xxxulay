@@ -560,6 +560,7 @@ async function gen(){
 }
 
 async function hmacGen(seed,svc,len,alpha){
+  if(!alpha||alpha.length===0)return '';
   const enc=new TextEncoder();
   const keyBytes=enc.encode(seed);
   const msgBase=enc.encode(svc+len);
