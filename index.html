@@ -330,8 +330,11 @@ function saveCfg(){
 }
 
 function init(){
-  window.addEventListener('offline',()=>{const t=document.getElementById('rartToggle');if(t)t.style.display='none';});
-  window.addEventListener('online',()=>{const t=document.getElementById('rartToggle');if(t)t.style.display='';});
+  function hideToggle(){const t=document.getElementById('rartToggle');if(t)t.style.display='none';}
+  function showToggle(){const t=document.getElementById('rartToggle');if(t)t.style.display='';}
+  window.addEventListener('offline',hideToggle);
+  window.addEventListener('online',()=>{checkNet().then(ok=>{if(ok)showToggle();});});
+  function checkNet(){return fetch('https://robohash.org/ping?'+Date.now(),{mode:'no-cors',cache:'no-store'}).then(()=>true).catch(()=>false);}
   loadState();
   if(!window.crypto||!window.crypto.subtle){
     document.getElementById('seedErr').textContent='Web Crypto API недоступен. Откройте через HTTPS или localhost.';
@@ -358,10 +361,8 @@ function init(){
     renderChk(); renderInv();
   }
   renderSvcChips();
-  if(!navigator.onLine){
-    const t=document.getElementById('rartToggle');
-    if(t)t.style.display='none';
-  }
+  if(!navigator.onLine){hideToggle();}
+  else{checkNet().then(ok=>{if(!ok)hideToggle();});}
 }
 
 function loadState(){
